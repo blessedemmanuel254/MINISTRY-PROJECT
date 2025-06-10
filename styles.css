@@ -1,0 +1,300 @@
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Poppins , Arial;
+}
+
+body {
+  background-image: url('images/5764744958148985345.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  /* Optional: add a fallback color */
+  background-color: #000;
+  background-attachment: fixed;
+}
+
+body .overlay {
+  width: 100vw;
+  height: 100vh;
+  background-color: #0f0f0f3d;
+  position: fixed;
+  display: none;
+}
+
+#popUp {
+  background-color: white;
+  border-radius: 12;
+  padding: 10px;
+  margin: 0 auto;
+  border-radius: 25px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: clamp(30px, 25%, 25%);
+  display: none;
+  z-index: 10;
+  width: fit-content;
+}
+
+#popUp h4 {
+  color: #0f0f0f;
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+#popUp .response {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+#popUp .response p {
+  background-color: #0f0f0f;
+  padding: 6px;
+  border-radius: 12px;
+  color: white;
+  cursor: pointer;
+}
+
+#popUp .response p:hover {
+  opacity: .75;
+}
+
+#popUp .response p.noResponce {
+  background: white;
+  color: #0f0f0f;
+  border: 1px solid #898888;
+}
+
+#popUp .response p.noResponce:hover {
+  background-color: #dedede;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 90%;
+  justify-content: center;
+  margin: 8vh auto;
+  padding: 10px;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-color: rgba(255, 255, 255, 0.87);
+}
+
+.container ul {
+  display: flex;
+  gap: 10px;
+  font-size: 14px;
+  overflow-x: auto;
+}
+
+.container ul li {
+  list-style: none;
+  cursor: pointer;
+  background-color: #898888;
+  color: white;
+  padding: 2px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.container ul li:hover {
+  opacity: .75;
+}
+
+.container ul li.active {
+  background-color: #0f0f0f;
+}
+
+.container a {
+  text-decoration: none;
+  color: white;
+  background-color: #008000;
+  padding: 3px;
+  width: fit-content;
+}
+
+.container .tableContainer {
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+.container table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  overflow-x: auto;
+}  
+
+.container table thead {
+  background-color: #0f0f0f;
+  color: white;
+}
+
+.container table thead th {
+  text-align: left;
+  padding: 5px;
+}
+
+.container table tbody tr th:last-of-type {
+  text-align: center;
+}
+
+.container table tbody tr {
+  color: #0f0f0f;
+}
+
+.container table tbody tr td {
+  padding: 5px;
+}
+
+.container table tbody tr td:not(:first-of-type) {
+  min-width: 120px;
+}
+
+.container table tbody tr td:nth-child(4) {
+  min-width: 200px;
+}
+
+.container table tbody tr td:nth-child(4) {
+  display: flex;
+  gap: 5px;
+}
+
+.container table tbody tr:nth-child(odd) {
+  background-color: #dedede;
+}
+
+.container table tbody tr td p {
+  background-color: #008000;
+  font-size: 14px;
+  color: white;
+  width: fit-content;
+  padding: 3px 10px;
+  cursor: pointer;
+}
+
+.container table tbody tr td p:hover {
+  opacity: .875;
+}
+
+.container table tbody tr td p.copy {
+  background-color: #898888;
+}
+
+.container table tbody tr td p.update {
+  background-color: #0f0f0f;
+}
+
+.container table tbody tr td i {
+  font-size: 14px;
+  color: #008000;
+  font-weight: bold;
+}
+
+.container table tbody tr td i.fa-x {
+  color: red;
+}
+
+.container table tbody tr td i.fa-minus {
+  color: #898888;
+}
+
+.container header {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.container header img {
+  height: 36px;
+  width: 36px;
+}
+
+.container header p {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.container h1 {
+  font-weight: bold;
+  font-size: 25px;
+}
+
+/**** Add servant ****/
+
+.container.newServant {
+  align-items: center;
+}
+
+.container p.newServant {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.container form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: clamp(300px, 50%, 50%);
+  margin: 0 auto;
+}
+
+.container form p.errorMessage {
+  color: red;
+  font-size: 14px;
+}
+
+.container form p.successMessage {
+  color: #008000;
+  font-size: 14px;
+}
+
+.container form p.successMessage span:first-of-type {
+  color: #0f0f0f;
+}
+
+.container form p.successMessage span:last-of-type {
+  color: #898888;
+}
+
+.container form span {
+  font-size: bold;
+  font-size: 14px;
+}
+
+.container form input, .container form select {
+  outline: none;
+  padding: 2px;
+}
+
+.container form select {
+  font-size: 14px;
+}
+
+.container form button {
+  background-color: #0f0f0f;
+  color: white;
+  padding: 6px;
+  border: none;
+  font-size: 14px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.container form button:hover {
+  opacity: .875;
+}
+
+@media screen and (max-width: 1000px) {
+  .container {
+    width: 100%;
+  }
+}
