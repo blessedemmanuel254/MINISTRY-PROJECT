@@ -58,6 +58,10 @@ body .container {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.container header .contnrHA a:not(:last-of-type):hover {
+  opacity: 0.875;
+}
+
 .container header .contnrHA a i {
   font-size: 16px;
   color: #ffff00;
@@ -136,7 +140,7 @@ body .container {
   border-radius: 4px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   position: fixed;
-  right: 0;
+  right: -100%;
   top: 0;
   z-index: 1002;
   transition: right .5s ease;
@@ -173,21 +177,43 @@ body .container {
   padding: 8px 16px;
   align-items: center;
   border: 1px solid #dedede;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .container .sideBar a.ercr:first-of-type {
   color: #ffffff;
   background-color: #0f268c;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: none;
+}
+
+.container .sideBar a.ercr:first-of-type:hover {
+  opacity: 0.875;
+}
+
+.container .sideBar a.ercr:last-of-type:hover {
+  background-color: #dedede3a;
+}
+
+.container .sideBar a.ercr i {
+  font-size: 16px;
+  color: #ffff00;
+}
+
+.container .sideBar a.ercr:last-of-type i {
+  color: #898888;
 }
 
 @media (max-width: 506px) {
+  .container header {
+    padding: 20px 10px;
+  }
+
   .container header .contnrHA, .container header .contnrHA a:not(:last-of-type) {
     display: none;
   }
-  
-  .container header {
-    padding: 20px 10px;
+
+  .container .sideBar a.ercr:first-of-type {
+    display: flex;
   }
 }
 
@@ -198,5 +224,13 @@ body .container {
 
   .container header .contnrHA .help-icon {
     display: none;
+  }
+
+  .container .overlay.active {
+    display: block;
+  }
+
+  .container .sideBar.active {
+    right: 0;
   }
 }

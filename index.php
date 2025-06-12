@@ -40,12 +40,14 @@
     <div class="overlay" id="overlay" onclick="toggleSideBar()"></div>
     <div class="sideBar" id="sidebar">
       <div class="sContainer">
-        <img src="Images/Jesus is Lord Radio Logo.avif" alt="Jesus is Lord Radio Logo" width="100">
+        <img src="Images/Jesus is Lord Radio Logo.avif" alt="Jesus is Lord Radio Logo" width="140">
         <i class="fa-solid fa-xmark" onclick="toggleSideBar()"></i>
       </div>
       <a class="ercr" href="https://www.jesusislordradio.info/" target="_blank"><i class="fa-solid fa-radio"></i> Listen&nbsp;to&nbsp;Radio</a>
-      <a class="ercr" href="#">Help</a>
+      <a class="ercr" href="#"><i class="fa-regular fa-circle-question"></i> Help</a>
     </div>
   </div>
+
+  <script src="Scripts/general.js"></script>
 </body>
 </html>
