@@ -1,0 +1,68 @@
+<?php
+require 'vendor/autoload.php';
+
+use AfricasTalking\SDK\AfricasTalking;
+
+// === CONFIGURATION ===
+$username = "YOUR_USERNAME"; // Use 'sandbox' for test account
+$apiKey   = "YOUR_API_KEY";  // Get from https://account.africastalking.com
+$AT       = new AfricasTalking($username, $apiKey);
+$sms      = $AT->sms();
+
+// === CONTACTS ===
+// Replace this with a DB call if needed
+$contacts = [
+    "+254712345678", // Contact 1
+    "+254798765432", // Contact 2
+];
+
+$status = "";
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $message = trim($_POST['message'] ?? '');
+
+    if ($message !== "") {
+        try {
+            $result = $sms->send([
+                'to'      => $contacts,
+                'message' => $message,
+                // 'from' => 'YourSenderID' // Optional if you have a registered sender ID
+            ]);
+            $status = "✅ Message sent successfully!";
+        } catch (Exception $e) {
+            $status = "❌ Error: " . $e->getMessage();
+        }
+    } else {
+        $status = "⚠️ Please enter a message.";
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Priest SMS Portal</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 20px; }
+        .container { max-width: 500px; background: white; padding: 30px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); border-radius: 8px; }
+        textarea { width: 100%; height: 120px; padding: 10px; font-size: 16px; }
+        button { background: #007bff; color: white; padding: 10px 20px; border: none; font-size: 16px; border-radius: 5px; cursor: pointer; }
+        .status { margin-top: 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Send SMS to Congregation</h2>
+    <form method="post">
+        <label for="message">Message:</label><br>
+        <textarea name="message" id="message" placeholder="Type your message here..."></textarea><br><br>
+        <button type="submit">Send SMS</button>
+    </form>
+    <?php if ($status): ?>
+        <div class="status"><?= htmlspecialchars($status) ?></div>
+    <?php endif; ?>
+</div>
+
+</body>
+</html>
