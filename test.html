@@ -1,67 +1,85 @@
-<?php
-require 'vendor/autoload.php';
-
-use AfricasTalking\SDK\AfricasTalking;
-
-// === CONFIGURATION ===
-$username = "YOUR_USERNAME"; // Use 'sandbox' for test account
-$apiKey   = "YOUR_API_KEY";  // Get from https://account.africastalking.com
-$AT       = new AfricasTalking($username, $apiKey);
-$sms      = $AT->sms();
-
-// === CONTACTS ===
-// Replace this with a DB call if needed
-$contacts = [
-    "+254712345678", // Contact 1
-    "+254798765432", // Contact 2
-];
-
-$status = "";
-
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $message = trim($_POST['message'] ?? '');
-
-    if ($message !== "") {
-        try {
-            $result = $sms->send([
-                'to'      => $contacts,
-                'message' => $message,
-                // 'from' => 'YourSenderID' // Optional if you have a registered sender ID
-            ]);
-            $status = "✅ Message sent successfully!";
-        } catch (Exception $e) {
-            $status = "❌ Error: " . $e->getMessage();
-        }
-    } else {
-        $status = "⚠️ Please enter a message.";
-    }
-}
-?>
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Priest SMS Portal</title>
-    <style>
-        body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 20px; }
-        .container { max-width: 500px; background: white; padding: 30px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); border-radius: 8px; }
-        textarea { width: 100%; height: 120px; padding: 10px; font-size: 16px; }
-        button { background: #007bff; color: white; padding: 10px 20px; border: none; font-size: 16px; border-radius: 5px; cursor: pointer; }
-        .status { margin-top: 15px; font-weight: bold; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add New Altar</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
+<body class="bg-light">
 
-<div class="container">
-    <h2>Send SMS to Congregation</h2>
-    <form method="post">
-        <label for="message">Message:</label><br>
-        <textarea name="message" id="message" placeholder="Type your message here..."></textarea><br><br>
-        <button type="submit">Send SMS</button>
+<div class="container mt-5">
+  <div class="card shadow-lg p-4">
+    <h3 class="text-center mb-4">Add New Altar</h3>
+    <form action="insert_altar.php" method="POST">
+      
+      <!-- Altar Name -->
+      <div class="mb-3">
+        <label for="altar_name" class="form-label">Altar Name</label>
+        <input type="text" class="form-control" id="altar_name" name="altar_name" required>
+      </div>
+
+      <!-- Type -->
+      <div class="mb-3">
+        <label for="type" class="form-label">Type</label>
+        <select class="form-select" id="type" name="type" required>
+          <option value="General">General</option>
+          <option value="RHSF">RHSF</option>
+        </select>
+      </div>
+
+      <!-- Location -->
+      <div class="mb-3">
+        <label for="location" class="form-label">Location (City/Town/Campus)</label>
+        <input type="text" class="form-control" id="location" name="location" required>
+      </div>
+
+      <!-- Leader ID -->
+      <div class="mb-3">
+        <label for="leader_id" class="form-label">Leader ID</label>
+        <input type="number" class="form-control" id="leader_id" name="leader_id" placeholder="Enter User ID of Leader">
+      </div>
+
+      <!-- Contact Phone -->
+      <div class="mb-3">
+        <label for="contact_phone" class="form-label">Contact Phone</label>
+        <input type="text" class="form-control" id="contact_phone" name="contact_phone">
+      </div>
+
+      <!-- Contact Email -->
+      <div class="mb-3">
+        <label for="contact_email" class="form-label">Contact Email</label>
+        <input type="email" class="form-control" id="contact_email" name="contact_email">
+      </div>
+
+      <!-- Established Date -->
+      <div class="mb-3">
+        <label for="established_date" class="form-label">Established Date</label>
+        <input type="date" class="form-control" id="established_date" name="established_date">
+      </div>
+
+      <!-- Description -->
+      <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+      </div>
+
+      <!-- Status -->
+      <div class="mb-3">
+        <label for="status" class="form-label">Status</label>
+        <select class="form-select" id="status" name="status">
+          <option value="Active" selected>Active</option>
+          <option value="Inactive">Inactive</option>
+        </select>
+      </div>
+
+      <!-- Submit -->
+      <div class="text-center">
+        <button type="submit" class="btn btn-primary w-50">Save Altar</button>
+      </div>
+
     </form>
-    <?php if ($status): ?>
-        <div class="status"><?= htmlspecialchars($status) ?></div>
-    <?php endif; ?>
+  </div>
 </div>
 
 </body>

@@ -5,24 +5,76 @@
   font-family: 'Poppins' , Arial;
 }
 
-body .container {
+html::-webkit-scrollbar {
+  display: none;
+}
+
+body {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  max-width: 1299px;
   min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body.nwAltr {
+  background-color: #dedede88;
+  align-items: center;
+  justify-content: center;
+}
+
+body .container{
+  width: 100%;
+  max-width: 1299px;
   margin: 0 auto;
 }
 
-.container header {
+header {
   padding: 20px 16px;
   display: flex;
-  gap: 10px;
+  gap: 16px;
   justify-content: space-between;
   align-items: center;
+  flex-direction: column;
+  font-size: 14px;
 }
 
-.container header a.hContainer {
+header section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: space-between;
+  width: 100%;
+}
+
+header section  ul {
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+}
+
+header section  ul a, .sideBar ul a {
+  background-color: #89888880;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  color: black;
+}
+
+header section ul a:hover, .sideBar ul a:hover {
+  opacity: .875;
+}
+
+header section ul a.active, .sideBar ul a.active {
+  background-color: #0f268c;
+  color: white;
+}
+
+header section  ul li {
+  text-decoration: none;
+  list-style: none;
+}
+
+header a.hContainer {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -30,22 +82,22 @@ body .container {
   color: #0f0f0f;
 }
 
-.container header a.hContainer img {
+header a.hContainer img {
   max-width: 45px;
   max-height: 45px;
 }
 
-.container header a.hContainer h1 {
+header a.hContainer h1 {
   font-size: 18px;
   line-height: 18px;
 }
 
-.container header .contnrHA {
+header .contnrHA {
   display: flex;
   gap: 16px;
 }
 
-.container header .contnrHA a:not(:last-of-type) {
+header .contnrHA a:not(:last-of-type) {
   color: #ffffff;
   background-color: #0f268c;
   border-radius: 4px;
@@ -58,20 +110,20 @@ body .container {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.container header .contnrHA a:not(:last-of-type):hover {
+header .contnrHA a:not(:last-of-type):hover {
   opacity: 0.875;
 }
 
-.container header .contnrHA a i {
+header .contnrHA a i {
   font-size: 16px;
   color: #ffff00;
 }
 
-.container header .contnrHA .help-icon {
+header .contnrHA .help-icon {
   position: relative;
 }
 
-.container header .contnrHA .help-icon i.fa-circle-question {
+header .contnrHA .help-icon i.fa-circle-question {
   font-size: 20px;
   color: #898888;
   cursor: pointer;
@@ -81,7 +133,7 @@ body .container {
   border: none;
 }
 
-.container header .contnrHA .help-icon p {
+header .contnrHA .help-icon p {
   color: black;
   position: absolute;
   background-color: #898888;
@@ -100,26 +152,26 @@ body .container {
   transition: all 0.3s ease;
 }
 
-.container header .contnrHA .help-icon i.fa-circle-question:hover {
+header .contnrHA .help-icon i.fa-circle-question:hover {
   background-color: #8988881e;
   padding: 10px;
   border-radius: 50%;
   border: none;
 }
 
-.container header .contnrHA .help-icon:hover p {
+header .contnrHA .help-icon:hover p {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
 
-.container header i.fa-bars {
+header i.fa-bars {
   font-size: 25px;
   color: #8988889d;
   cursor: pointer;
   display: none;
 }
 
-.container .overlay {
+.overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -130,7 +182,7 @@ body .container {
   z-index: 1001;
 }
 
-.container .sideBar {
+.sideBar {
   background-color: white;
   display: flex;
   flex-direction: column;
@@ -148,14 +200,14 @@ body .container {
   margin-left: 10px;
 }
 
-.container .sideBar .sContainer {
+.sideBar .sContainer {
   display: flex;
   justify-content: center;
   width: 100%;
   position: relative;
 }
 
-.container .sideBar .sContainer i {
+.sideBar .sContainer i {
   position: absolute;
   top: 0;
   right: 0;
@@ -164,7 +216,13 @@ body .container {
   cursor: pointer;
 }
 
-.container .sideBar a.ercr {
+.sideBar ul {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sideBar a.ercr {
   color: #898888;
   background-color: #ffffff;
   padding-bottom: 0;
@@ -179,58 +237,210 @@ body .container {
   border: 1px solid #dedede;
 }
 
-.container .sideBar a.ercr:first-of-type {
+.sideBar a.ercr:first-of-type {
   color: #ffffff;
   background-color: #0f268c;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: none;
 }
 
-.container .sideBar a.ercr:first-of-type:hover {
+.sideBar a.ercr:first-of-type:hover {
   opacity: 0.875;
 }
 
-.container .sideBar a.ercr:last-of-type:hover {
+.sideBar a.ercr:last-of-type:hover {
   background-color: #dedede3a;
 }
 
-.container .sideBar a.ercr i {
+.sideBar a.ercr i {
   font-size: 16px;
   color: #ffff00;
 }
 
-.container .sideBar a.ercr:last-of-type i {
+.sideBar a.ercr:last-of-type i {
   color: #898888;
 }
 
 @media (max-width: 506px) {
-  .container header {
+  header {
     padding: 20px 10px;
   }
 
-  .container header .contnrHA, .container header .contnrHA a:not(:last-of-type) {
+  header .contnrHA, header .contnrHA a:not(:last-of-type) {
     display: none;
   }
 
-  .container .sideBar a.ercr:first-of-type {
+  .sideBar a.ercr:first-of-type {
     display: flex;
   }
 }
 
-@media (max-width: 530px) {
-  .container header i.fa-bars {
+@media (max-width: 605px) {
+  header section  ul {
+    display: none;
+  }
+  header i.fa-bars {
     display: block;
   }
 
-  .container header .contnrHA .help-icon {
+  header .contnrHA .help-icon {
     display: none;
   }
 
-  .container .overlay.active {
+  .overlay.active {
     display: block;
   }
 
-  .container .sideBar.active {
+  .sideBar.active {
     right: 0;
   }
+}
+
+/* Main Section */
+main {
+  display: flex;
+  gap: 16px;
+  height: fit-content;
+  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+  background: url('/Images/5764744958148985344.jpg') no-repeat center center / cover fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  /* Optional: add a fallback color */
+  background-color: #000;
+  position: relative;
+  padding-top: 50px;
+}
+
+main::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6); /* Change 0.6 for lighter/darker */
+  z-index: 1;
+}
+
+/* Ensure content inside main is above overlay */
+main > * {
+  position: relative;
+  z-index: 2;
+}
+
+
+main .mContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  gap: 16px;
+  flex-direction: column;
+  padding: 8px 16px;
+  min-height: fit-content;
+}
+
+main .mContainer h1 {
+  font-family: 'Montserrat', 'Poppins', sans-serif;
+  font-weight: 800;  /* adjust thickness */
+  font-size: clamp(50px, 7vw, 70px);   /* big size like in the image */
+  color: white;
+}
+
+main .mContainer .descMc {
+  padding: 8px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  backdrop-filter: blur(10px) saturate(150%);
+  -webkit-backdrop-filter: blur(10px) saturate(150%);
+  border: 1px solid white;
+  border-radius: 12px;
+}
+
+main .mContainer .descMc p {
+  font-size: clamp(16px, 1.3vw, 20px);
+  color: white;
+  text-align: left;
+}
+
+main .mContainer .descMc p.dscHed {
+  color: #ffff00;
+}
+
+main .mContainer .descMc .mdlDesc {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+main .mContainer .descMc .mdlDesc span {
+  color: #898888;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 0 16px;
+}
+
+main .mContainer .hmpgBtns {
+  display: flex;
+  gap: 16px;
+  padding: 16px 0;
+}
+
+main .mContainer .hmpgBtns a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: white;
+  background-color: #0f268cdc;
+  padding: 8px 16px;
+  border-radius: 4px;
+}
+
+main .mContainer .hmpgBtns a:hover {
+ opacity: .875;
+}
+
+main .mContainer .hmpgBtns a:last-of-type {
+  background-color: #ff000094;
+}
+
+/* Footer section */
+
+footer {
+  background-color: #0f268c;
+  padding: 8px 16px;
+  display: flex;
+}
+
+footer p {
+  color: white;
+}
+
+footer p a {
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.596);
+}
+
+/* Altar Registration */
+
+body.nwAltr .fmContnr {
+  border: 1px solid #89888888;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 8px 16px;
+  text-align: center;
+  border-radius: 20px;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
