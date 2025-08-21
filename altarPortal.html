@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Landing page | Returntoholiness</title>
+  <title>Portal | Returntoholiness</title>
 
   <link rel="stylesheet" href="Styles/general.css">
 
@@ -25,11 +25,11 @@
   <header>
     <section class="container">
       <a href="index.php" class="hContainer">
-        <img src="Images/Ministry Logo.png" alt="Ministry Logo" width="40">
-        <h1>THE&nbsp;MINISTRY&nbsp;OF<br>REPENTANCE&nbsp;AND&nbsp;HOLINESS</h1>
+        <img src="Images/Altar Logo.png" alt="Altar Logo" width="60">
+        <h1>PWANI&nbsp;UNIVERSITY&nbsp;R&H<br>STUDENTS&nbsp;FELLOWSHIP</h1>
       </a>
       <div class="contnrHA">
-        <a href="https://www.jesusislordradio.info/" target="_blank"><i class="fa-solid fa-radio"></i> Listen&nbsp;to&nbsp;Radio</a>
+        <a class="rdCll" href="tel:+254774445851"><i class="fa-solid fa-phone-volume"></i> Call&nbsp;the&nbsp;Radio</a>
         <a href="#" class="help-icon">
           <i class="fa-regular fa-circle-question"></i>
           <p class="help-text">Help</p>
@@ -39,63 +39,71 @@
     </section>
     <section class="container">
       <ul>
-        <a href="" class="active"><li>Home</li></a>
-        <a onclick="toggleCodePopup()"><li>Announcements</li></a>
+        <a href="" class="active"><li>Dashboard</li></a>
+        <a><li>Members</li></a>
+        <a><li>Media</li></a>
+        <li class="drpdwn">
+          <a href="#">Followup ▼</a>
+          <div class="dropdown-content">
+            <a href="#">General Ministry</a>
+            <a href="#">RHSF (Students)</a>
+            <a href="#">Youth</a>
+          </div>
+        </li>
+        <a href=""><li>Make&nbsp;Announcement</li></a>
         <a href=""><li>Activities</li></a>
-        <a href=""><li>Sermons</li></a>
-        <a href="altarLogin.html"><li>Altar&nbsp;Account</li></a>
         <a href=""><li>FAQs</li></a>
       </ul>
     </section>
+    <!-- Breadcrumb -->
+    <nav class="flex items-center text-sm text-gray-600" aria-label="Breadcrumb">
+      <!-- Home -->
+      <a href="#" class="text-blue-600 hover:underline">Home</a>
+
+      <!-- Arrow -->
+      <svg class="mx-2 h-4 w-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+
+      <!-- Inventory -->
+      <a href="#" class="text-blue-600 hover:underline">Inventory</a>
+
+      <!-- Arrow -->
+      <svg class="mx-2 h-4 w-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+
+      <!-- Available Cars (current page) -->
+      <span class="text-gray-500">Available Cars</span>
+    </nav>
   </header>
 
   <div class="overlay" id="overlay" onclick="toggleSideBar()"></div>
-  <div class="codOverlay" id="codOverlay" onclick="toggleCodePopup()"></div>
-  <form action="" id="codePrompt" class="codPopup">
-    <span>Enter your unique Altar Code to proceed;</span>
-    <input type="text" name="" id="">
-    <button type="submit" id="codPopBtn">View Announcements</button>
-  </form action="">
   <div class="sideBar" id="sidebar">
     <div class="sContainer">
       <img src="Images/Jesus is Lord Radio Logo.avif" alt="Jesus is Lord Radio Logo" width="140">
       <i class="fa-solid fa-xmark" onclick="toggleSideBar()"></i>
     </div>
     <ul>
-      <a href="" class="active">Home</a>
-      <p href="" onclick="toggleCodePopup(), toggleSideBar()">Announcements</p>
-      <a href="">Sermons</a>
+      <a href="" class="active"><li>Dashboard</li></a>
+      <a><li>Members</li></a>
+      <a><li>Media</li></a>
+      <li class="drpdwn">
+        <a href="#">Followup ▼</a>
+        <div class="dropdown-content">
+          <a href="#">Evangelism</a>
+          <a href="#">Visitors</a>
+          <a href="#"></a>
+        </div>
+      </li>
+      <a href=""><li>Make&nbsp;Announcement</li></a>
       <a href=""><li>Activities</li></a>
-      <a href="registerAltar.html">Altar Account</a>
-      <a href="">FAQs</a>
+      <a href=""><li>FAQs</li></a>
     </ul>
     <a class="ercr" href="https://www.jesusislordradio.info/" target="_blank"><i class="fa-solid fa-radio"></i> Listen&nbsp;to&nbsp;Radio</a>
     <a class="ercr" href="#"><i class="fa-regular fa-circle-question"></i> Help</a>
   </div>
-  <main id="home">
-    <div class="mContainer container">
-      <h1>Prepare The Way</h1>
-      <h1>The Messiah Is Coming</h1>
-      <div class="descMc">
-        <p>This platform is dedicated to nurturing a life of repentance, holiness, and righteousness in preparation for the glorious coming of our Lord and Savior, Jesus Christ.</p>
-        <p class="dscHed">Here, members of the body of Christ can:</p>
-        <div class="mdlDesc">
-          <span><i class="fa-solid fa-caret-right"></i>Stay updated on services, conferences, and fellowship activities.</span>
-
-          <span><i class="fa-solid fa-caret-right"></i>Record and follow up on new believers reached through evangelism.</span>
-
-          <span><i class="fa-solid fa-caret-right"></i>Grow spiritually within the General Ministry (families, parents, children, youth).</span>
-
-          <span><i class="fa-solid fa-caret-right"></i>Connect and be strengthened through the Repentance and Holiness Students Fellowship (RHSF) across universities.</span>
-        </div>
-
-        <p>Our prayer is that every soul may be encouraged, rooted in holiness, and faithfully prepared for the Kingdom of God.</p>
-      </div>
-      <div class="hmpgBtns">
-        <a href="registerAltar.html"><i class="fa-solid fa-house-user"></i>Register&nbsp;Altar</a>
-        <a href="https://www.youtube.com/@repentpreparetheway" target="_blank"><i class="fa-brands fa-youtube"></i>YouTube&nbsp;Channel</a>
-      </div>
-    </div>
+  <main>
   </main>
   <footer>
     <div class="container">
