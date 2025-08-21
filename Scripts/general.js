@@ -13,3 +13,46 @@ function toggleCodePopup() {
   codOverlay.classList.toggle('active');
   codePrompt.classList.toggle('active');
 }
+
+/* Members progress graph Js */
+
+const ctx = document.getElementById('membersLineChart').getContext('2d');
+
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'], // months
+    datasets: [
+      {
+        label: 'Active Members',
+        data: [120, 150, 180, 200, 220, 250, 280], // example data
+        borderColor: 'green',
+        backgroundColor: 'rgba(0, 128, 0, 0.2)',
+        tension: 0.3,
+        fill: true
+      },
+      {
+        label: 'Inactive Members',
+        data: [50, 60, 55, 70, 65, 75, 80], // example data
+        borderColor: 'red',
+        backgroundColor: 'rgba(255, 0, 0, 0.2)',
+        tension: 0.3,
+        fill: true
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      title: {
+        display: true,
+        text: 'Active vs Inactive Members Over Time'
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  }
+});

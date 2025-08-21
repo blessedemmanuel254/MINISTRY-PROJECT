@@ -79,17 +79,21 @@ header section ul li.drpdwn {
 header section ul li.drpdwn .dropdown-content {
   display: none;
   position: absolute;
+  flex-direction: column;
+  gap: 8px;
+  top: 150%;
   min-width: 160px;
-  box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+  background-color: white;
+  padding: 8px;
   z-index: 1;
+  height: fit-content;
+  border-radius: 4px;
+  border: 1px solid #898888;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-header section ul li.drpdwn:hover .dropdown-content {
-  display: block;
-}
-
-header section ul li.drpdwn .dropdown-content a {
-  padding: 8px 16px;
+header section ul li.drpdwn .dropdown-content.active {
+  display: flex;
 }
 
 header a.hContainer {
@@ -197,6 +201,39 @@ header i.fa-bars {
   cursor: pointer;
   display: none;
 }
+
+header nav {
+  display: flex;
+  gap: 1px;
+  padding: 8px 0;
+  align-items: center;
+}
+
+header nav a {
+  color: #898888;
+  font-size: 16px;
+  text-decoration: none;
+  font-weight: 550;
+}
+
+header nav a.curnt {
+  color: #0f268c;
+  font-weight: normal;
+}
+
+header nav svg {
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  color: #8988889a;
+}
+
+svg path {
+  stroke-width: 2;       /* make it thicker */
+}
+
+/* Overlays section*/
 
 body .overlay, body .codOverlay {
   position: fixed;
@@ -334,7 +371,7 @@ body .codPopup button:hover {
 
 @media (max-width: 545px) {
   header {
-    padding: 20px 10px;
+    padding: 20px 16px;
   }
 
   header .contnrHA, header .contnrHA a:not(:last-of-type) {
@@ -346,10 +383,11 @@ body .codPopup button:hover {
   }
 }
 
-@media (max-width: 605px) {
-  header section  ul {
+@media (max-width: 715px) {
+  header section.scnd {
     display: none;
   }
+
   header i.fa-bars {
     display: block;
   }
@@ -367,6 +405,16 @@ body .codPopup button:hover {
   }
 }
 
+@media (max-width: 859px) {
+  header section.scnnd {
+    display: none;
+  }
+
+  header i.fa-bars.scnnd {
+    display: block;
+  }
+}
+
 /* Main Section */
 main#home {
   display: flex;
@@ -374,8 +422,7 @@ main#home {
   height: fit-content;
   min-height: 100vh;
   justify-content: center;
-  align-items: center;
-  background: url('/Images/5764744958148985344.jpg') no-repeat center center / cover fixed;
+  background: url('/Images/5764744958148985344.jpg') no-repeat center center;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -383,6 +430,24 @@ main#home {
   background-color: #000;
   position: relative;
   padding-top: 50px;
+}
+
+@media (max-width: 700px) {
+  main#home {
+    height: 140vh;
+  }
+}
+
+@media (max-width: 445px) {
+  main#home {
+    height: 160vh;
+  }
+}
+
+@media (max-width: 370px) {
+  main#home {
+    height: 190vh;
+  }
 }
 
 main#home::before {
@@ -402,7 +467,6 @@ main > * {
   z-index: 2;
 }
 
-
 main .mContainer {
   position: absolute;
   top: 0;
@@ -421,7 +485,7 @@ main .mContainer {
 main .mContainer h1 {
   font-family: 'Montserrat', 'Poppins', sans-serif;
   font-weight: 800;  /* adjust thickness */
-  font-size: clamp(50px, 7vw, 70px);   /* big size like in the image */
+  font-size: clamp(30px, 7vw, 70px);   /* big size like in the image */
   color: white;
 }
 
@@ -483,6 +547,12 @@ main .mContainer .hmpgBtns a:hover {
 
 main .mContainer .hmpgBtns a:last-of-type {
   background-color: #ff000094;
+}
+
+@media (max-width: 425px) {
+  main .mContainer .hmpgBtns {
+    flex-direction: column;
+  }
 }
 
 /* Footer section */
@@ -655,3 +725,88 @@ body.nwAltr .mjCntr {
     width: 100%;
   }
 }
+
+/* Dashboard */
+main#mnFrAlp {
+  background-color: #898888;
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+}
+
+main .mnCtnr {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+main .mnCtnr .crdsStcsDiv {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  padding: 20px 16px;
+}
+
+main .mnCtnr .card {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  gap: 16px;
+}
+
+main .mnCtnr .card h1.hd {
+  font-size: 20px;
+  color: #898888;
+  font-weight: normal;
+}
+
+main .mnCtnr .card .midCd {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+main .mnCtnr .card .midCd i {
+  font-size: 50px;
+  color: #0f0f0f;
+}
+
+main .mnCtnr .card .midCd .crdDesc {
+  display: flex;
+  flex-direction: column;
+  padding-right: 16px;
+}
+
+main .mnCtnr .card .midCd .crdDesc h1 {
+  font-size: 35px;
+  color: #0f268c;
+}
+
+main .mnCtnr .card .midCd .crdDesc p {
+  color: green;
+  font-size: 13px;
+}
+
+main .mnCtnr .card p.lstDc {
+  color: #0f268c;
+  font-size: 14px;
+}
+
+main .mnCtnr .lwrStcsDiv {/* 
+  display: grid;
+  grid-template-columns: .625fr .25fr; */
+  background-color: white;
+  margin: 16px;
+  padding: 16px ;
+  border-radius: 4px;/* 
+  gap: 10px; */
+}/* 
+
+main .mnCtnr .lwrStcsDiv .lwrTbl {
+  background-color: lightblue;
+  width: 100%;
+} */

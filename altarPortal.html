@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Portal | Returntoholiness</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <link rel="stylesheet" href="Styles/general.css">
 
@@ -35,19 +36,19 @@
           <p class="help-text">Help</p>
         </a>
       </div>
-      <i class="fa-solid fa-bars" onclick="toggleSideBar()"></i>
+      <i class="fa-solid fa-bars scnnd" onclick="toggleSideBar()"></i>
     </section>
-    <section class="container">
+    <section class="container scnnd">
       <ul>
-        <a href="" class="active"><li>Dashboard</li></a>
+        <a href="altarPortal.html" class="active"><li>Dashboard</li></a>
         <a><li>Members</li></a>
         <a><li>Media</li></a>
         <li class="drpdwn">
-          <a href="#">Followup ▼</a>
+          <a href="#">Followup&nbsp;▼</a>
           <div class="dropdown-content">
-            <a href="#">General Ministry</a>
-            <a href="#">RHSF (Students)</a>
-            <a href="#">Youth</a>
+            <a href="#">Evangelism</a>
+            <a href="#">Visitors</a>
+            <a href="#">Hospital&nbsp;Mission</a>
           </div>
         </li>
         <a href=""><li>Make&nbsp;Announcement</li></a>
@@ -56,7 +57,7 @@
       </ul>
     </section>
     <!-- Breadcrumb -->
-    <nav class="flex items-center text-sm text-gray-600" aria-label="Breadcrumb">
+    <nav class="container">
       <!-- Home -->
       <a href="#" class="text-blue-600 hover:underline">Home</a>
 
@@ -66,15 +67,7 @@
       </svg>
 
       <!-- Inventory -->
-      <a href="#" class="text-blue-600 hover:underline">Inventory</a>
-
-      <!-- Arrow -->
-      <svg class="mx-2 h-4 w-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-      </svg>
-
-      <!-- Available Cars (current page) -->
-      <span class="text-gray-500">Available Cars</span>
+      <a href="#" class="curnt">Dashboard</a>
     </nav>
   </header>
 
@@ -85,15 +78,15 @@
       <i class="fa-solid fa-xmark" onclick="toggleSideBar()"></i>
     </div>
     <ul>
-      <a href="" class="active"><li>Dashboard</li></a>
+      <a href="altarPortal.html" class="active"><li>Dashboard</li></a>
       <a><li>Members</li></a>
       <a><li>Media</li></a>
       <li class="drpdwn">
-        <a href="#">Followup ▼</a>
+        <a href="#">Followup&nbsp;▼</a>
         <div class="dropdown-content">
           <a href="#">Evangelism</a>
           <a href="#">Visitors</a>
-          <a href="#"></a>
+          <a href="#">Hospital&nbsp;Mission</a>
         </div>
       </li>
       <a href=""><li>Make&nbsp;Announcement</li></a>
@@ -103,7 +96,73 @@
     <a class="ercr" href="https://www.jesusislordradio.info/" target="_blank"><i class="fa-solid fa-radio"></i> Listen&nbsp;to&nbsp;Radio</a>
     <a class="ercr" href="#"><i class="fa-regular fa-circle-question"></i> Help</a>
   </div>
-  <main>
+  <main id="mnFrAlp">
+    <div class="mnCtnr container">
+      <div class="crdsStcsDiv">
+        <div class="card">
+          <h1 class="hd">Total Members</h1>
+          <div class="midCd">
+            <i class="fa-solid fa-people-group"></i>
+            <div class="crdDesc">
+              <h1>160</h1>
+              <p>+15% Increase</p>
+            </div>
+          </div>
+          <p class="lstDc">Sheep of Christ</p>
+        </div>
+        <div class="card">
+          <h1 class="hd">Pending Followups</h1>
+          <div class="midCd">
+            <i class="fa-solid fa-chart-simple"></i>
+            <div class="crdDesc">
+              <h1>16</h1>
+              <p>+30% Done</p>
+            </div>
+          </div>
+          <p class="lstDc">Let's bring them home</p>
+        </div>
+        <div class="card">
+          <h1 class="hd">Activities</h1>
+          <div class="midCd">
+            <i class="fa-solid fa-chart-line"></i>
+            <div class="crdDesc">
+              <h1>2</h1>
+              <p>Active session(s)</p>
+            </div>
+          </div>
+          <p class="lstDc">Currently Active</p>
+        </div>
+        <div class="card">
+          <h1 class="hd">Announcements</h1>
+          <div class="midCd">
+            <i class="fab fa-twitter"></i>
+            <div class="crdDesc">
+              <h1>1</h1>
+              <p>What's popping</p>
+            </div>
+          </div>
+          <p class="lstDc">The headlines</p>
+        </div>
+      </div>
+      <div class="lwrStcsDiv">
+        <div id="chart-container">
+          <canvas id="membersLineChart"></canvas>
+        </div><!-- 
+        <div class="lwrTbl">
+          <table>
+            <thead>
+              <td>Test</td>
+            </thead>
+            <tbody>
+              <tr></tr>
+              <tr></tr>
+              <tr></tr>
+              <tr></tr>
+            </tbody>
+          </table>
+        </div> -->
+      </div>
+    </div>
   </main>
   <footer>
     <div class="container">
