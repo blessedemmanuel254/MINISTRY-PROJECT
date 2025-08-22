@@ -661,13 +661,17 @@ body.nwAltr .mjCntr {
   width: 100%;
 }
 
-.nwAltr .fmContnr form .errorMsg {
+.nwAltr .fmContnr form .errorMsg, .nwAltr .fmContnr form .successMsg {
   color: #ff0000;
   text-align: left;
   font-size: 14px;
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.nwAltr .fmContnr form .successMsg {
+  color: #008000;
 }
 
 .nwAltr .fmContnr form .fmInCntnr, .nwAltr .fmContnr form .inpBox {

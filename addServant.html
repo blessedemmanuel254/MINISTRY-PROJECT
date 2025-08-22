@@ -80,12 +80,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="Styles/general.css">
+  <link rel="stylesheet" href="Styles/styles.css">
 </head>
 <body>
   <div class="container newServant">
     <header class="newServantHeader">
-      <img src="images/ministrylogo.png" alt="Ministry Logo">
+      <img src="Images/Ministry Logo.avif" alt="Ministry Logo" width="40">
       <p>PWANI UNIVERSITY ALTAR</p>
     </header>
     <p class="newServant">Add new follow-up</p>
@@ -121,7 +122,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <option value="EBEI">Earlybird (In-school)</option>
         <option value="HEVM">Hostel Evangelism</option>
         <option value="EBEI">Lunch Hour Outreach</option>
-        <option value="GEVM">General Outreach</option>
         <option value="SUV">Sunday Visitor</option>
         <option value="OTH">Evangelism (other)</option>
       </select>
@@ -129,5 +129,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <button type="submit">SUBMIT</button>
     </form>
   </div>
+      
+  <footer>
+    <div class="container">
+      <div>
+        <a href="#">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="#">
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a href="#">
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a href="#">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+        <a href="#">
+          <i class="fab fa-youtube"></i>
+        </a>
+      </div>
+      <p>&copy;2025 <a href="">returntoholiness.org,</a> All Rights Reserved</p>
+    </div>
+  </footer>
 </body>
 </html>
