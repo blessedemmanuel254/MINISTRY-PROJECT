@@ -1,0 +1,323 @@
+<?php
+include 'connection.php';
+function maskPhone($phone) {
+  $len = strlen($phone);
+  if ($len <= 6) {
+      return $phone; // If too short, just return as is.
+  }
+  $first3 = substr($phone, 0, 3);
+  $last3 = substr($phone, -3);
+  $maskLength = $len - 6;
+  $mask = str_repeat('*', $maskLength);
+  return $first3 . $mask . $last3;
+}
+
+// Check if this is an AJAX POST request for updating the status
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST['status'])) {
+  // Get and sanitize the POST values (using prepared statements below)
+  $id = $_POST['id'];
+  $status = $_POST['status'];
+
+  // Prepare the update query to change the user's status
+  $stmt = $conn->prepare("UPDATE followuplist SET status = ? WHERE id = ?");
+  $stmt->bind_param("ii", $status, $id);
+
+  // Execute the update query
+  if (!$stmt->execute()) {
+    error_log("Error executing update: " . $stmt->error);
+  }
+  
+  $stmt->close();
+  exit; // End the script so no HTML is output in response to the AJAX call
+}
+?> 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Followup | Returntoholiness</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link rel="stylesheet" href="Styles/general.css">
+  <link rel="stylesheet" href="Styles/styles.css">
+
+  <link rel="icon" type="image/png" href="Images/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="Images/favicon.svg" />
+  <link rel="shortcut icon" href="Images/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="Images/apple-touch-icon.png" />
+  <link rel="manifest" href="Images/site.webmanifest" />
+
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Poppins:wght@700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <section class="container">
+      <a href="index.php" class="hContainer">
+        <img src="Images/Altar Logo.png" alt="Altar Logo" width="60">
+        <h1>PWANI&nbsp;UNIVERSITY&nbsp;R&H<br>STUDENTS&nbsp;FELLOWSHIP</h1>
+      </a>
+      <div class="contnrHA">
+        <a class="rdCll" href="tel:+254774445851"><i class="fa-solid fa-phone-volume"></i> Call&nbsp;the&nbsp;Radio</a>
+        <a href="#" class="help-icon">
+          <i class="fa-regular fa-circle-question"></i>
+          <p class="help-text">Help</p>
+        </a>
+      </div>
+      <i class="fa-solid fa-bars scnnd" onclick="toggleSideBar()"></i>
+    </section>
+    <section class="container scnnd">
+      <ul>
+        <a href="altarPortal.html"><li>Dashboard</li></a>
+        <a><li>Members</li></a>
+        <a><li>Media</li></a>
+        <li class="drpdwn">
+          <a href="followupAltar.html" class="active">Followup&nbsp;▼</a>
+          <div class="dropdown-content">
+            <a href="#">Evangelism</a>
+            <a href="#">Visitors</a>
+            <a href="#">Hospital&nbsp;Mission</a>
+          </div>
+        </li>
+        <a href=""><li>Make&nbsp;Announcement</li></a>
+        <a href=""><li>Activities</li></a>
+        <a href=""><li>FAQs</li></a>
+      </ul>
+    </section>
+    <!-- Breadcrumb -->
+    <nav class="container">
+      <!-- Home -->
+      <a href="#" class="text-blue-600 hover:underline">Home</a>
+
+      <!-- Arrow -->
+      <svg class="mx-2 h-4 w-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+
+      <!-- Inventory -->
+      <a href="#">Followup</a>
+      <!-- Arrow -->
+      <svg class="mx-2 h-4 w-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+
+      <!-- Inventory -->
+      <a href="#" class="curnt">Evangelism</a>
+    </nav>
+  </header>
+
+  <div class="overlay" id="overlay" onclick="toggleSideBar()"></div>
+  <div class="sideBar" id="sidebar">
+    <div class="sContainer">
+      <img src="Images/Jesus is Lord Radio Logo.avif" alt="Jesus is Lord Radio Logo" width="140">
+      <i class="fa-solid fa-xmark" onclick="toggleSideBar()"></i>
+    </div>
+    <ul>
+      <a href="altarPortal.html"><li>Dashboard</li></a>
+      <a><li>Members</li></a>
+      <a><li>Media</li></a>
+      <li class="drpdwn">
+        <a href="followuplist.html" class="active">Followup&nbsp;▼</a>
+        <div class="dropdown-content">
+          <a href="#">Evangelism</a>
+          <a href="#">Visitors</a>
+          <a href="#">Hospital&nbsp;Mission</a>
+        </div>
+      </li>
+      <a href=""><li>Make&nbsp;Announcement</li></a>
+      <a href=""><li>Activities</li></a>
+      <a href=""><li>FAQs</li></a>
+    </ul>
+    <a class="ercr" href="https://www.jesusislordradio.info/" target="_blank"><i class="fa-solid fa-radio"></i> Listen&nbsp;to&nbsp;Radio</a>
+    <a class="ercr" href="#"><i class="fa-regular fa-circle-question"></i> Help</a>
+  </div>
+  <main>
+    <a href="index.php" id="overlay" class="overlay"></a>
+    <div id="popUp">
+      <h4>Did you do the follow up? If you have already called the servant and the follow up done successfully, select <span>Successful</span>. Else if there is no response or you did not communicate select <span>No answer</span></h4>
+      <div class="response">
+        <p class="noResponce">No&nbsp;answer</p>
+        <p>Successful</p>
+      </div>
+    </div>
+    <div class="containerFp container">
+      <h1>Follow up list</h1>
+      <a href="addServant.php">+ Add new servant</a>
+      <div class="tableContainer">
+        <!-- Give the table an ID for DataTables -->
+        <table id="myTable">
+          <thead>
+            <th>#</th>
+            <th>First&nbsp;Name</th>
+            <th>Number</th>
+            <th>Action</th>
+            <th>Status</th>
+            <th>Evangelist</th>
+            <th>M.&nbsp;Point</th>
+            <th>Date</th>
+          </thead>
+          <tbody>
+            <?php
+            $query = "SELECT * FROM followuplist";
+            $result = $conn->query($query);
+            $counter = 1;
+
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                  // Create masked phone number
+                  $maskedPhone = maskPhone($row['phoneNumber']);
+                  echo "<tr>
+                          <td>{ $counter}.</td>
+                          <td>{$row['fname']}</td>
+                          <!-- Display the masked phone number, and store the actual number in data-phone -->
+                          <td data-phone='{$row['phoneNumber']}'>{$maskedPhone}</td>
+                          <td>
+                            <p class='copy' style='cursor:pointer;'>Copy</p>
+                            <p class='update' style='cursor:pointer;' data-userid='{$row['id']}'>Update</p>
+                          </td>
+                          <td><i class='fa-solid " . ($row['status'] == '2' ? 'fa-check' : ($row['status'] == '1' ? 'fa-x' : 'fa-minus')) . "'></i></td>
+                          <td>{$row['evangelist']}</td>
+                          <td>{$row['venue']}</td>
+                          <td>{$row['dDate']}</td>
+                        </tr>";
+                        $counter++;
+                }
+            } else {
+                echo "<tr><td colspan='8'>No records found</td></tr>";
+            }
+            ?>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+  <footer>
+    <div class="container">
+      <div>
+        <a href="#">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="#">
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a href="#">
+          <i class="fa-brands fa-tiktok"></i>
+        </a>
+        <a href="#">
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a href="#">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+        <a href="https://www.youtube.com/@repentpreparetheway" target="_blank">
+          <i class="fab fa-youtube"></i>
+        </a>
+      </div>
+      <p>&copy;2025 <a href="">returntoholiness.org,</a> All Rights Reserved</p>
+    </div>
+  </footer>
+  
+  <!-- Include jQuery and DataTables JS -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  
+  <script>
+    // Initialize DataTables with 25 rows per page and disable sorting
+    $(document).ready(function(){
+      $('#myTable').DataTable({
+        "pageLength": 25,
+        "ordering": false
+      });
+    });
+    
+    document.addEventListener("DOMContentLoaded", function(){
+      const copyButtons = document.querySelectorAll(".copy");
+      
+      copyButtons.forEach(function(btn) {
+        btn.addEventListener("click", function(){
+          // Get the row in which the button is located.
+          const row = btn.closest("tr");
+          // Get the first name from the second cell.
+          const firstName = row.getElementsByTagName("td")[1].textContent.trim();
+          // Instead of reading the masked text, retrieve the original phone number from the data attribute in the third cell.
+          const phoneCell = row.querySelector("td[data-phone]");
+          const phoneNumber = phoneCell.getAttribute("data-phone");
+
+          if(navigator.clipboard) {
+            navigator.clipboard.writeText(phoneNumber).then(function(){
+              alert(`You have copied ${firstName}'s number: ${phoneNumber}. Let's bring the sheep of Christ home.`);
+            }).catch(function(err){
+              console.error("Error copying text: ", err);
+            });
+          } else {
+            // Fallback for browsers that do not support Clipboard API
+            const textarea = document.createElement("textarea");
+            textarea.value = phoneNumber;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textarea);
+            alert(`You have copied ${firstName}'s number. Let's bring the sheep of Christ home.`);
+          }
+        });
+      });
+
+      // Update functionality
+      const updateButtons = document.querySelectorAll(".update");
+      const overlay = document.getElementById("overlay");
+      let currentUserId = null; // Will store the id of the user to update
+      
+      updateButtons.forEach(function(btn) {
+        btn.addEventListener("click", function(){
+          currentUserId = btn.getAttribute("data-userid");
+          document.getElementById("popUp").style.display = "block";
+          document.getElementById("overlay").style.display = "block";
+        });
+      });
+      
+      // Handle clicks on the popup responses
+      const popUp = document.getElementById("popUp");
+      const responses = popUp.querySelectorAll(".response p");
+      responses.forEach(function(resp) {
+        resp.addEventListener("click", function(){
+          let newStatus;
+          const responseText = resp.textContent.trim().toLowerCase().replace(/\u00A0/g, ' ');
+          if(responseText === "successful") {
+              newStatus = 2;
+          } else if(responseText === "no answer") {
+              newStatus = 1;
+          }
+          
+          // Send an AJAX POST request to update the user's status
+          fetch("", {  // Empty string ("") sends the request to the same page
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: "id=" + encodeURIComponent(currentUserId) + "&status=" + encodeURIComponent(newStatus)
+          })
+          .then(response => response.text())
+          .then(data => {
+            // Hide the popup after the update
+            popUp.style.display = "none";
+            overlay.style.display = "block";
+            // Optionally, reload the page or update the status icon dynamically
+            location.reload();
+          })
+          .catch(error => {
+            console.error("Error updating status:", error);
+          });
+        });
+      });
+    });
+  </script>
+
+  <script src="Scripts/general.js"></script>
+</body>
+</html>

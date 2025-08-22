@@ -6,14 +6,29 @@
   font-family: Poppins , Arial;
 }
 
-body {
-  background-image: url('/Images/5764744958148985345.jpg');
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  /* Optional: add a fallback color */
-  background-color: #000;
-  background-attachment: fixed;
+.containerFp {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 90%;
+  margin: 8vh auto;
+  padding: 8px 16px;
+  overflow-x: hidden;
+  background-color: rgba(255, 255, 255, 0.87);
+  min-height: 80vh;
+}
+
+.containerFp h1 {
+  font-weight: bold;
+  font-size: 25px;
+}
+
+.containerFp a {
+  text-decoration: none;
+  color: white;
+  background-color: #008000;
+  padding: 3px;
+  width: fit-content;
 }
 
 body .overlay {
@@ -75,104 +90,58 @@ body .overlay {
   background-color: #dedede;
 }
 
-.container {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  width: 90%;
-  justify-content: center;
-  margin: 8vh auto;
-  padding: 10px;
-  min-height: 100vh;
-  overflow-x: hidden;
-  background-color: rgba(255, 255, 255, 0.87);
-}
-
-.container ul {
-  display: flex;
-  gap: 10px;
-  font-size: 14px;
+.tableContainer {
   overflow-x: auto;
+  overflow-y: hidden;
 }
 
-.container ul li {
-  list-style: none;
-  cursor: pointer;
-  background-color: #898888;
-  color: white;
-  padding: 2px;
-  border-radius: 10px;
-  font-size: 14px;
-}
-
-.container ul li:hover {
-  opacity: .75;
-}
-
-.container ul li.active {
-  background-color: #0f0f0f;
-}
-
-.container a {
-  text-decoration: none;
-  color: white;
-  background-color: #008000;
-  padding: 3px;
-  width: fit-content;
-}
-
-.container .tableContainer {
-  overflow-x: auto;
-  overflow-y: auto;
-}
-
-.container table {
+table {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
   overflow-x: auto;
 }  
 
-.container table thead {
+table thead {
   background-color: #0f0f0f;
   color: white;
 }
 
-.container table thead th {
+table thead th {
   text-align: left;
   padding: 5px;
 }
 
-.container table tbody tr th:last-of-type {
+table tbody tr th:last-of-type {
   text-align: center;
 }
 
-.container table tbody tr {
+table tbody tr {
   color: #0f0f0f;
 }
 
-.container table tbody tr td {
+table tbody tr td {
   padding: 5px;
 }
 
-.container table tbody tr td:not(:first-of-type) {
+table tbody tr td:not(:first-of-type) {
   min-width: 120px;
 }
 
-.container table tbody tr td:nth-child(4) {
+table tbody tr td:nth-child(4) {
   min-width: 200px;
 }
 
-.container table tbody tr td:nth-child(4) {
+table tbody tr td:nth-child(4) {
   display: flex;
   gap: 5px;
 }
 
-.container table tbody tr:nth-child(odd) {
+table tbody tr:nth-child(odd) {
   background-color: #dedede;
 }
 
-.container table tbody tr td p {
+table tbody tr td p {
   background-color: #008000;
   font-size: 14px;
   color: white;
@@ -181,65 +150,49 @@ body .overlay {
   cursor: pointer;
 }
 
-.container table tbody tr td p:hover {
+table tbody tr td p:hover {
   opacity: .875;
 }
 
-.container table tbody tr td p.copy {
+table tbody tr td p.copy {
   background-color: #898888;
 }
 
-.container table tbody tr td p.update {
+table tbody tr td p.update {
   background-color: #0f0f0f;
 }
 
-.container table tbody tr td i {
+table tbody tr td i {
   font-size: 14px;
   color: #008000;
   font-weight: bold;
 }
 
-.container table tbody tr td i.fa-x {
+table tbody tr td i.fa-x {
   color: red;
 }
 
-.container table tbody tr td i.fa-minus {
+table tbody tr td i.fa-minus {
   color: #898888;
 }
 
-.container header {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.container header img {
-  height: 36px;
-  width: 36px;
-}
-
-.container header p {
-  font-weight: bold;
-  font-size: 20px;
-}
-
-.container h1 {
+h1 {
   font-weight: bold;
   font-size: 25px;
 }
 
-/**** Add servant ****/
+/* Add servant */
 
 .container.newServant {
   align-items: center;
 }
 
-.container p.newServant {
+p.newServant {
   font-size: 16px;
   font-weight: bold;
 }
 
-.container form {
+form {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -247,39 +200,39 @@ body .overlay {
   margin: 0 auto;
 }
 
-.container form p.errorMessage {
+form p.errorMessage {
   color: red;
   font-size: 14px;
 }
 
-.container form p.successMessage {
+form p.successMessage {
   color: #008000;
   font-size: 14px;
 }
 
-.container form p.successMessage span:first-of-type {
+form p.successMessage span:first-of-type {
   color: #0f0f0f;
 }
 
-.container form p.successMessage span:last-of-type {
+form p.successMessage span:last-of-type {
   color: #898888;
 }
 
-.container form span {
+form span {
   font-size: bold;
   font-size: 14px;
 }
 
-.container form input, .container form select {
+form input, form select {
   outline: none;
   padding: 2px;
 }
 
-.container form select {
+form select {
   font-size: 14px;
 }
 
-.container form button {
+form button {
   background-color: #0f0f0f;
   color: white;
   padding: 6px;
@@ -289,12 +242,6 @@ body .overlay {
   cursor: pointer;
 }
 
-.container form button:hover {
+form button:hover {
   opacity: .875;
-}
-
-@media screen and (max-width: 1000px) {
-  .container {
-    width: 100%;
-  }
 }
