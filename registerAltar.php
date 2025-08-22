@@ -1,72 +1,106 @@
-<?php
+<?php 
 include 'connection.php';
 $success = "";
 $error = "";
 
-// Handle form submission
+// Encryption settings for email
+define('ENCRYPTION_KEY', 'your-32-character-secret-key-here'); // store securely (env var, not code)
+define('ENCRYPTION_METHOD', 'AES-256-CBC');
+
+function encryptEmail($email) {
+    $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length(ENCRYPTION_METHOD));
+    $encrypted = openssl_encrypt($email, ENCRYPTION_METHOD, ENCRYPTION_KEY, 0, $iv);
+    return base64_encode($iv . '::' . $encrypted);
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  // Sanitize inputs
-  $altar_name       = trim($conn->real_escape_string($_POST['altar_name']));
-  $altar_type       = trim($conn->real_escape_string($_POST['altar_type']));
-  $snr_pst_fullname = trim($conn->real_escape_string($_POST['snr_pst_fullname']));
-  $snr_pst_title    = trim($conn->real_escape_string($_POST['snr_pst_title']));
-  $altar_status     = trim($conn->real_escape_string($_POST['altar_status']));
-  $phone_1          = trim($conn->real_escape_string($_POST['phone_1']));
-  $phone_2          = trim($conn->real_escape_string($_POST['phone_2']));
-  $email            = trim($conn->real_escape_string($_POST['email']));
-  $county           = trim($conn->real_escape_string($_POST['county']));
-  $password         = $_POST['password'];
-  $confirm_password = $_POST['confirm_password'];
+    // Collect inputs
+    $altar_name       = trim($_POST['altar_name']);
+    $altar_type       = trim($_POST['altar_type']);
+    $snr_pst_fullname = trim($_POST['snr_pst_fullname']);
+    $snr_pst_title    = trim($_POST['snr_pst_title']);
+    $altar_status     = trim($_POST['altar_status']);
+    $phone_1          = trim($_POST['phone_1']);
+    $phone_2          = trim($_POST['phone_2']);
+    $email            = trim($_POST['email']);
+    $county           = trim($_POST['county']);
+    $password         = $_POST['password'];
+    $confirm_password = $_POST['confirm_password'];
 
-  // Validation checks
-  if (empty($altar_name) || strlen($altar_name) < 3 || strlen($altar_name) > 100) {
-      $error = "Altar name must be between 3 and 100 characters!";
-  } elseif (empty($snr_pst_fullname) || !preg_match("/^[a-zA-Z\s.]+$/", $snr_pst_fullname) || str_word_count($snr_pst_fullname) < 2) {
-      $error = "Senior Pastor fullname must be at least 2 and only letters, spaces, or periods!";
-  } elseif (strlen($snr_pst_title) < 5) {
-      $error = "Senior Pastor title must be at least 5 characters long!";
-  } elseif (empty($phone_1) || !preg_match("/^07\d{8}$/", $phone_1)) {
-      $error = "Please enter a valid phone number!";
-  } elseif (!empty($phone_2) && $phone_1 === $phone_2) {
-      $error = "Phone 2 cannot be the same as Phone 1.";
-  } elseif (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-      $error = "Invalid email format!";
-  } elseif (strlen($password) < 6) {
-      $error = "Password must be at least 6 characters long!";
-  } elseif ($password !== $confirm_password) {
-      $error = "Passwords do not match!";
-  } else {
-    // Check uniqueness for altar_name
-    $checkAltar = $conn->query("SELECT altar_id FROM altars WHERE altar_name='$altar_name' LIMIT 1");
-    if ($checkAltar->num_rows > 0) {
-        $error = "An altar with this name already exists!";
-    }
+    // Validation (same as yours)...
 
-    // Check uniqueness for email (if provided)
-    if (empty($error) && !empty($email)) {
-        $checkEmail = $conn->query("SELECT altar_id FROM altars WHERE email='$email' LIMIT 1");
-        if ($checkEmail->num_rows > 0) {
-            $error = "This email is already registered with another altar!";
+    if (empty($altar_name) || strlen($altar_name) < 3 || strlen($altar_name) > 100) {
+        $error = "Altar name must be between 3 and 100 characters!";
+    } elseif (empty($snr_pst_fullname) || !preg_match("/^[a-zA-Z\s.]+$/", $snr_pst_fullname) || str_word_count($snr_pst_fullname) < 2) {
+        $error = "Senior Pastor fullname must be at least 2 and only letters, spaces, or periods!";
+    } elseif (strlen($snr_pst_title) < 5) {
+        $error = "Senior Pastor title must be at least 5 characters long!";
+    } elseif (empty($phone_1) || !preg_match("/^07\d{8}$/", $phone_1)) {
+        $error = "Please enter a valid phone number!";
+    } elseif (!empty($phone_2) && $phone_1 === $phone_2) {
+        $error = "Phone 2 cannot be the same as Phone 1.";
+    } elseif (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error = "Invalid email format!";
+    } elseif (strlen($password) < 6) {
+        $error = "Password must be at least 6 characters long!";
+    } elseif ($password !== $confirm_password) {
+        $error = "Passwords do not match!";
+    } else {
+        // --- Check uniqueness for altar_name ---
+        $stmt = $conn->prepare("SELECT altar_id FROM altars WHERE altar_name = ? LIMIT 1");
+        $stmt->bind_param("s", $altar_name);
+        $stmt->execute();
+        $stmt->store_result();
+        if ($stmt->num_rows > 0) {
+            $error = "An altar with this name already exists!";
+        }
+        $stmt->close();
+
+        // --- Check uniqueness for email (if provided) ---
+        if (empty($error) && !empty($email)) {
+            $encEmail = encryptEmail($email);
+
+            $stmt = $conn->prepare("SELECT altar_id FROM altars WHERE email = ? LIMIT 1");
+            $stmt->bind_param("s", $encEmail);
+            $stmt->execute();
+            $stmt->store_result();
+            if ($stmt->num_rows > 0) {
+                $error = "This email is already registered with another altar!";
+            }
+            $stmt->close();
         }
     }
-  }
 
-  // Insert into DB if no error
-  if (empty($error)) {
-    // Hash password before saving
-    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    // Insert if no error
+    if (empty($error)) {
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        $encEmail = !empty($email) ? encryptEmail($email) : null;
 
-    $sql = "INSERT INTO altars 
-        (altar_name, altar_type, snr_pst_fullname, snr_pst_title, altar_status, phone_1, phone_2, email, county, password) 
-        VALUES 
-        ('$altar_name', '$altar_type', '$snr_pst_fullname', '$snr_pst_title', '$altar_status', '$phone_1', '$phone_2', '$email', '$county', '$hashedPassword')";
+        $stmt = $conn->prepare("INSERT INTO altars 
+            (altar_name, altar_type, snr_pst_fullname, snr_pst_title, altar_status, phone_1, phone_2, email, county, password) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-    if ($conn->query($sql) === TRUE) {
-        $success = "Amen please, your altar is registered successfully! Wait for verification email to login. We may contact you for more information. #PROTECTINGTHEGLORY";
-    } else {
-        $error = "Database Error: " . $conn->error;
+        $stmt->bind_param(
+            "ssssssssss",
+            $altar_name,
+            $altar_type,
+            $snr_pst_fullname,
+            $snr_pst_title,
+            $altar_status,
+            $phone_1,
+            $phone_2,
+            $encEmail,
+            $county,
+            $hashedPassword
+        );
+
+        if ($stmt->execute()) {
+            $success = "Amen please, your altar has been registered successfully! Wait for verification email to login. We may contact you for more information. #PROTECTINGTHEGLORY";
+        } else {
+            $error = "Database Error: " . $stmt->error;
+        }
+        $stmt->close();
     }
-  }
 }
 ?>
 
@@ -206,7 +240,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           </div>
         </div>
         <button type="submit">Register Altar</button>
-        <p class="lgIn">Already have your altar's accout with us? <a href="altarLogin.html">Login here</a></p>
+        <p class="lgIn">Already have your altar's account with us? <a href="altarLogin.html">Login here</a></p>
       </form>
     </div>
   </div>
