@@ -55,6 +55,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Poppins:wght@700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 </head>
 <body>
   <header>
@@ -75,14 +78,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST
     <section class="container scnnd">
       <ul>
         <a href="altarPortal.html"><li>Dashboard</li></a>
-        <a><li>Members</li></a>
+        <a href="memberAltar.html"><li>Members</li></a>
         <a><li>Media</li></a>
         <li class="drpdwn">
-          <a href="followupAltar.html" class="active">Followup&nbsp;▼</a>
-          <div class="dropdown-content">
-            <a href="#">Evangelism</a>
+          <a onclick="toggleDropdown()" class="active">Followup&nbsp;▼</a>
+          <div class="dropdown-content" id="Dropdown">
+            <a href="followupAltar.html">Evangelism</a>
             <a href="#">Visitors</a>
+            <a href="#">Lunch&nbsp;Hour</a>
             <a href="#">Hospital&nbsp;Mission</a>
+            <a href="#">First&nbsp;Years</a>
           </div>
         </li>
         <a href=""><li>Make&nbsp;Announcement</li></a>
@@ -113,6 +118,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST
   </header>
 
   <div class="overlay" id="overlay" onclick="toggleSideBar()"></div>
+  <div class="overlayDropdown" id="overlayDropdown" onclick="toggleDropdown()"></div>
   <div class="sideBar" id="sidebar">
     <div class="sContainer">
       <img src="Images/Jesus is Lord Radio Logo.avif" alt="Jesus is Lord Radio Logo" width="140">
@@ -120,13 +126,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST
     </div>
     <ul>
       <a href="altarPortal.html"><li>Dashboard</li></a>
-      <a><li>Members</li></a>
+      <a href="memberAltar.html"><li>Members</li></a>
       <a><li>Media</li></a>
       <li class="drpdwn">
-        <a href="followuplist.html" class="active">Followup&nbsp;▼</a>
-        <div class="dropdown-content">
-          <a href="#">Evangelism</a>
+        <a onclick="toggleDropdownS()" class="active">Followup&nbsp;▼</a>
+        <div class="dropdown-content" id="DropdownS">
+          <a href="followupAltar.html">Evangelism</a>
           <a href="#">Visitors</a>
+          <a href="#">Lunch&nbsp;Hour</a>
           <a href="#">Hospital&nbsp;Mission</a>
         </div>
       </li>
@@ -134,7 +141,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST
       <a href=""><li>Activities</li></a>
       <a href=""><li>FAQs</li></a>
     </ul>
-    <a class="ercr" href="https://www.jesusislordradio.info/" target="_blank"><i class="fa-solid fa-radio"></i> Listen&nbsp;to&nbsp;Radio</a>
+    <a class="rdCll" href="tel:+254774445851"><i class="fa-solid fa-phone-volume"></i> Call&nbsp;the&nbsp;Radio</a>
     <a class="ercr" href="#"><i class="fa-regular fa-circle-question"></i> Help</a>
   </div>
   <main>
@@ -148,14 +155,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST
     </div>
     <div class="containerFp container">
       <h1>Follow up list</h1>
-      <a href="addServant.php">+ Add new servant</a>
+      <a class="addS" href="addServant.php">+ Add new servant</a>
       <div class="tableContainer">
         <!-- Give the table an ID for DataTables -->
         <table id="myTable">
           <thead>
             <th>#</th>
             <th>First&nbsp;Name</th>
-            <th>Number</th>
+            <th>Phone</th>
             <th>Action</th>
             <th>Status</th>
             <th>Evangelist</th>
@@ -177,9 +184,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST
                           <td>{$row['fname']}</td>
                           <!-- Display the masked phone number, and store the actual number in data-phone -->
                           <td data-phone='{$row['phoneNumber']}'>{$maskedPhone}</td>
-                          <td>
-                            <p class='copy' style='cursor:pointer;'>Copy</p>
+                          <td class="ffth"><a class='call' style='cursor:pointer;'><i class="fa-solid fa-phone-volume"></i>Call</a>
                             <p class='update' style='cursor:pointer;' data-userid='{$row['id']}'>Update</p>
+                            <p class='delete' style='cursor:pointer;' data-userid='{$row['id']}'>Delete</p>
                           </td>
                           <td><i class='fa-solid " . ($row['status'] == '2' ? 'fa-check' : ($row['status'] == '1' ? 'fa-x' : 'fa-minus')) . "'></i></td>
                           <td>{$row['evangelist']}</td>

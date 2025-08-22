@@ -71,29 +71,35 @@ header section ul li {
   list-style: none;
 }
 
-header section ul li.drpdwn {
+header section ul li.drpdwn, .sideBar ul li.drpdwn  {
   position: relative;
   display: inline-block;
 }
 
-header section ul li.drpdwn .dropdown-content {
+header section ul li.drpdwn .dropdown-content, .sideBar ul li .dropdown-content {
   display: none;
   position: absolute;
   flex-direction: column;
   gap: 8px;
-  top: 150%;
+  top: 90%;
   min-width: 160px;
   background-color: white;
   padding: 8px;
-  z-index: 1;
+  z-index: 10;
   height: fit-content;
   border-radius: 4px;
   border: 1px solid #898888;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-header section ul li.drpdwn .dropdown-content.active {
+.sideBar ul li .dropdown-content {
+  position: relative;
+  top: 170%;
+}
+
+header section ul li.drpdwn .dropdown-content.active, .sideBar ul li .dropdown-content.active {
   display: flex;
+  margin-top: 16px;
 }
 
 header a.hContainer {
@@ -119,7 +125,7 @@ header .contnrHA {
   gap: 16px;
 }
 
-header .contnrHA a:not(:last-of-type) {
+header .contnrHA a:not(:last-of-type), .sideBar a.rdCll {
   color: #ffffff;
   background-color: #0f268c;
   border-radius: 4px;
@@ -132,7 +138,7 @@ header .contnrHA a:not(:last-of-type) {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-header .contnrHA a.rdCll {
+header .contnrHA a.rdCll, .sideBar a.rdCll {
   background-color: #ffff00;
   color: black;
 }
@@ -235,7 +241,7 @@ svg path {
 
 /* Overlays section*/
 
-body .overlay, body .codOverlay {
+body .overlay, body .codOverlay, body .overlayDropdown {
   position: fixed;
   top: 0;
   left: 0;
@@ -248,7 +254,6 @@ body .overlay, body .codOverlay {
 
 body .codOverlay.active {
   display: block;
-  background-color: rgba(0, 0, 0, 0.466);
   z-index: 3;
 }
 
@@ -330,6 +335,15 @@ body .codPopup button:hover {
   gap: 16px;
 }
 
+.sideBar ul li {
+  list-style: none;
+  display: block;
+}
+
+.sideBar ul li.drpdwn a {
+  display: block;
+}
+
 .sideBar a.ercr {
   color: #898888;
   background-color: #ffffff;
@@ -395,6 +409,16 @@ body .codPopup button:hover {
   header .contnrHA .help-icon {
     display: none;
   }
+}
+
+@media (max-width: 859px) {
+  header section.scnnd {
+    display: none;
+  }
+
+  header i.fa-bars.scnnd {
+    display: block;
+  }
 
   .overlay.active {
     display: block;
@@ -405,13 +429,11 @@ body .codPopup button:hover {
   }
 }
 
-@media (max-width: 859px) {
-  header section.scnnd {
-    display: none;
-  }
-
-  header i.fa-bars.scnnd {
+@media (min-width: 859px) {
+  body .overlayDropdown.active {
     display: block;
+    background-color: transparent;
+    z-index: 3;
   }
 }
 
@@ -728,7 +750,7 @@ body.nwAltr .mjCntr {
 
 /* Dashboard */
 main#mnFrAlp {
-  background-color: #898888;
+  background-color: white;
   min-height: 80vh;
   display: flex;
   align-items: center;
@@ -755,12 +777,29 @@ main .mnCtnr .card {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 16px;
   gap: 16px;
+  background: linear-gradient(135deg, #ffffff, #5ca7f1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+main .mnCtnr .card:nth-child(2) {
+  background: linear-gradient(135deg, #ffffff, #ff3b3b);
+}
+
+main .mnCtnr .card:nth-child(3) {
+  background: linear-gradient(135deg, #ffffff, #ffff00);
+}
+
+main .mnCtnr .card:nth-child(4) {
+  background: linear-gradient(135deg, #ffffff, pink);
+}
+
+main .mnCtnr .card:hover {
+  transform: translateY(-8px);
 }
 
 main .mnCtnr .card h1.hd {
-  font-size: 20px;
+  font-size: 16px;
   color: #898888;
-  font-weight: normal;
 }
 
 main .mnCtnr .card .midCd {
@@ -801,7 +840,6 @@ main .mnCtnr .lwrStcsDiv {/*
   grid-template-columns: .625fr .25fr; */
   background-color: white;
   margin: 16px;
-  padding: 16px ;
   border-radius: 4px;/* 
   gap: 10px; */
 }/* 

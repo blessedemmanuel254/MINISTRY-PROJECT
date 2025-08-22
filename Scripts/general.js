@@ -14,6 +14,20 @@ function toggleCodePopup() {
   codePrompt.classList.toggle('active');
 }
 
+function toggleDropdown() {
+  const overlayDropdown = document.getElementById('overlayDropdown');
+  const Dropdown = document.getElementById('Dropdown');
+  const DropdownS = document.getElementById('DropdownS');
+  overlayDropdown.classList.toggle('active');
+  Dropdown.classList.toggle('active');
+  DropdownS.classList.toggle('active');
+}
+
+function toggleDropdownS() {
+  const DropdownS = document.getElementById('DropdownS');
+  DropdownS.classList.toggle('active');
+}
+
 /* Members progress graph Js */
 
 const ctx = document.getElementById('membersLineChart').getContext('2d');
@@ -27,7 +41,7 @@ new Chart(ctx, {
         label: 'Active Members',
         data: [120, 150, 180, 200, 220, 250, 280], // example data
         borderColor: 'green',
-        backgroundColor: 'rgba(0, 128, 0, 0.2)',
+        backgroundColor: 'rgba(15, 38, 140, 0.2)',
         tension: 0.3,
         fill: true
       },
@@ -56,3 +70,5 @@ new Chart(ctx, {
     }
   }
 });
+
+/* Active vs Inactive Line Graph Js */

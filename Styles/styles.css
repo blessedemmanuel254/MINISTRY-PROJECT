@@ -23,11 +23,12 @@
   font-size: 25px;
 }
 
-.containerFp a {
+.containerFp a.addS {
   text-decoration: none;
   color: white;
-  background-color: #008000;
-  padding: 3px;
+  background-color: #0f268c;
+  padding: 6px 8px;
+  border-radius: 4px;
   width: fit-content;
 }
 
@@ -132,8 +133,9 @@ table tbody tr td:nth-child(4) {
   min-width: 200px;
 }
 
-table tbody tr td:nth-child(4) {
+table tbody tr td:nth-child(5), table tbody tr td.ffth {
   display: flex;
+  align-items: center;
   gap: 5px;
 }
 
@@ -141,25 +143,34 @@ table tbody tr:nth-child(odd) {
   background-color: #dedede;
 }
 
-table tbody tr td p {
-  background-color: #008000;
+table tbody tr td p, table tbody tr td a {
+  background-color: #ff0000;
   font-size: 14px;
   color: white;
   width: fit-content;
   padding: 3px 10px;
   cursor: pointer;
+  border-radius: 12px;
 }
 
 table tbody tr td p:hover {
   opacity: .875;
 }
 
-table tbody tr td p.copy {
-  background-color: #898888;
+table tbody tr td a.call {
+  background-color: #0f268c;
+  color: white;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+table tbody tr td a.call i {
+  color: white;
 }
 
 table tbody tr td p.update {
-  background-color: #0f0f0f;
+  background-color: #008000;
 }
 
 table tbody tr td i {

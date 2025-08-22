@@ -41,13 +41,14 @@
     <section class="container scnnd">
       <ul>
         <a href="altarPortal.html" class="active"><li>Dashboard</li></a>
-        <a><li>Members</li></a>
+        <a href="memberAltar.html"><li>Members</li></a>
         <a><li>Media</li></a>
         <li class="drpdwn">
-          <a href="#">Followup&nbsp;▼</a>
-          <div class="dropdown-content">
-            <a href="#">Evangelism</a>
+          <a onclick="toggleDropdown()">Followup&nbsp;▼</a>
+          <div class="dropdown-content" id="Dropdown">
+            <a href="followupAltar.html">Evangelism</a>
             <a href="#">Visitors</a>
+            <a href="#">Lunch&nbsp;Hour</a>
             <a href="#">Hospital&nbsp;Mission</a>
           </div>
         </li>
@@ -72,6 +73,7 @@
   </header>
 
   <div class="overlay" id="overlay" onclick="toggleSideBar()"></div>
+  <div class="overlayDropdown" id="overlayDropdown" onclick="toggleDropdown()"></div>
   <div class="sideBar" id="sidebar">
     <div class="sContainer">
       <img src="Images/Jesus is Lord Radio Logo.avif" alt="Jesus is Lord Radio Logo" width="140">
@@ -79,13 +81,14 @@
     </div>
     <ul>
       <a href="altarPortal.html" class="active"><li>Dashboard</li></a>
-      <a><li>Members</li></a>
+      <a href="memberAltar.html"><li>Members</li></a>
       <a><li>Media</li></a>
       <li class="drpdwn">
-        <a href="#">Followup&nbsp;▼</a>
-        <div class="dropdown-content">
-          <a href="#">Evangelism</a>
+        <a onclick="toggleDropdownS()">Followup&nbsp;▼</a>
+        <div class="dropdown-content" id="DropdownS">
+          <a href="followupAltar.html">Evangelism</a>
           <a href="#">Visitors</a>
+          <a href="#">Lunch&nbsp;Hour</a>
           <a href="#">Hospital&nbsp;Mission</a>
         </div>
       </li>
@@ -93,7 +96,7 @@
       <a href=""><li>Activities</li></a>
       <a href=""><li>FAQs</li></a>
     </ul>
-    <a class="ercr" href="https://www.jesusislordradio.info/" target="_blank"><i class="fa-solid fa-radio"></i> Listen&nbsp;to&nbsp;Radio</a>
+    <a class="rdCll" href="tel:+254774445851"><i class="fa-solid fa-phone-volume"></i> Call&nbsp;the&nbsp;Radio</a>
     <a class="ercr" href="#"><i class="fa-regular fa-circle-question"></i> Help</a>
   </div>
   <main id="mnFrAlp">
