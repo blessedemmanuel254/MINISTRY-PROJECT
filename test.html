@@ -3,69 +3,84 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Active vs Inactive Members (Line Chart)</title>
+  <title>Ministry Dashboard - Line Chart</title>
+  <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background: #f4f6f9;
       font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 30px;
+      background-color: #f8f9fa;
     }
-    #chart-container {
-      width: 700px;
-      height: 400px;
+    .chart-container {
+      width: 75%;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
     }
   </style>
 </head>
 <body>
-  <div id="chart-container">
-    <canvas id="membersLineChart"></canvas>
+
+  <div class="chart-container">
+    <h2>Altar Registrations Over Time</h2>
+    <canvas id="altarLineChart"></canvas>
   </div>
 
   <script>
-    const ctx = document.getElementById('membersLineChart').getContext('2d');
+    // Sample Data (replace with dynamic DB values later)
+    const data = {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+      datasets: [{
+        label: 'Registered Altars',
+        data: [5, 9, 15, 20, 28, 32, 37], // Example growth numbers
+        fill: true,
+        borderColor: 'rgba(54, 162, 235, 1)',
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        tension: 0.4,  // smooth curves
+        pointBackgroundColor: 'rgba(54, 162, 235, 1)',
+        pointRadius: 5
+      }]
+    };
 
-    new Chart(ctx, {
+    const config = {
       type: 'line',
-      data: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'], // months
-        datasets: [
-          {
-            label: 'Active Members',
-            data: [120, 150, 180, 200, 220, 250, 280], // example data
-            borderColor: 'green',
-            backgroundColor: 'rgba(0, 128, 0, 0.2)',
-            tension: 0.3,
-            fill: true
-          },
-          {
-            label: 'Inactive Members',
-            data: [50, 60, 55, 70, 65, 75, 80], // example data
-            borderColor: 'red',
-            backgroundColor: 'rgba(255, 0, 0, 0.2)',
-            tension: 0.3,
-            fill: true
-          }
-        ]
-      },
+      data: data,
       options: {
         responsive: true,
         plugins: {
           title: {
             display: true,
-            text: 'Active vs Inactive Members Over Time'
+            text: 'Growth of Registered Altars',
+            font: { size: 18 }
+          },
+          legend: {
+            position: 'top'
           }
         },
         scales: {
           y: {
-            beginAtZero: true
+            beginAtZero: true,
+            ticks: { stepSize: 5 }
           }
         }
       }
-    });
+    };
+
+    // Render Chart
+    new Chart(
+      document.getElementById('altarLineChart'),
+      config
+    );
   </script>
+
 </body>
 </html>

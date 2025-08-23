@@ -77,13 +77,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST
     </section>
     <section class="container scnnd">
       <ul>
-        <a href="altarPortal.html"><li>Dashboard</li></a>
-        <a href="memberAltar.html"><li>Members</li></a>
+        <a href="altarPortal.php"><li>Dashboard</li></a>
+        <a href="memberAltar.php"><li>Members</li></a>
         <a><li>Media</li></a>
         <li class="drpdwn">
           <a onclick="toggleDropdown()" class="active">Followup&nbsp;▼</a>
           <div class="dropdown-content" id="Dropdown">
-            <a href="followupAltar.html">Evangelism</a>
+            <a href="followupAltar.php">Evangelism</a>
             <a href="#">Visitors</a>
             <a href="#">Lunch&nbsp;Hour</a>
             <a href="#">Hospital&nbsp;Mission</a>
@@ -125,13 +125,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST
       <i class="fa-solid fa-xmark" onclick="toggleSideBar()"></i>
     </div>
     <ul>
-      <a href="altarPortal.html"><li>Dashboard</li></a>
-      <a href="memberAltar.html"><li>Members</li></a>
+      <a href="altarPortal.php"><li>Dashboard</li></a>
+      <a href="memberAltar.php"><li>Members</li></a>
       <a><li>Media</li></a>
       <li class="drpdwn">
         <a onclick="toggleDropdownS()" class="active">Followup&nbsp;▼</a>
         <div class="dropdown-content" id="DropdownS">
-          <a href="followupAltar.html">Evangelism</a>
+          <a href="followupAltar.php">Evangelism</a>
           <a href="#">Visitors</a>
           <a href="#">Lunch&nbsp;Hour</a>
           <a href="#">Hospital&nbsp;Mission</a>
@@ -185,7 +185,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST
                           <td>{$row['fname']}</td>
                           <!-- Display the masked phone number, and store the actual number in data-phone -->
                           <td data-phone='{$row['phoneNumber']}'>{$maskedPhone}</td>
-                          <td class="ffth"><a class='call' style='cursor:pointer;'><i class="fa-solid fa-phone-volume"></i>Call</a>
+                          <td class='ffth'><a class='call' style='cursor:pointer;'><i class='fa-solid fa-phone-volume'></i>Call</a>
                             <p class='update' style='cursor:pointer;' data-userid='{$row['id']}'>Update</p>
                             <p class='delete' style='cursor:pointer;' data-userid='{$row['id']}'>Delete</p>
                           </td>

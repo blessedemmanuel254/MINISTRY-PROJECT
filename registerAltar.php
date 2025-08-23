@@ -3,14 +3,24 @@ include 'connection.php';
 $success = "";
 $error = "";
 
-// Encryption settings for email
-define('ENCRYPTION_KEY', 'your-32-character-secret-key-here'); // store securely (env var, not code)
-define('ENCRYPTION_METHOD', 'AES-256-CBC');
+function normalizePhoneNumber($rawPhone) {
+  // Remove all characters except numbers and plus sign
+  $cleaned = preg_replace('/[^\d+]/', '', $rawPhone);
 
-function encryptEmail($email) {
-    $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length(ENCRYPTION_METHOD));
-    $encrypted = openssl_encrypt($email, ENCRYPTION_METHOD, ENCRYPTION_KEY, 0, $iv);
-    return base64_encode($iv . '::' . $encrypted);
+  // Handle various formats
+  if (strpos($cleaned, '+') === 0) {
+      // Already starts with country code
+      return $cleaned;
+  } elseif (strpos($cleaned, '0') === 0 && strlen($cleaned) >= 10) {
+      // Starts with 0 — assume it's local Kenyan-style and convert to +254
+      return '+254' . substr($cleaned, 1);
+  } elseif (strlen($cleaned) >= 9 && !str_starts_with($cleaned, '+')) {
+      // Assume starts directly with country code
+      return '+' . $cleaned;
+  }
+
+  // Invalid fallback
+  return '';
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -58,10 +68,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // --- Check uniqueness for email (if provided) ---
         if (empty($error) && !empty($email)) {
-            $encEmail = encryptEmail($email);
+            $encrypted_email = base64_encode($email);
 
             $stmt = $conn->prepare("SELECT altar_id FROM altars WHERE email = ? LIMIT 1");
-            $stmt->bind_param("s", $encEmail);
+            $stmt->bind_param("s", $encrypted_email);
             $stmt->execute();
             $stmt->store_result();
             if ($stmt->num_rows > 0) {
@@ -73,8 +83,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Insert if no error
     if (empty($error)) {
+        $normalized_phone1 = normalizePhoneNumber($phone_1);
+        $normalized_phone2 = normalizePhoneNumber($phone_2);
+        $encrypted_phone1 = base64_encode($normalized_phone1);
+        $encrypted_phone2 = base64_encode($normalized_phone2);
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-        $encEmail = !empty($email) ? encryptEmail($email) : null;
+
 
         $stmt = $conn->prepare("INSERT INTO altars 
             (altar_name, altar_type, snr_pst_fullname, snr_pst_title, altar_status, phone_1, phone_2, email, county, password) 
@@ -87,9 +101,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $snr_pst_fullname,
             $snr_pst_title,
             $altar_status,
-            $phone_1,
-            $phone_2,
-            $encEmail,
+            $encrypted_phone1,
+            $encrypted_phone2,
+            $encrypted_email,
             $county,
             $hashedPassword
         );
@@ -240,7 +254,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           </div>
         </div>
         <button type="submit">Register Altar</button>
-        <p class="lgIn">Already have your altar's account with us? <a href="altarLogin.html">Login here</a></p>
+        <p class="lgIn">Already have your altar's account with us? <a href="altarLogin.php">Login here</a></p>
       </form>
     </div>
   </div>

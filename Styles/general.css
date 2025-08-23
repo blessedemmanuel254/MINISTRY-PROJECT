@@ -454,24 +454,6 @@ main#home {
   padding-top: 50px;
 }
 
-@media (max-width: 700px) {
-  main#home {
-    height: 140vh;
-  }
-}
-
-@media (max-width: 445px) {
-  main#home {
-    height: 160vh;
-  }
-}
-
-@media (max-width: 370px) {
-  main#home {
-    height: 190vh;
-  }
-}
-
 main#home::before {
   content: "";
   position: absolute;

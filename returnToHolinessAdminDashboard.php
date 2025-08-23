@@ -1,0 +1,248 @@
+<?php
+include 'connection.php';
+
+// --- CARD 1: Total Altars ---
+$totalAltars = 0;
+$stmt = $conn->prepare("SELECT COUNT(*) FROM altars");
+$stmt->execute();
+$stmt->bind_result($totalAltars);
+$stmt->fetch();
+$stmt->close();
+
+// --- CARD 2: Pending Verifications ---
+$pendingAltars = 0;
+$stmt = $conn->prepare("SELECT COUNT(*) FROM altars WHERE verification_status = ?");
+$status = 'pending';
+$stmt->bind_param("s", $status);
+$stmt->execute();
+$stmt->bind_result($pendingAltars);
+$stmt->fetch();
+$stmt->close();
+
+// --- CARD 3: Verified Altars ---
+$verifiedAltars = 0;
+$stmt = $conn->prepare("SELECT COUNT(*) FROM altars WHERE verification_status = ?");
+$status = 'verified';
+$stmt->bind_param("s", $status);
+$stmt->execute();
+$stmt->bind_result($verifiedAltars);
+$stmt->fetch();
+$stmt->close();
+
+// --- CARD 4: Rejected Altars ---
+$rejectedAltars = 0;
+$stmt = $conn->prepare("SELECT COUNT(*) FROM altars WHERE verification_status = ?");
+$status = 'rejected';
+$stmt->bind_param("s", $status);
+$stmt->execute();
+$stmt->bind_result($rejectedAltars);
+$stmt->fetch();
+$stmt->close();
+
+// --- GRAPH: Monthly Altars Growth ---
+$months = [];
+$counts = [];
+$stmt = $conn->prepare("
+    SELECT DATE_FORMAT(created_at, '%Y-%m') as month, COUNT(*) 
+    FROM altars 
+    GROUP BY month 
+    ORDER BY month ASC
+");
+$stmt->execute();
+$stmt->bind_result($month, $count);
+while ($stmt->fetch()) {
+    $months[] = $month;
+    $counts[] = $count;
+}
+$stmt->close();
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin | Returntoholiness</title>
+
+  <link rel="stylesheet" href="Styles/admin.css">
+
+  <link rel="icon" type="image/png" href="Images/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="Images/favicon.svg" />
+  <link rel="shortcut icon" href="Images/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="Images/apple-touch-icon.png" />
+  <link rel="manifest" href="Images/site.webmanifest" />
+
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Poppins:wght@700;800;900&display=swap" rel="stylesheet"> -->
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="adContnr">
+    <div class="sidebar" id="sidebar">
+      <div class="hder">
+        <img src="Images/Ministry Logo.avif" alt="Ministry Logo" width="35">
+        <i class="fa-solid fa-circle-user"></i>
+      </div>
+      <section>
+        <img src="Images/Admin Profile.jpg" alt="" width="100">
+        <h2>Emmanuel&nbsp;Werangai</h2>
+        <p>emmanueltindi23@gmail.com</p>
+      </section>
+      <ul>
+        <a href="" class="active"><i class="fa-solid fa-house"></i>Dashboard</a>
+        <a href=""><i class="fa-solid fa-place-of-worship"></i>Altars</a>
+        <a href=""><i class="fa-solid fa-chart-line"></i>Activities</a>
+        <a href=""><i class="fa-solid fa-pen"></i>Updates</a>
+        <a href=""><i class="fa-solid fa-ticket"></i>Tickets</a>
+        <a href=""><i class="fa-solid fa-arrow-right-from-bracket"></i>Logout</a>
+      </ul>
+    </div>
+    <div class="cntnrDash">
+      <header>
+        <section class="container">
+          <div>
+            <i class="fa-solid fa-bars"></i>
+            <h1>ADMIN</h1>
+          </div>
+          <div>
+            <i class="fa-regular fa-bell"></i>
+            <i class="fa-regular fa-comment-dots"></i>
+          </div>
+        </section>
+      </header>
+      <main>
+        <div class="wlcmTp container">
+          <h1>Returntoholiness Analytics<br><span>The aerial view of registered Altars</span></h1>
+          <a href="#"><i class="fa-solid fa-envelope"></i>Email&nbsp;the&nbsp;Radio</a>
+        </div>
+        <div class="container">
+          <div class="crdsCntr">
+           <div class="card">
+              <div>
+                <p>TOTAL ALTARS<br><span>Registered Altars</span></p>
+                <h1><?php echo $totalAltars; ?></h1>
+                <p>+1.7% increase</p>
+              </div>
+              <i class="fa-solid fa-place-of-worship"></i>
+            </div>
+            <div class="card">
+              <div>
+                <p>PENDING&nbsp;VERIFICATIONS<br><span>Altar authentications</span></p>
+                <h1><?php echo $pendingAltars; ?></h1>
+                <p>Altars on waiting</p>
+              </div>
+              <i class="fa-brands fa-cloudversify"></i>
+            </div>
+            <div class="card">
+              <div>
+                <p>VERIFIED&nbsp;ALTARS<br><span>All verified</span></p>
+                <h1><?php echo $verifiedAltars; ?></h1>
+                <p>Ready to go</p>
+              </div>
+              <i class="fa-solid fa-certificate"></i>
+            </div>
+            <div class="card">
+              <div>
+                <p>REJECTED&nbsp;ALTARS<br><span>Failed verification</span></p>
+                <h1><?php echo $rejectedAltars; ?></h1>
+                <p>Unsecure or fake</p>
+              </div>
+              <i class="fa-solid fa-circle-stop"></i>
+            </div>
+            <div class="card">
+              <div>
+                <p>SITE VISITS<br><span>Daily users</span></p>
+                <h1>21</h1>
+                <p>6% increase</p>
+              </div>
+              <i class="fa-solid fa-place-of-worship"></i>
+            </div>
+          </div>
+        </div>
+        <div class="chart-container container">
+          <h2>Altar Registrations Over Time</h2>
+          <canvas id="altarLineChart"></canvas>
+        </div>
+        <footer>
+          <div class="container">
+            <div>
+              <a href="#">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="#">
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a href="#">
+                <i class="fa-brands fa-tiktok"></i>
+              </a>
+              <a href="#">
+                <i class="fab fa-instagram"></i>
+              </a>
+              <a href="#">
+                <i class="fab fa-linkedin-in"></i>
+              </a>
+              <a href="https://www.youtube.com/@repentpreparetheway" target="_blank">
+                <i class="fab fa-youtube"></i>
+              </a>
+            </div>
+            <p>&copy;2025 <a href="">returntoholiness.org,</a> All Rights Reserved</p>
+          </div>
+        </footer>
+      </main>
+    </div>
+  </div>
+  
+  <script>
+    // Sample Data (replace with dynamic DB values later)
+    const data = {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+      datasets: [{
+        label: 'Registered Altars',
+        data: [5, 9, 15, 20, 28, 32, 37], // Example growth numbers
+        fill: true,
+        borderColor: 'rgba(54, 162, 235, 1)',
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        tension: 0.4,  // smooth curves
+        pointBackgroundColor: 'rgba(54, 162, 235, 1)',
+        pointRadius: 5
+      }]
+    };
+
+    const config = {
+      type: 'line',
+      data: data,
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Growth of Registered Altars',
+            font: { size: 18 }
+          },
+          legend: {
+            position: 'top'
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: { stepSize: 5 }
+          }
+        }
+      }
+    };
+
+    // Render Chart
+    new Chart(
+      document.getElementById('altarLineChart'),
+      config
+    );
+  </script>
+</body>
+</html>

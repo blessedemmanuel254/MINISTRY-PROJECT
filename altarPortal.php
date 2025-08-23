@@ -40,13 +40,13 @@
     </section>
     <section class="container scnnd">
       <ul>
-        <a href="altarPortal.html" class="active"><li>Dashboard</li></a>
-        <a href="memberAltar.html"><li>Members</li></a>
+        <a href="altarPortal.php" class="active"><li>Dashboard</li></a>
+        <a href="memberAltar.php"><li>Members</li></a>
         <a><li>Media</li></a>
         <li class="drpdwn">
           <a onclick="toggleDropdown()">Followup&nbsp;▼</a>
           <div class="dropdown-content" id="Dropdown">
-            <a href="followupAltar.html">Evangelism</a>
+            <a href="followupAltar.php">Evangelism</a>
             <a href="#">Visitors</a>
             <a href="#">Lunch&nbsp;Hour</a>
             <a href="#">Hospital&nbsp;Mission</a>
@@ -81,13 +81,13 @@
       <i class="fa-solid fa-xmark" onclick="toggleSideBar()"></i>
     </div>
     <ul>
-      <a href="altarPortal.html" class="active"><li>Dashboard</li></a>
-      <a href="memberAltar.html"><li>Members</li></a>
+      <a href="altarPortal.php" class="active"><li>Dashboard</li></a>
+      <a href="memberAltar.php"><li>Members</li></a>
       <a><li>Media</li></a>
       <li class="drpdwn">
         <a onclick="toggleDropdownS()">Followup&nbsp;▼</a>
         <div class="dropdown-content" id="DropdownS">
-          <a href="followupAltar.html">Evangelism</a>
+          <a href="followupAltar.php">Evangelism</a>
           <a href="#">Visitors</a>
           <a href="#">Lunch&nbsp;Hour</a>
           <a href="#">Hospital&nbsp;Mission</a>
