@@ -1,4 +1,4 @@
-<!-- <?php
+<?php
 session_start();
 include 'connection.php'; // connect to your DB
 
@@ -66,7 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   <link rel="apple-touch-icon" sizes="180x180" href="Images/apple-touch-icon.png" />
   <link rel="manifest" href="Images/site.webmanifest" />
 
-  <!-- Font Awesome CDN --><!-- 
+  <!-- Font Awesome CDN -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -128,4 +128,4 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     </div>
   </footer>
 </body>
-</html> --> -->
+</html>

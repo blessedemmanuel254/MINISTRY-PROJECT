@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 session_start();
 require_once "connection.php"; // your DB connection
 
@@ -10,6 +13,12 @@ if (!isset($_SESSION['altar_id'])) {
 
 $altar_id = $_SESSION['altar_id'];
 $altar_name = $_SESSION['altar_name'];
+
+function decodePhone($phone) {
+    // Example: if phones are base64 encoded in DB
+    return base64_decode($phone);
+}
+
 
 function maskPhone($phone) {
   $len = strlen($phone);
@@ -23,31 +32,52 @@ function maskPhone($phone) {
   return $first3 . $mask . $last3;
 }
 
-// Check if this is an AJAX POST request for updating the status
-if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST['status'])) {
-  // Get and sanitize the POST values (using prepared statements below)
-  $id = $_POST['id'];
-  $status = $_POST['status'];
+// --- Handle AJAX requests ---
+// --- Handle AJAX requests ---
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+  if (isset($_POST['action']) && isset($_POST['id'])) {
+    $id = intval($_POST['id']);
+    $action = $_POST['action'];
 
-  // Prepare the update query to change the user's status
-  $stmt = $conn->prepare("UPDATE followuplist SET status = ? WHERE id = ?");
-  $stmt->bind_param("ii", $status, $id);
+    if ($action === "delete") {
+      $stmt = $conn->prepare("DELETE FROM members WHERE member_id = ?");
+      $stmt->bind_param("i", $id);
+      $stmt->execute();
+      $stmt->close();
 
-  // Execute the update query
-  if (!$stmt->execute()) {
-    error_log("Error executing update: " . $stmt->error);
+    } elseif ($action === "inactive") {
+      $stmt = $conn->prepare("UPDATE members SET status = 'Inactive' WHERE member_id = ?");
+      $stmt->bind_param("i", $id);
+      $stmt->execute();
+      $stmt->close();
+
+    } elseif ($action === "active") {
+      $stmt = $conn->prepare("UPDATE members SET status = 'Active' WHERE member_id = ?");
+      $stmt->bind_param("i", $id);
+      $stmt->execute();
+      $stmt->close();
+
+    } elseif ($action === "update" && isset($_POST['status'])) {
+      // status is a text column ('Active' / 'Inactive'), so bind as string
+      $status = $_POST['status'];
+      $stmt = $conn->prepare("UPDATE members SET status = ? WHERE member_id = ?");
+      $stmt->bind_param("si", $status, $id);
+      $stmt->execute();
+      $stmt->close();
+    }
+
+    exit; // important for AJAX
   }
-  
-  $stmt->close();
-  exit; // End the script so no HTML is output in response to the AJAX call
 }
-?> 
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Followup | Returntoholiness</title>
+  <title>Inactive Members | Returntoholiness</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <link rel="stylesheet" href="Styles/general.css">
@@ -99,7 +129,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST
             <a href="#">Lunch&nbsp;Hour</a>
             <a href="#">Hospital&nbsp;Mission</a>
             <a href="firstYearFollowup.php">First&nbsp;Years</a>
-            <a href="inactiveMembers.php">INACTIVE&nbsp;MEMBERS</a>
+            <a href="inactiveMembers.php" class="activeIn">INACTIVE&nbsp;MEMBERS</a>
           </div>
         </li>
         <a href=""><li>Make&nbsp;Announcement</li></a>
@@ -111,21 +141,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST
     <nav class="container">
       <!-- Home -->
       <a href="#" class="text-blue-600 hover:underline">Home</a>
-
+      <!-- Arrow -->
+      <svg class="mx-2 h-4 w-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+      <a href="#" class="text-blue-600 hover:underline">Followup</a>
       <!-- Arrow -->
       <svg class="mx-2 h-4 w-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
       </svg>
 
       <!-- Inventory -->
-      <a href="#">Followup</a>
-      <!-- Arrow -->
-      <svg class="mx-2 h-4 w-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-      </svg>
-
-      <!-- Inventory -->
-      <a href="#" class="curnt">Evangelism</a>
+      <a href="#" class="curnt">Inactive Members</a>
     </nav>
   </header>
 
@@ -148,6 +175,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST
           <a href="#">Lunch&nbsp;Hour</a>
           <a href="#">Hospital&nbsp;Mission</a>
           <a href="firstYearFollowup.php">First&nbsp;Years</a>
+          <a href="inactiveMembers.php" class="activeIn">INACTIVE&nbsp;MEMBERS</a>
         </div>
       </li>
       <a href=""><li>Make&nbsp;Announcement</li></a>
@@ -157,61 +185,73 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST
     <a class="rdCll" href="tel:+254777445851"><i class="fa-solid fa-phone-volume"></i> Call&nbsp;the&nbsp;Radio</a>
     <a class="ercr" href="#"><i class="fa-regular fa-circle-question"></i> Help</a>
   </div>
-  <main>
+  <main><!-- 
+    <a href="index.php" id="overlay" class="overlay"></a>
+    <div id="popUp">
+      <h4>Did you do the follow up? If you have already called the servant and the follow up done successfully, select <span>Successful</span>. Else if there is no response or you did not communicate select <span>No answer</span></h4>
+      <div class="response">
+        <p class="noResponce">No&nbsp;answer</p>
+        <p>Successful</p>
+      </div>
+    </div> -->
     <div class="containerFp container">
-      <h1>Follow up list</h1>
-      <a class="addS" href="followupForm.php">+ Add new servant</a>
+      <h1>Inactive members list</h1>
       <div class="tableContainer">
         <!-- Give the table an ID for DataTables -->
         <table id="myTable">
           <thead>
             <th>#</th>
-            <th>Name</th>
-            <th>Phone</th>
+            <th>First&nbsp;Name</th>
+            <th>Second&nbsp;Name</th>
+            <th>Gender</th>
             <th>Action</th>
-            <th class="fStUpth">Status</th>
-            <th>Evangelist</th>
-            <th>M.&nbsp;Point</th>
+            <th>Phone</th>
+            <th>Status</th>
+            <th>Move</th>
             <th>Date</th>
           </thead>
           <tbody>
-            
             <?php
-            $stmt = $conn->prepare("
-              SELECT followup_id, first_name, phone, evangelist_name, meeting_point, mission_type, 
-                      DATE(date_evangelized) AS date_evangelized, status 
-              FROM followup_details 
-              WHERE altar_id = ?
-            ");
+            $stmt = $conn->prepare("SELECT member_id, first_name, second_name, gender, phone, status, date_registered 
+                        FROM members 
+                        WHERE altar_id = ? AND status = 'Inactive'");
             $stmt->bind_param("i", $altar_id);
             $stmt->execute();
-            $result = $stmt->get_result();
 
+            $result = $stmt->get_result();  // ✅ mysqli_result
             $counter = 1;
+
             if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-              $phoneDecoded = base64_decode($row['phone']);
-              $maskedPhone = maskPhone($phoneDecoded);
+                while ($row = $result->fetch_assoc()) {
+                  // Decode phone number first
+                  $decodedPhone = decodePhone($row['phone']);
+                  // Now mask decoded number
+                  $maskedPhone = maskPhone($decodedPhone);
+
+                  // Capitalize first letters of names
+                  $firstName = ucfirst(strtolower($row['first_name']));
+                  $secondName = ucfirst(strtolower($row['second_name']));
                   echo "<tr>
                           <td>{$counter}.</td>
-                          <td>{$row['first_name']}</td>
+                          <td>{$firstName}</td>
+                          <td>{$secondName}</td>
                           <!-- Display the masked phone number, and store the actual number in data-phone -->
-                          <td data-phone='{$row['phone']}'>{$maskedPhone}</td>
+                          <td>{$row['gender']}</td>
                           <td class='ffth'>
-                            <a href='tel:{$phoneDecoded}' class='call' style='cursor:pointer;'><i class='fa-solid fa-phone-volume'></i>Call</a>
-                            <p class='update' style='cursor:pointer;' data-userid='{$row['followup_id']}'>Update</p>
-                            <p class='delete' style='cursor:pointer;' data-userid='{$row['followup_id']}'>Delete</p>
+                            <a class='call' href='tel:{$decodedPhone}'><i class='fa-solid fa-phone-volume'></i> Call</a>
+                            <p class='update' style='cursor:pointer;' data-userid='{$row['member_id']}'>Update</p>
+                            <p class='delete' style='cursor:pointer;' data-userid='{$row['member_id']}'>Delete</p>
                           </td>
-                          <td class='fStUp'><i class='fa-solid " . ($row['status'] == '2' ? 'fa-check' : ($row['status'] == '1' ? 'fa-x' : 'fa-minus')) . "'></i></td>
-                          <td>{$row['evangelist_name']}</td>
-                          <td>{$row['meeting_point']}</td>
-                          <td>{$row['date_evangelized']}</td>
+                          <td data-phone='{$decodedPhone}'>{$maskedPhone}</td>
+                          <td class='ffth ssth'><p class='actvIllsttr'>{$row['status']}</p></td>
+                          <td><p class='mMve' data-userid='{$row['member_id']}'><i class='fa-solid fa-folder-closed'></i>Move&nbsp;to&nbsp;active</p></td>
+                          <td>{$row['date_registered']}</td>
                         </tr>";
                         $counter++;
                 }
-              } else {
-                    echo "<tr><td colspan='8'>No records found</td></tr>";
-                }
+            } else {
+              echo "<tr><td colspan='9'>No records found</td></tr>";
+            }
             ?>
           </tbody>
         </table>
@@ -244,28 +284,54 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST
     </div>
   </footer>
 
-  <script src="Scripts/general.js"></script>
-  <script>
-    $(document).ready(function() {
-      $('#myTable').DataTable();
-
-      // Update status
-      $(".status").change(function() {
-        let id = $(this).data("id");
-        let status = $(this).val();
-        $.post("", { action: "update", id: id, status: status }, function(response) {
-          alert("Status updated");
-        });
+  <script src="Scripts/general.js"></script><script>
+  /*  // Handle update status
+    document.querySelectorAll(".update").forEach(btn => {
+      btn.addEventListener("click", function() {
+        const userId = this.dataset.userid;
+        const newStatus = prompt("Enter new status (1 = Not Reached, 2 = Reached):");
+        if (newStatus) {
+          fetch("", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: "action=update&id=" + userId + "&status=" + newStatus
+          }).then(() => location.reload());
+        }
       });
+    }); */
 
-      // Delete record
-      $(".delete").click(function() {
-        if (!confirm("Are you sure you want to delete this record?")) return;
-        let id = $(this).data("id");
-        $.post("", { action: "delete", id: id }, function(response) {
-          alert("Record deleted");
-          location.reload();
-        });
+    // Handle delete
+    document.querySelectorAll(".delete").forEach(btn => {
+      btn.addEventListener("click", function() {
+        const userId = this.dataset.userid;
+        if (confirm("Are you sure you want to DELETE this record?")) {
+          fetch("", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: "action=delete&id=" + encodeURIComponent(userId)
+          }).then(() => location.reload());
+        }
+      });
+    });
+
+    // Handle move to inactive
+    document.querySelectorAll(".mMve").forEach(btn => {
+      btn.addEventListener("click", function() {
+        const userId = this.dataset.userid;
+        // Normalize the text content
+        const txt = this.textContent.replace(/\u00A0/g, ' ').toLowerCase();
+        // IMPORTANT: check 'inactive' first because it contains 'active'
+        const toInactive = txt.includes("move to inactive");
+        const action = toInactive ? "inactive" : "active";
+        const label = toInactive ? "INACTIVE" : "ACTIVE";
+
+        if (confirm("Move this member to " + label + "?")) {
+          fetch("", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: "action=" + encodeURIComponent(action) + "&id=" + encodeURIComponent(userId)
+          }).then(() => location.reload());
+        }
       });
     });
   </script>

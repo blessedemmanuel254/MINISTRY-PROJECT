@@ -113,6 +113,10 @@ table thead th {
   padding: 5px;
 }
 
+table thead th.fStUpth, table tbody tr td.fStUp {
+  text-align: center;
+}
+
 table tbody tr th:last-of-type {
   text-align: center;
 }
@@ -129,14 +133,14 @@ table tbody tr td:not(:first-of-type) {
   min-width: 120px;
 }
 
-table tbody tr td:nth-child(4) {
-  min-width: 200px;
-}
-
-table tbody tr td:nth-child(5), table tbody tr td.ffth {
+table tbody tr td.ffth {
   display: flex;
   align-items: center;
   gap: 5px;
+}
+
+table tbody tr td.ffth.svth {
+  gap: 0;
 }
 
 table tbody tr:nth-child(odd) {
@@ -151,6 +155,7 @@ table tbody tr td p, table tbody tr td a {
   padding: 3px 10px;
   cursor: pointer;
   border-radius: 12px;
+  text-decoration: none;
 }
 
 table tbody tr td p:hover {
@@ -173,6 +178,25 @@ table tbody tr td p.update {
   background-color: #008000;
 }
 
+table tbody tr td p.actvIllsttr {
+  background-color: #898888a9;
+  color: black;
+  border-radius: 2px;
+}
+
+table tbody tr td p.mMve {
+  color: white;
+  background-color: #0f0f0f;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 4px;
+}
+
+table tbody tr td p.mMve i {
+  color: white;
+}
+
 table tbody tr td i {
   font-size: 14px;
   color: #008000;
@@ -190,69 +214,4 @@ table tbody tr td i.fa-minus {
 h1 {
   font-weight: bold;
   font-size: 25px;
-}
-
-/* Add servant */
-
-.container.newServant {
-  align-items: center;
-}
-
-p.newServant {
-  font-size: 16px;
-  font-weight: bold;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: clamp(300px, 50%, 50%);
-  margin: 0 auto;
-}
-
-form p.errorMessage {
-  color: red;
-  font-size: 14px;
-}
-
-form p.successMessage {
-  color: #008000;
-  font-size: 14px;
-}
-
-form p.successMessage span:first-of-type {
-  color: #0f0f0f;
-}
-
-form p.successMessage span:last-of-type {
-  color: #898888;
-}
-
-form span {
-  font-size: bold;
-  font-size: 14px;
-}
-
-form input, form select {
-  outline: none;
-  padding: 2px;
-}
-
-form select {
-  font-size: 14px;
-}
-
-form button {
-  background-color: #0f0f0f;
-  color: white;
-  padding: 6px;
-  border: none;
-  font-size: 14px;
-  margin-top: 10px;
-  cursor: pointer;
-}
-
-form button:hover {
-  opacity: .875;
 }

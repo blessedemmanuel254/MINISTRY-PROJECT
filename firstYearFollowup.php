@@ -11,66 +11,47 @@ if (!isset($_SESSION['altar_id'])) {
 $altar_id = $_SESSION['altar_id'];
 $altar_name = $_SESSION['altar_name'];
 
-// ===== Fetch Altar Name =====
-$stmt = $conn->prepare("SELECT altar_name FROM altars WHERE altar_id = ?");
-$stmt->bind_param("i", $altar_id);
-$stmt->execute();
-$stmt->bind_result($altar_name);
-$stmt->fetch();
-$stmt->close();
+function maskPhone($phone) {
+  $len = strlen($phone);
+  if ($len <= 6) {
+      return $phone; // If too short, just return as is.
+  }
+  $first3 = substr($phone, 0, 3);
+  $last3 = substr($phone, -3);
+  $maskLength = $len - 6;
+  $mask = str_repeat('*', $maskLength);
+  return $first3 . $mask . $last3;
+}
 
-// ===== Fetch Statistics =====
+// Check if this is an AJAX POST request for updating the status
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST['status'])) {
+  // Get and sanitize the POST values (using prepared statements below)
+  $id = $_POST['id'];
+  $status = $_POST['status'];
 
-// Total members
-$result = $conn->query("SELECT COUNT(*) AS total FROM members WHERE altar_id = $altar_id");
-$totalMembers = $result->fetch_assoc()['total'];
+  // Prepare the update query to change the user's status
+  $stmt = $conn->prepare("UPDATE followuplist SET status = ? WHERE id = ?");
+  $stmt->bind_param("ii", $status, $id);
 
-// Active members (status = 'Active')
-$result = $conn->query("SELECT COUNT(*) AS total FROM members WHERE altar_id = $altar_id AND status = 'Active'");
-$activeMembers = $result->fetch_assoc()['total'];
-
-// Inactive members (status = 'Inactive')
-$result = $conn->query("SELECT COUNT(*) AS total FROM members WHERE altar_id = $altar_id AND status = 'Inactive'");
-$inactiveMembers = $result->fetch_assoc()['total'];
-
-// ===== NEW: First Years =====
-$stmt = $conn->prepare("SELECT COUNT(*) AS total FROM followup_details WHERE altar_id = ? AND mission_type = 'FYR'");
-$stmt->bind_param("i", $altar_id);
-$stmt->execute();
-$result = $stmt->get_result();
-$firstYears = $result->fetch_assoc()['total'];
-$stmt->close();
-
-// ===== NEW: Pending Followups =====
-$stmt = $conn->prepare("SELECT COUNT(*) AS total FROM followup_details WHERE altar_id = ? AND status = 0");
-$stmt->bind_param("i", $altar_id);
-$stmt->execute();
-$result = $stmt->get_result();
-$pendingFollowups = $result->fetch_assoc()['total'];
-$stmt->close();
-/* 
-// Pending followups
-$result = $conn->query("SELECT COUNT(*) AS total FROM followups WHERE altar_id = $altar_id AND status = 'Pending'");
-$pendingFollowups = $result->fetch_assoc()['total'];
-
-// Active activities
-$result = $conn->query("SELECT COUNT(*) AS total FROM activities WHERE altar_id = $altar_id AND status = 'Active'");
-$activities = $result->fetch_assoc()['total'];
-
-// Announcements
-$result = $conn->query("SELECT COUNT(*) AS total FROM announcements WHERE altar_id = $altar_id");
-$announcements = $result->fetch_assoc()['total']; */
-?>
-
+  // Execute the update query
+  if (!$stmt->execute()) {
+    error_log("Error executing update: " . $stmt->error);
+  }
+  
+  $stmt->close();
+  exit; // End the script so no HTML is output in response to the AJAX call
+}
+?> 
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portal | Returntoholiness</title>
+  <title>Precious First Years | Returntoholiness</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <link rel="stylesheet" href="Styles/general.css">
+  <link rel="stylesheet" href="Styles/styles.css">
 
   <link rel="icon" type="image/png" href="Images/favicon-96x96.png" sizes="96x96" />
   <link rel="icon" type="image/svg+xml" href="Images/favicon.svg" />
@@ -85,6 +66,9 @@ $announcements = $result->fetch_assoc()['total']; */
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Poppins:wght@700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 </head>
 <body>
   <header>
@@ -104,11 +88,11 @@ $announcements = $result->fetch_assoc()['total']; */
     </section>
     <section class="container scnnd">
       <ul>
-        <a href="altarPortal.php" class="active"><li>Dashboard</li></a>
+        <a href="altarPortal.php"><li>Dashboard</li></a>
         <a href="memberAltar.php"><li>Members</li></a>
         <a><li>Media</li></a>
         <li class="drpdwn">
-          <a onclick="toggleDropdown()">Followup&nbsp;▼</a>
+          <a onclick="toggleDropdown()" class="active">Followup&nbsp;▼</a>
           <div class="dropdown-content" id="Dropdown">
             <a href="followupAltar.php">Evangelism</a>
             <a href="#">Visitors</a>
@@ -134,7 +118,14 @@ $announcements = $result->fetch_assoc()['total']; */
       </svg>
 
       <!-- Inventory -->
-      <a href="#" class="curnt">Dashboard</a>
+      <a href="#">Followup</a>
+      <!-- Arrow -->
+      <svg class="mx-2 h-4 w-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+
+      <!-- Inventory -->
+      <a href="#" class="curnt">First Years</a>
     </nav>
   </header>
 
@@ -146,11 +137,11 @@ $announcements = $result->fetch_assoc()['total']; */
       <i class="fa-solid fa-xmark" onclick="toggleSideBar()"></i>
     </div>
     <ul>
-      <a href="altarPortal.php" class="active"><li>Dashboard</li></a>
+      <a href="altarPortal.php"><li>Dashboard</li></a>
       <a href="memberAltar.php"><li>Members</li></a>
       <a><li>Media</li></a>
       <li class="drpdwn">
-        <a onclick="toggleDropdownS()">Followup&nbsp;▼</a>
+        <a onclick="toggleDropdownS()" class="active">Followup&nbsp;▼</a>
         <div class="dropdown-content" id="DropdownS">
           <a href="followupAltar.php">Evangelism</a>
           <a href="#">Visitors</a>
@@ -167,104 +158,64 @@ $announcements = $result->fetch_assoc()['total']; */
     <a class="rdCll" href="tel:+254777445851"><i class="fa-solid fa-phone-volume"></i> Call&nbsp;the&nbsp;Radio</a>
     <a class="ercr" href="#"><i class="fa-regular fa-circle-question"></i> Help</a>
   </div>
-  <main id="mnFrAlp">
-    <div class="mnCtnr container">
-      <div class="crdsStcsDiv">
-        <div class="card">
-          <h1 class="hd">Active Members</h1>
-          <div class="midCd">
-            <i class="fa-solid fa-user-graduate"></i>
-            <div class="crdDesc">
-              <h1><?php echo $activeMembers; ?></h1>
-              <p>Consistently present</p>
-            </div>
-          </div>
-          <p class="lstDc">Consistently present</p>
-        </div>
+  <main>
+    <div class="containerFp container">
+      <h1>Precious First Years</h1>
+      <a class="addS" href="addFirstyrRhsfAltars.php">+ Add new student</a>
+      <div class="tableContainer">
+        <!-- Give the table an ID for DataTables -->
+        <table id="myTable">
+          <thead>
+            <th>#</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Action</th>
+            <th class="fStUpth">Status</th>
+            <th>Evangelist</th>
+            <th>M.&nbsp;Point</th>
+            <th>Date</th>
+          </thead>
+          <tbody>
+            
+            <?php
+            $stmt = $conn->prepare("
+              SELECT followup_id, first_name, phone, evangelist_name, meeting_point, mission_type, 
+                      DATE(date_evangelized) AS date_evangelized, status 
+              FROM followup_details 
+              WHERE altar_id = ? AND mission_type = 'FYR'
+            ");
+            $stmt->bind_param("i", $altar_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
 
-        <div class="card">
-          <h1 class="hd">First Years</h1>
-          <div class="midCd">
-            <i class="fa-solid fa-chart-simple"></i>
-            <div class="crdDesc">
-              <h1><?php echo $firstYears; ?></h1>
-              <p>Total registered</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <h1 class="hd">Pending Followups</h1>
-          <div class="midCd">
-            <i class="fa-solid fa-chart-simple"></i>
-            <div class="crdDesc">
-              <h1><?php /* echo $pendingFollowups; */ ?>0</h1>
-              <p>Let's bring them home</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <h1 class="hd">Total Members</h1>
-          <div class="midCd">
-            <i class="fa-solid fa-people-group"></i>
-            <div class="crdDesc">
-              <h1><?php echo $totalMembers; ?></h1>
-              <p>Sheep of Christ</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <h1 class="hd">Inactive Members</h1>
-          <div class="midCd">
-            <i class="fa-solid fa-person-arrow-down-to-line"></i>
-            <div class="crdDesc">
-              <h1><?php echo $inactiveMembers; ?></h1>
-              <p>Let's go for them</p>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <h1 class="hd">Activities</h1>
-          <div class="midCd">
-            <i class="fa-solid fa-chart-line"></i>
-            <div class="crdDesc">
-              <h1>2</h1>
-              <p>Active session(s)</p>
-            </div>
-          </div>
-          <p class="lstDc">Currently Active</p>
-        </div>
-        <div class="card">
-          <h1 class="hd">Announcements</h1>
-          <div class="midCd">
-            <i class="fab fa-twitter"></i>
-            <div class="crdDesc">
-              <h1>1</h1>
-              <p>What's popping</p>
-            </div>
-          </div>
-          <p class="lstDc">The headlines</p>
-        </div>
-      </div>
-      <div class="lwrStcsDiv">
-        <div id="chart-container">
-          <canvas id="membersLineChart"></canvas>
-        </div><!-- 
-        <div class="lwrTbl">
-          <table>
-            <thead>
-              <td>Test</td>
-            </thead>
-            <tbody>
-              <tr></tr>
-              <tr></tr>
-              <tr></tr>
-              <tr></tr>
-            </tbody>
-          </table>
-        </div> -->
+            $counter = 1;
+            if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+              $phoneDecoded = base64_decode($row['phone']);
+              $maskedPhone = maskPhone($phoneDecoded);
+                  echo "<tr>
+                          <td>{$counter}.</td>
+                          <td>{$row['first_name']}</td>
+                          <!-- Display the masked phone number, and store the actual number in data-phone -->
+                          <td data-phone='{$row['phone']}'>{$maskedPhone}</td>
+                          <td class='ffth'>
+                            <a href='tel:{$phoneDecoded}' class='call' style='cursor:pointer;'><i class='fa-solid fa-phone-volume'></i>Call</a>
+                            <p class='update' style='cursor:pointer;' data-userid='{$row['followup_id']}'>Update</p>
+                            <p class='delete' style='cursor:pointer;' data-userid='{$row['followup_id']}'>Delete</p>
+                          </td>
+                          <td class='fStUp'><i class='fa-solid " . ($row['status'] == '2' ? 'fa-check' : ($row['status'] == '1' ? 'fa-x' : 'fa-minus')) . "'></i></td>
+                          <td>{$row['evangelist_name']}</td>
+                          <td>{$row['meeting_point']}</td>
+                          <td>{$row['date_evangelized']}</td>
+                        </tr>";
+                        $counter++;
+                }
+              } else {
+                    echo "<tr><td colspan='8'>No records found</td></tr>";
+                }
+            ?>
+          </tbody>
+        </table>
       </div>
     </div>
   </main>
@@ -295,5 +246,29 @@ $announcements = $result->fetch_assoc()['total']; */
   </footer>
 
   <script src="Scripts/general.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('#myTable').DataTable();
+
+      // Update status
+      $(".status").change(function() {
+        let id = $(this).data("id");
+        let status = $(this).val();
+        $.post("", { action: "update", id: id, status: status }, function(response) {
+          alert("Status updated");
+        });
+      });
+
+      // Delete record
+      $(".delete").click(function() {
+        if (!confirm("Are you sure you want to delete this record?")) return;
+        let id = $(this).data("id");
+        $.post("", { action: "delete", id: id }, function(response) {
+          alert("Record deleted");
+          location.reload();
+        });
+      });
+    });
+  </script>
 </body>
 </html>

@@ -169,7 +169,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           </div>
           <div class="inpBox">
             <span>Senior Pastor Title</span>
-            <input type="text" name="snr_pst_title" placeholder="e.g Deputy Arch Bishop" value="<?php echo htmlspecialchars($snr_pst_title ?? ''); ?>" required>
+            <select name="snr_pst_title" required>
+              <option value="">-- Select title --</option>
+              <option value="PASTOR" <?php echo ($snr_pst_title ?? '') === 'PASTOR' ? 'selected' : ''; ?>>PASTOR</option>
+              <option value="OVERSEER" <?php echo ($snr_pst_title ?? '') === 'OVERSEER' ? 'selected' : ''; ?>>OVERSEER</option>
+              <option value="ASSISTANT SENIOR PASTOR" <?php echo ($snr_pst_title ?? '') === 'ASSISTANT SENIOR PASTOR' ? 'selected' : ''; ?>>ASSISTANT SENIOR PASTOR</option>
+              <option value="BISHOP" <?php echo ($snr_pst_title ?? '') === 'BISHOP' ? 'selected' : ''; ?>>BISHOP</option>
+              <option value="DEPUTY ARCH BISHOP" <?php echo ($snr_pst_title ?? '') === 'DEPUTY ARCH BISHOP' ? 'selected' : ''; ?>>DEPUTY ARCH BISHOP</option>
+              <option value="SENIOR DEPUTY ARCH BISHOP" <?php echo ($snr_pst_title ?? '') === 'SENIOR DEPUTY ARCH BISHOP' ? 'selected' : ''; ?>>SENIOR DEPUTY ARCH BISHOP</option>
+              <option value="EMERITUS" <?php echo ($snr_pst_title ?? '') === 'EMERITUS' ? 'selected' : ''; ?>>EMERITUS</option>
+            </select>
           </div>
           <div class="inpBox">
             <span>Altar Status</span>

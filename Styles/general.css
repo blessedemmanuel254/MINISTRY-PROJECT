@@ -4,10 +4,10 @@
   box-sizing: border-box;
   font-family: 'Poppins' , Arial;
 }
-/* 
+
 html::-webkit-scrollbar {
   display: none;
-} */
+}
 
 body {
   display: flex;
@@ -74,6 +74,7 @@ header section ul li {
 header section ul li.drpdwn, .sideBar ul li.drpdwn  {
   position: relative;
   display: inline-block;
+  height: fit-content;
 }
 
 header section ul li.drpdwn .dropdown-content, .sideBar ul li .dropdown-content {
@@ -309,8 +310,9 @@ body .codPopup button:hover {
   top: 0;
   z-index: 1002;
   transition: right .5s ease;
-  min-height: 100vh;
+  height: 100%;
   margin-left: 10px;
+  overflow-y: auto;
 }
 
 .sideBar .sContainer {
@@ -559,6 +561,12 @@ main .mContainer .hmpgBtns a:last-of-type {
   }
 }
 
+@media (min-width: 600px) {
+  main#home {
+    height: 150vh;
+  }
+}
+
 /* Footer section */
 
 footer {
@@ -621,6 +629,19 @@ body.nwAltr .mjCntr {
   width: clamp(220px, 80%, 600px);
 }
 
+.nwAltr .fmContnr header {
+  padding: 20px 0;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+}
+
+.nwAltr .fmContnr header p {
+  font-weight: bold;
+  font-size: 20px;
+}
+
 .nwAltr .fmContnr .fmTp, .nwAltr .fmContnr form {
   display: flex;
   flex-direction: column;
@@ -630,7 +651,7 @@ body.nwAltr .mjCntr {
 .nwAltr .fmContnr .fmTp h1 {
   text-align: center;
   color: #0f268c;
-  font-size: clamp(24px, 2.4vw, 30px);
+  font-size: clamp(24px, 2.4vw, 28px);
 }
 
 .nwAltr .fmContnr .fmTp p {
@@ -654,6 +675,15 @@ body.nwAltr .mjCntr {
 
 .nwAltr .fmContnr form .successMsg {
   color: #008000;
+}
+
+.nwAltr .fmContnr form .successMsg.flwUp {
+  display: inline-block;
+}
+
+.nwAltr .fmContnr form .successMsg.flwUp span:first-of-type {
+  font-size: 16px;
+  font-weight: bold;
 }
 
 .nwAltr .fmContnr form .fmInCntnr, .nwAltr .fmContnr form .inpBox {
@@ -768,14 +798,26 @@ main .mnCtnr .card {
 }
 
 main .mnCtnr .card:nth-child(2) {
-  background: linear-gradient(135deg, #ffffff, #ff3b3b);
+  background: linear-gradient(135deg, #ffffff, #cc00ff);
 }
 
 main .mnCtnr .card:nth-child(3) {
-  background: linear-gradient(135deg, #ffffff, #ffff00);
+  background: linear-gradient(135deg, #ffffff, #ff3b3b);
 }
 
 main .mnCtnr .card:nth-child(4) {
+  background: linear-gradient(135deg, #ffffff, #ffff00);
+}
+
+main .mnCtnr .card:nth-child(5) {
+  background: linear-gradient(135deg, #ffffff, rgb(0, 0, 0));
+}
+
+main .mnCtnr .card:nth-child(6) {
+  background: linear-gradient(135deg, #ffffff, rgb(0, 255, 42));
+}
+
+main .mnCtnr .card:nth-child(7) {
   background: linear-gradient(135deg, #ffffff, pink);
 }
 
@@ -809,11 +851,13 @@ main .mnCtnr .card .midCd .crdDesc {
 main .mnCtnr .card .midCd .crdDesc h1 {
   font-size: 35px;
   color: #0f268c;
+  text-align: center;
 }
 
 main .mnCtnr .card .midCd .crdDesc p {
   color: green;
   font-size: 13px;
+  text-align: center;
 }
 
 main .mnCtnr .card p.lstDc {
