@@ -770,6 +770,52 @@ main#mnFrAlp {
   min-height: 80vh;
   display: flex;
   align-items: center;
+  flex-direction: column;
+  gap: 20px;
+  padding: 0 16px;
+}
+
+main#mnFrAlp .devUpdts {
+  display: flex;
+  background-color: #dedede9f;
+  border-radius: 2px;
+  padding: 8px 16px;
+  color: black;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+}
+
+main#mnFrAlp .devUpdts .ttlDiv {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+}
+
+main#mnFrAlp .devUpdts .ttlDiv h2 {
+  display: flex;
+  gap: 10px;
+  font-size: 16px;
+  align-items: center;
+}
+
+main#mnFrAlp .devUpdts .ttlDiv i {
+  color: rgb(255, 136, 0);
+  cursor: pointer;
+  font-size: 18px;
+}
+
+main#mnFrAlp .devUpdts .ttlDiv i.fa-xmark {
+  color: #ff0000b0;
+  background-color: #89888856;
+  padding: 4px;
+  border-radius: 2px;
+}
+
+main#mnFrAlp .devUpdts .ttlDiv i.fa-xmark:hover {
+  opacity: .875;
 }
 
 main .mnCtnr {
@@ -782,7 +828,6 @@ main .mnCtnr .crdsStcsDiv {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 16px;
-  padding: 20px 16px;
 }
 
 main .mnCtnr .card {

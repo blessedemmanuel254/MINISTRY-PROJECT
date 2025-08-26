@@ -72,3 +72,12 @@ new Chart(ctx, {
 });
 
 /* Active vs Inactive Line Graph Js */
+
+const sidebar = document.getElementById("sidebar");
+const toggleBtn = document.getElementById("toggleBtn");
+const dash = document.querySelector(".cntnrDash");
+
+toggleBtn.addEventListener("click", () => {
+  sidebar.classList.toggle("active");
+  dash.classList.toggle("shift"); // optional: shift dashboard content
+});

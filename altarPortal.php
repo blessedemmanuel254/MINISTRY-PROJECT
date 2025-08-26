@@ -168,6 +168,13 @@ $announcements = $result->fetch_assoc()['total']; */
     <a class="ercr" href="#"><i class="fa-regular fa-circle-question"></i> Help</a>
   </div>
   <main id="mnFrAlp">
+    <div class="devUpdts container">
+      <div class="ttlDiv">
+        <h2><i class="fa-solid fa-triangle-exclamation"></i> Developer&nbsp;Updates</h2>
+        <i class="fa-solid fa-xmark"></i>
+      </div>
+      <p>We are launching the August Evangelism Drive. Every altar should submit at least 10 new first-year follow-ups by the 20th. Let’s work together for greater impact!</p>
+    </div>
     <div class="mnCtnr container">
       <div class="crdsStcsDiv">
         <div class="card">

@@ -66,7 +66,7 @@
       <p href="" onclick="toggleCodePopup(), toggleSideBar()">Announcements</p>
       <a href="">Sermons</a>
       <a href=""><li>Activities</li></a>
-      <a href="registerAltar.php">Altar Account</a>
+      <a href="altarLogin.php">Altar Account</a>
       <a href="">FAQs</a>
     </ul>
     <a class="ercr" href="https://www.jesusislordradio.info/" target="_blank"><i class="fa-solid fa-radio"></i> Listen&nbsp;to&nbsp;Radio</a>

@@ -195,8 +195,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <table id="myTable">
           <thead>
             <th>#</th>
-            <th>First&nbsp;Name</th>
-            <th>Second&nbsp;Name</th>
+            <th>Name</th>
             <th>Gender</th>
             <th>Action</th>
             <th>Phone</th>
@@ -227,8 +226,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                   $secondName = ucfirst(strtolower($row['second_name']));
                   echo "<tr>
                           <td>{$counter}.</td>
-                          <td>{$firstName}</td>
-                          <td>{$secondName}</td>
+                          <td>{$firstName}&nbsp;{$secondName}</td>
                           <!-- Display the masked phone number, and store the actual number in data-phone -->
                           <td>{$row['gender']}</td>
                           <td class='ffth'>

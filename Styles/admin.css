@@ -25,6 +25,11 @@
   width: clamp(200px, 15%, 320px);
   min-width: 245px;
   padding: 20px 16px;
+  margin-left: -100%;
+}
+
+.adContnr .sidebar.active {
+  margin-left: 0;
 }
 
 .adContnr .sidebar .hder {
@@ -92,6 +97,14 @@
   flex-direction: column;
   gap: 16px;
   width: 100%;
+  transition: margin-left 0.3s ease;
+
+
+}
+
+/* To push content when sidebar opens (optional) */
+.cntnrDash.shift {
+  margin-left: clamp(200px, 15%, 320px); /* same as sidebar width */
 }
 
 /* Header section */
@@ -298,4 +311,86 @@ footer p {
 footer p a {
   text-decoration: none;
   color: rgba(255, 255, 255, 0.596);
+}
+
+/* Table Section */
+.tcontnr {
+  padding: 0 16px;
+  min-height: 70vh;
+}
+
+.tcontnr table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  overflow-x: auto;
+}
+
+.tcontnr table thead {
+  background-color: #000000;
+  color: white;
+}
+
+.tcontnr table thead th, .tcontnr table tbody tr td {
+  padding: 4px;
+  text-align: left;
+
+}
+
+.tcontnr table thead th:first-of-type {
+  border-top-left-radius: 12px;
+
+}
+
+.tcontnr table thead th:last-of-type {
+  border-top-right-radius: 12px;
+}
+
+.tcontnr table tbody tr td:not(:first-of-type) {
+  min-width: 120px;
+}
+
+.tcontnr table tbody tr td.dfTd, .tcontnr table tbody tr td p.dfTd {
+  display: flex;
+  gap:5px;
+  align-items: center;
+  width: fit-content;
+}
+
+.tcontnr table tbody tr td p.dfTd {
+  min-width: fit-content;
+}
+
+.tcontnr table tbody tr td.dfTd p, .tcontnr table tbody tr td.dfTd a {
+  font-size: 14px;
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #ff3b3b;
+  color: white;
+  display: flex;
+  gap:5px;
+  align-items: center;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tcontnr table tbody tr td.dfTd a {
+  text-decoration: none;
+  background-color: #008000;
+}
+
+.tcontnr table tbody tr td.dfTd p.update {
+  background-color: #0f268c;
+}
+
+.tcontnr table tbody tr td.dfTd p:last-of-type {
+  border-radius: 2px;
+  color: #0f0f0f;
+  background-color: #dedede;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+table tbody tr td p:hover {
+  opacity: .875;
 }
