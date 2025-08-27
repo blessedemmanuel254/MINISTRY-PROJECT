@@ -13,6 +13,7 @@ if (!isset($_SESSION['altar_id'])) {
 
 $altar_id = $_SESSION['altar_id'];
 $altar_name = $_SESSION['altar_name'];
+$altar_type = $_SESSION['altar_type'];
 
 function decodePhone($phone) {
     // Example: if phones are base64 encoded in DB
@@ -126,7 +127,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
           <div class="dropdown-content" id="Dropdown">
             <a href="followupAltar.php">Evangelism</a>
             <a href="visitorsAltar.php">Visitors</a>
+          <?php if ($altar_type === 'RHSF'): ?>
             <a href="firstYearFollowup.php">First&nbsp;Years</a>
+          <?php endif; ?>
             <a href="inactiveMembers.php" class="activeIn">INACTIVE&nbsp;MEMBERS</a>
           </div>
         </li>
@@ -150,7 +153,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       </svg>
 
       <!-- Inventory -->
-      <a href="#" class="curnt">Inactive Members</a>
+      <a href="#" class="curnt">INACTIVE MEMBERS</a>
     </nav>
   </header>
 
@@ -170,9 +173,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <div class="dropdown-content" id="DropdownS">
           <a href="followupAltar.php">Evangelism</a>
           <a href="visitorsAltar.php">Visitors</a>
-          <a href="#">Lunch&nbsp;Hour</a>
-          <a href="#">Hospital&nbsp;Mission</a>
-          <a href="firstYearFollowup.php">First&nbsp;Years</a>
+          <?php if ($altar_type === 'RHSF'): ?>
+            <a href="firstYearFollowup.php">First&nbsp;Years</a>
+          <?php endif; ?>
           <a href="inactiveMembers.php" class="activeIn">INACTIVE&nbsp;MEMBERS</a>
         </div>
       </li>

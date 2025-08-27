@@ -13,22 +13,19 @@ function maskPhone($phone) {
 }
 
 // Check if this is an AJAX POST request for updating the status
-if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST['status'])) {
-  // Get and sanitize the POST values (using prepared statements below)
-  $id = $_POST['id'];
-  $status = $_POST['status'];
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+  if (isset($_POST['action']) && isset($_POST['id'])) {
+    $id = intval($_POST['id']);
+    $action = $_POST['action'];
 
-  // Prepare the update query to change the user's status
-  $stmt = $conn->prepare("UPDATE followuplist SET status = ? WHERE id = ?");
-  $stmt->bind_param("ii", $status, $id);
+    if ($action === "delete") {
+      $stmt = $conn->prepare("DELETE FROM followup_details WHERE followup_id = ?");
+      $stmt->bind_param("i", $id);
+      $stmt->execute();
+      $stmt->close();
 
-  // Execute the update query
-  if (!$stmt->execute()) {
-    error_log("Error executing update: " . $stmt->error);
+    }
   }
-  
-  $stmt->close();
-  exit; // End the script so no HTML is output in response to the AJAX call
 }
 ?>
 

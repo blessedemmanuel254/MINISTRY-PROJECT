@@ -10,6 +10,7 @@ if (!isset($_SESSION['altar_id'])) {
 
 $altar_id = $_SESSION['altar_id'];
 $altar_name = $_SESSION['altar_name'];
+$altar_type = $_SESSION['altar_type'];
 
 function maskPhone($phone) {
   $len = strlen($phone);
@@ -24,22 +25,19 @@ function maskPhone($phone) {
 }
 
 // Check if this is an AJAX POST request for updating the status
-if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST['status'])) {
-  // Get and sanitize the POST values (using prepared statements below)
-  $id = $_POST['id'];
-  $status = $_POST['status'];
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+  if (isset($_POST['action']) && isset($_POST['id'])) {
+    $id = intval($_POST['id']);
+    $action = $_POST['action'];
 
-  // Prepare the update query to change the user's status
-  $stmt = $conn->prepare("UPDATE followuplist SET status = ? WHERE id = ?");
-  $stmt->bind_param("ii", $status, $id);
+    if ($action === "delete") {
+      $stmt = $conn->prepare("DELETE FROM followup_details WHERE followup_id = ?");
+      $stmt->bind_param("i", $id);
+      $stmt->execute();
+      $stmt->close();
 
-  // Execute the update query
-  if (!$stmt->execute()) {
-    error_log("Error executing update: " . $stmt->error);
+    }
   }
-  
-  $stmt->close();
-  exit; // End the script so no HTML is output in response to the AJAX call
 }
 ?> 
 <!DOCTYPE html>
@@ -96,7 +94,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST
           <div class="dropdown-content" id="Dropdown">
             <a href="followupAltar.php">Evangelism</a>
             <a href="visitorsAltar.php">Visitors</a>
+          <?php if ($altar_type === 'RHSF'): ?>
             <a href="firstYearFollowup.php">First&nbsp;Years</a>
+          <?php endif; ?>
             <a href="inactiveMembers.php">INACTIVE&nbsp;MEMBERS</a>
           </div>
         </li>
@@ -143,9 +143,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST
         <div class="dropdown-content" id="DropdownS">
           <a href="followupAltar.php">Evangelism</a>
           <a href="visitorsAltar.php">Visitors</a>
-          <a href="#">Lunch&nbsp;Hour</a>
-          <a href="#">Hospital&nbsp;Mission</a>
-          <a href="firstYearFollowup.php">First&nbsp;Years</a>
+          <?php if ($altar_type === 'RHSF'): ?>
+            <a href="firstYearFollowup.php">First&nbsp;Years</a>
+          <?php endif; ?>
           <a href="inactiveMembers.php">INACTIVE&nbsp;MEMBERS</a>
         </div>
       </li>
@@ -245,26 +245,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST
 
   <script src="Scripts/general.js"></script>
   <script>
-    $(document).ready(function() {
-      $('#myTable').DataTable();
-
-      // Update status
-      $(".status").change(function() {
-        let id = $(this).data("id");
-        let status = $(this).val();
-        $.post("", { action: "update", id: id, status: status }, function(response) {
-          alert("Status updated");
-        });
-      });
-
-      // Delete record
-      $(".delete").click(function() {
-        if (!confirm("Are you sure you want to delete this record?")) return;
-        let id = $(this).data("id");
-        $.post("", { action: "delete", id: id }, function(response) {
-          alert("Record deleted");
-          location.reload();
-        });
+    
+    // Handle delete
+    document.querySelectorAll(".delete").forEach(btn => {
+      btn.addEventListener("click", function() {
+        const userId = this.dataset.userid;
+        if (confirm("Are you sure you want to DELETE this record?")) {
+          fetch("", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: "action=delete&id=" + encodeURIComponent(userId)
+          }).then(() => location.reload());
+        }
       });
     });
   </script>

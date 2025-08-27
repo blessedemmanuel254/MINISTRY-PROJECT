@@ -9,6 +9,7 @@ include 'connection.php'; // connect to your DB
 } */
 
 $error = '';
+$pendingMessage = '';
 $success = '';
 $login = '';
 
@@ -46,6 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // Success
         $_SESSION['altar_id'] = $altar['altar_id'];
         $_SESSION['altar_name'] = $altar['altar_name'];
+        $_SESSION['altar_type'] = $altar['altar_type'];
         $success = "✅ Login successful! Welcome " . htmlspecialchars($altar['snr_pst_fullname']);
         header("Location: altarPortal.php");
         exit;
@@ -88,6 +90,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <p>Enter your altar name and altar password to login:</p>
       </div>
       <form action="" method="POST">
+        <?php if (!empty($pendingMessage)) { ?>
+          <p class="errorMsg"><i class="fa-solid fa-triangle-exclamation"></i> <?php echo htmlspecialchars($pendingMessage); ?></p>
+        <?php } ?>
+
         <?php if (!empty($error)) { ?>
           <p class="errorMsg"><i class="fa-solid fa-triangle-exclamation"></i> <?php echo htmlspecialchars($error); ?></p>
         <?php } ?>

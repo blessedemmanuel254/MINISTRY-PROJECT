@@ -842,27 +842,27 @@ main .mnCtnr .card {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-main .mnCtnr .card:nth-child(2) {
+main .mnCtnr .card.fstYrCd {
   background: linear-gradient(135deg, #ffffff, #cc00ff);
 }
 
-main .mnCtnr .card:nth-child(3) {
+main .mnCtnr .card.pdgCd {
   background: linear-gradient(135deg, #ffffff, #ff3b3b);
 }
 
-main .mnCtnr .card:nth-child(4) {
+main .mnCtnr .card.ttMCd {
   background: linear-gradient(135deg, #ffffff, #ffff00);
 }
 
-main .mnCtnr .card:nth-child(5) {
+main .mnCtnr .card.intvCd {
   background: linear-gradient(135deg, #ffffff, rgb(0, 0, 0));
 }
 
-main .mnCtnr .card:nth-child(6) {
+main .mnCtnr .card.acvtsCd {
   background: linear-gradient(135deg, #ffffff, rgb(0, 255, 42));
 }
 
-main .mnCtnr .card:nth-child(7) {
+main .mnCtnr .card.anctsCd {
   background: linear-gradient(135deg, #ffffff, pink);
 }
 

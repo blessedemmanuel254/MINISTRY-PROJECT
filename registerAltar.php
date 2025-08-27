@@ -83,37 +83,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Insert if no error
     if (empty($error)) {
-        $normalized_phone1 = normalizePhoneNumber($phone_1);
-        $normalized_phone2 = normalizePhoneNumber($phone_2);
-        $encrypted_phone1 = base64_encode($normalized_phone1);
-        $encrypted_phone2 = base64_encode($normalized_phone2);
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+      $normalized_phone1 = normalizePhoneNumber($phone_1);
+      $normalized_phone2 = normalizePhoneNumber($phone_2);
+      $encrypted_phone1  = base64_encode($normalized_phone1);
+      $encrypted_phone2  = base64_encode($normalized_phone2);
+      $encrypted_email   = !empty($email) ? base64_encode($email) : null;
+      $hashedPassword    = password_hash($password, PASSWORD_DEFAULT);
 
+      $stmt = $conn->prepare("INSERT INTO altars 
+          (altar_name, altar_type, snr_pst_fullname, snr_pst_title, altar_status, phone_1, phone_2, email, county, password) 
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-        $stmt = $conn->prepare("INSERT INTO altars 
-            (altar_name, altar_type, snr_pst_fullname, snr_pst_title, altar_status, phone_1, phone_2, email, county, password) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-
-        $stmt->bind_param(
-            "ssssssssss",
-            $altar_name,
-            $altar_type,
-            $snr_pst_fullname,
-            $snr_pst_title,
-            $altar_status,
-            $encrypted_phone1,
-            $encrypted_phone2,
-            $encrypted_email,
-            $county,
-            $hashedPassword
-        );
-
-        if ($stmt->execute()) {
-            $success = "Amen please, your altar has been registered successfully! Wait for verification email to login. We may contact you for more information. #PROTECTINGTHEGLORY";
-        } else {
-            $error = "Database Error: " . $stmt->error;
-        }
-        $stmt->close();
+      $stmt->bind_param(
+          "ssssssssss",
+          $altar_name,
+          $altar_type,
+          $snr_pst_fullname,
+          $snr_pst_title,
+          $altar_status,
+          $encrypted_phone1,
+          $encrypted_phone2,
+          $encrypted_email,
+          $county,
+          $hashedPassword
+      );
+      if ($stmt->execute()) {
+          $success = "Amen please, your altar has been registered successfully! Wait for verification email to login. We may contact you for more information. #PROTECTINGTHEGLORY";
+      } else {
+          $error = "Database Error: " . $stmt->error;
+      }
+      $stmt->close();
     }
 }
 ?>
@@ -157,7 +156,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           </div>
           <div class="inpBox">
             <span>Type of Altar</span>
-            <select name="altar_type" value="<?php echo htmlspecialchars($altar_type ?? ''); ?>" required>
+            <select name="altar_type" required>
               <option value="">-- Choose altar type --</option>
               <option value="General" <?php echo ($altar_type ?? '') === 'General' ? 'selected' : ''; ?>>General</option>
               <option value="RHSF" <?php echo ($altar_type ?? '') === 'RHSF' ? 'selected' : ''; ?>>RHSF</option>

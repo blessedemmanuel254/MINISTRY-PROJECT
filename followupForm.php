@@ -13,6 +13,7 @@ if (!isset($_SESSION['altar_id'])) {
 
 $altar_id = $_SESSION['altar_id'];
 $altar_name = $_SESSION['altar_name'];
+$altar_type = $_SESSION['altar_type'];
 
 $errorMsg = "";
 $successMsg = "";

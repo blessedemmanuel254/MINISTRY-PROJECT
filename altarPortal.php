@@ -10,6 +10,7 @@ if (!isset($_SESSION['altar_id'])) {
 
 $altar_id = $_SESSION['altar_id'];
 $altar_name = $_SESSION['altar_name'];
+$altar_type = $_SESSION['altar_type'];
 
 // ===== Fetch Altar Name =====
 $stmt = $conn->prepare("SELECT altar_name FROM altars WHERE altar_id = ?");
@@ -112,7 +113,9 @@ $announcements = $result->fetch_assoc()['total']; */
           <div class="dropdown-content" id="Dropdown">
             <a href="followupAltar.php">Evangelism</a>
             <a href="visitorsAltar.php">Visitors</a>
-            <a href="firstYearFollowup.php">First&nbsp;Years</a>
+            <?php if ($altar_type === 'RHSF'): ?>
+              <a href="firstYearFollowup.php">First&nbsp;Years</a>
+            <?php endif; ?>
             <a href="inactiveMembers.php">INACTIVE&nbsp;MEMBERS</a>
           </div>
         </li>
@@ -152,9 +155,9 @@ $announcements = $result->fetch_assoc()['total']; */
         <div class="dropdown-content" id="DropdownS">
           <a href="followupAltar.php">Evangelism</a>
           <a href="visitorsAltar.php">Visitors</a>
-          <a href="#">Lunch&nbsp;Hour</a>
-          <a href="#">Hospital&nbsp;Mission</a>
-          <a href="firstYearFollowup.php">First&nbsp;Years</a>
+          <?php if ($altar_type === 'RHSF'): ?>
+            <a href="firstYearFollowup.php">First&nbsp;Years</a>
+          <?php endif; ?>
           <a href="inactiveMembers.php">INACTIVE&nbsp;MEMBERS</a>
         </div>
       </li>
@@ -187,18 +190,20 @@ $announcements = $result->fetch_assoc()['total']; */
           <p class="lstDc">Consistently present</p>
         </div>
 
-        <div class="card">
-          <h1 class="hd">First Years</h1>
-          <div class="midCd">
-            <i class="fa-solid fa-chart-simple"></i>
-            <div class="crdDesc">
-              <h1><?php echo $firstYears; ?></h1>
-              <p>Total registered</p>
+        <?php if ($altar_type === 'RHSF'): ?>
+          <div class="card fstYrCd">
+            <h1 class="hd">First Years</h1>
+            <div class="midCd">
+              <i class="fa-solid fa-chart-simple"></i>
+              <div class="crdDesc">
+                <h1><?php echo $firstYears; ?></h1>
+                <p>Total registered</p>
+              </div>
             </div>
           </div>
-        </div>
+        <?php endif; ?>
 
-        <div class="card">
+        <div class="card pdgCd">
           <h1 class="hd">Pending Followups</h1>
           <div class="midCd">
             <i class="fa-solid fa-chart-simple"></i>
@@ -209,7 +214,7 @@ $announcements = $result->fetch_assoc()['total']; */
           </div>
         </div>
 
-        <div class="card">
+        <div class="card ttMCd">
           <h1 class="hd">Total Members</h1>
           <div class="midCd">
             <i class="fa-solid fa-people-group"></i>
@@ -220,7 +225,7 @@ $announcements = $result->fetch_assoc()['total']; */
           </div>
         </div>
 
-        <div class="card">
+        <div class="card intvCd">
           <h1 class="hd">Inactive Members</h1>
           <div class="midCd">
             <i class="fa-solid fa-person-arrow-down-to-line"></i>
@@ -230,7 +235,7 @@ $announcements = $result->fetch_assoc()['total']; */
             </div>
           </div>
         </div>
-        <div class="card">
+        <div class="card acvtsCd">
           <h1 class="hd">Activities</h1>
           <div class="midCd">
             <i class="fa-solid fa-chart-line"></i>
@@ -241,7 +246,7 @@ $announcements = $result->fetch_assoc()['total']; */
           </div>
           <p class="lstDc">Currently Active</p>
         </div>
-        <div class="card">
+        <div class="card anctsCd">
           <h1 class="hd">Announcements</h1>
           <div class="midCd">
             <i class="fab fa-twitter"></i>
