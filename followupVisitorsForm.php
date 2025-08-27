@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $phoneNumber = trim($_POST['phoneNumber']);
   $gender = trim($_POST['gender']);
   $evangelist = trim($_POST['evangelist']);
-  $venue = trim($_POST['venue']);
+  $venue = "CHURCH";
   $missionType = trim($_POST['missionType']);
 
   // Normalize phone
@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Follow up form | Returntoholiness</title>
+  <title>Visitors' Form | Returntoholiness</title>
 
   <link rel="stylesheet" href="Styles/general.css">
 
@@ -129,8 +129,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <p><?php echo strtoupper($altar_name); ?></p>
       </header>
       <div class="fmTp">
-        <h1>ADD NEW STUDENT</h1>
-        <p>Input student's details in the spaces below:</p>
+        <h1>VISITORS' FORM</h1>
+        <p>Fill visitor's details in the spaces below:</p>
       </div>
       <!-- Display error or success message inside the form -->
       <form action="" method="POST">
@@ -160,18 +160,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </select>
           </div>
           <div class="inpBox">
-            <span>Evangelist Name:</span>
+            <span>Usher's Name:</span>
             <input name="evangelist" type="text" value="<?php echo htmlspecialchars($evangelist ?? ''); ?>" required>
           </div>
           <div class="inpBox">
-            <span>Meeting Point:</span>
-            <input name="venue" type="text" value="<?php echo htmlspecialchars($venue ?? ''); ?>" required>
-          </div>
-          <div class="inpBox">
-            <span>Mission Type:</span>
+            <span>Activity Type:</span>
             <select id="missionType" name="missionType" required>
-              <option value="">--Select mission/category--</option>
-              <option value="FYR" <?php echo ($missionType ?? '') === 'FYR' ? 'selected' : ''; ?>>First year reception</option>
+              <option value="">--Select activity/category--</option>
+              <option value="Visitor reception" <?php echo ($missionType ?? '') === 'Visitor reception' ? 'selected' : ''; ?>>Visitor reception</option>
             </select>
           </div>
           <button type="submit">SUBMIT</button>

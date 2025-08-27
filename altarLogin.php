@@ -2,6 +2,12 @@
 session_start();
 include 'connection.php'; // connect to your DB
 
+// Redirect if altar not logged in
+/* if (isset($_SESSION['altar_id'])) {
+  header("Location: altarPortal.php");
+  exit();
+} */
+
 $error = '';
 $success = '';
 $login = '';

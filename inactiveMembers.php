@@ -125,9 +125,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
           <a onclick="toggleDropdown()" class="active">Followup&nbsp;▼</a>
           <div class="dropdown-content" id="Dropdown">
             <a href="followupAltar.php">Evangelism</a>
-            <a href="#">Visitors</a>
-            <a href="#">Lunch&nbsp;Hour</a>
-            <a href="#">Hospital&nbsp;Mission</a>
+            <a href="visitorsAltar.php">Visitors</a>
             <a href="firstYearFollowup.php">First&nbsp;Years</a>
             <a href="inactiveMembers.php" class="activeIn">INACTIVE&nbsp;MEMBERS</a>
           </div>
@@ -140,7 +138,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <!-- Breadcrumb -->
     <nav class="container">
       <!-- Home -->
-      <a href="#" class="text-blue-600 hover:underline">Home</a>
+      <a href="altarPortal.php" class="text-blue-600 hover:underline">Home</a>
       <!-- Arrow -->
       <svg class="mx-2 h-4 w-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -171,7 +169,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <a onclick="toggleDropdownS()" class="active">Followup&nbsp;▼</a>
         <div class="dropdown-content" id="DropdownS">
           <a href="followupAltar.php">Evangelism</a>
-          <a href="#">Visitors</a>
+          <a href="visitorsAltar.php">Visitors</a>
           <a href="#">Lunch&nbsp;Hour</a>
           <a href="#">Hospital&nbsp;Mission</a>
           <a href="firstYearFollowup.php">First&nbsp;Years</a>

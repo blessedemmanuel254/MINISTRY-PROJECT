@@ -95,9 +95,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST
           <a onclick="toggleDropdown()" class="active">Followup&nbsp;▼</a>
           <div class="dropdown-content" id="Dropdown">
             <a href="followupAltar.php">Evangelism</a>
-            <a href="#">Visitors</a>
-            <a href="#">Lunch&nbsp;Hour</a>
-            <a href="#">Hospital&nbsp;Mission</a>
+            <a href="visitorsAltar.php">Visitors</a>
             <a href="firstYearFollowup.php">First&nbsp;Years</a>
             <a href="inactiveMembers.php">INACTIVE&nbsp;MEMBERS</a>
           </div>
@@ -110,7 +108,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST
     <!-- Breadcrumb -->
     <nav class="container">
       <!-- Home -->
-      <a href="#" class="text-blue-600 hover:underline">Home</a>
+      <a href="altarPortal.php" class="text-blue-600 hover:underline">Home</a>
 
       <!-- Arrow -->
       <svg class="mx-2 h-4 w-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -125,7 +123,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST
       </svg>
 
       <!-- Inventory -->
-      <a href="#" class="curnt">First Years</a>
+      <a href="firstYearFollowup.php" class="curnt">First Years</a>
     </nav>
   </header>
 
@@ -144,7 +142,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST
         <a onclick="toggleDropdownS()" class="active">Followup&nbsp;▼</a>
         <div class="dropdown-content" id="DropdownS">
           <a href="followupAltar.php">Evangelism</a>
-          <a href="#">Visitors</a>
+          <a href="visitorsAltar.php">Visitors</a>
           <a href="#">Lunch&nbsp;Hour</a>
           <a href="#">Hospital&nbsp;Mission</a>
           <a href="firstYearFollowup.php">First&nbsp;Years</a>
@@ -179,7 +177,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST
             
             <?php
             $stmt = $conn->prepare("
-              SELECT followup_id, first_name, phone, evangelist_name, meeting_point, mission_type, 
+              SELECT followup_id, first_name, second_name, phone, evangelist_name, meeting_point, mission_type, 
                       DATE(date_evangelized) AS date_evangelized, status 
               FROM followup_details 
               WHERE altar_id = ? AND mission_type = 'FYR'
@@ -195,7 +193,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST
               $maskedPhone = maskPhone($phoneDecoded);
                   echo "<tr>
                           <td>{$counter}.</td>
-                          <td>{$row['first_name']}</td>
+                          <td>{$row['first_name']}&nbsp;{$row['second_name']}</td>
                           <!-- Display the masked phone number, and store the actual number in data-phone -->
                           <td data-phone='{$row['phone']}'>{$maskedPhone}</td>
                           <td class='ffth'>

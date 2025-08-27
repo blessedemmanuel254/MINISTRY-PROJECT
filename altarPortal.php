@@ -111,9 +111,7 @@ $announcements = $result->fetch_assoc()['total']; */
           <a onclick="toggleDropdown()">Followup&nbsp;▼</a>
           <div class="dropdown-content" id="Dropdown">
             <a href="followupAltar.php">Evangelism</a>
-            <a href="#">Visitors</a>
-            <a href="#">Lunch&nbsp;Hour</a>
-            <a href="#">Hospital&nbsp;Mission</a>
+            <a href="visitorsAltar.php">Visitors</a>
             <a href="firstYearFollowup.php">First&nbsp;Years</a>
             <a href="inactiveMembers.php">INACTIVE&nbsp;MEMBERS</a>
           </div>
@@ -126,7 +124,7 @@ $announcements = $result->fetch_assoc()['total']; */
     <!-- Breadcrumb -->
     <nav class="container">
       <!-- Home -->
-      <a href="#" class="text-blue-600 hover:underline">Home</a>
+      <a href="altarPortal.php" class="text-blue-600 hover:underline">Home</a>
 
       <!-- Arrow -->
       <svg class="mx-2 h-4 w-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -134,7 +132,7 @@ $announcements = $result->fetch_assoc()['total']; */
       </svg>
 
       <!-- Inventory -->
-      <a href="#" class="curnt">Dashboard</a>
+      <a href="altarPortal.php" class="curnt">Dashboard</a>
     </nav>
   </header>
 
@@ -153,7 +151,7 @@ $announcements = $result->fetch_assoc()['total']; */
         <a onclick="toggleDropdownS()">Followup&nbsp;▼</a>
         <div class="dropdown-content" id="DropdownS">
           <a href="followupAltar.php">Evangelism</a>
-          <a href="#">Visitors</a>
+          <a href="visitorsAltar.php">Visitors</a>
           <a href="#">Lunch&nbsp;Hour</a>
           <a href="#">Hospital&nbsp;Mission</a>
           <a href="firstYearFollowup.php">First&nbsp;Years</a>

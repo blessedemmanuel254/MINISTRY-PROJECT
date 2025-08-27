@@ -47,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Followup | Returntoholiness</title>
+  <title>Visitors In The House | Returntoholiness</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <link rel="stylesheet" href="Styles/general.css">
@@ -123,7 +123,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST
       </svg>
 
       <!-- Inventory -->
-      <a href="followupAltar.php" class="curnt">Evangelism</a>
+      <a href="visitorsAltar.php" class="curnt">Visitors</a>
     </nav>
   </header>
 
@@ -146,6 +146,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST
           <a href="#">Lunch&nbsp;Hour</a>
           <a href="#">Hospital&nbsp;Mission</a>
           <a href="firstYearFollowup.php">First&nbsp;Years</a>
+          <a href="inactiveMembers.php">INACTIVE&nbsp;MEMBERS</a>
         </div>
       </li>
       <a href=""><li>Make&nbsp;Announcement</li></a>
@@ -157,8 +158,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST
   </div>
   <main>
     <div class="containerFp container">
-      <h1>Follow up list</h1>
-      <a class="addS" href="followupForm.php">+ Add new servant</a>
+      <h1>Precious First Years</h1>
+      <a class="addS" href="followupVisitorsForm.php">+ Add Visitor</a>
       <div class="tableContainer">
         <!-- Give the table an ID for DataTables -->
         <table id="myTable">
@@ -168,9 +169,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST
             <th>Phone</th>
             <th>Action</th>
             <th class="fStUpth">Status</th>
-            <th>Evangelist</th>
-            <th>Mission&nbsp;Type</th>
-            <th>M.&nbsp;Point</th>
+            <th>Usher's Name</th>
             <th>Date</th>
           </thead>
           <tbody>
@@ -180,7 +179,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST
               SELECT followup_id, first_name, second_name, phone, evangelist_name, meeting_point, mission_type, 
                       DATE(date_evangelized) AS date_evangelized, status 
               FROM followup_details 
-              WHERE altar_id = ? AND mission_type != 'FYR' AND mission_type != 'Visitor reception'
+              WHERE altar_id = ? AND mission_type = 'Visitor reception'
             ");
             $stmt->bind_param("i", $altar_id);
             $stmt->execute();
@@ -203,8 +202,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && isset($_POST
                           </td>
                           <td class='fStUp'><i class='fa-solid " . ($row['status'] == '2' ? 'fa-check' : ($row['status'] == '1' ? 'fa-x' : 'fa-minus')) . "'></i></td>
                           <td>{$row['evangelist_name']}</td>
-                          <td>{$row['mission_type']}</td>
-                          <td>{$row['meeting_point']}</td>
                           <td>{$row['date_evangelized']}</td>
                         </tr>";
                         $counter++;

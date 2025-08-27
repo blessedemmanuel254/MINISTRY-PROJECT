@@ -35,6 +35,7 @@ function normalizePhone($phone) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   // Retrieve and trim form data
   $fname = trim($_POST['fname']);
+  $sname = trim($_POST['sname']);
   $phoneNumber = trim($_POST['phoneNumber']);
   $gender = trim($_POST['gender']);
   $evangelist = trim($_POST['evangelist']);
@@ -46,15 +47,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   // --- Validate inputs ---
   if (empty($fname) || empty($phoneNumber) || empty($gender) || empty($evangelist) || empty($venue) || empty($missionType)) {
-    $errorMsg = "All fields are required.";
-  } elseif (strpos($fname, ' ') !== false) {
-    $errorMsg = "Please enter only one name for the servant.";
+    $errorMsg = "All fields are required!";
   } elseif (!preg_match('/^\+?[0-9]{10,15}$/', $phoneNumber)) {
-    $errorMsg = "Please enter a valid phone number.";
+    $errorMsg = "Please enter a valid phone number!";
   } elseif (strpos($evangelist, ' ') !== false) {
-    $errorMsg = "Please enter only one name for the evangelist.";
+    $errorMsg = "Please enter only one name for the evangelist!";
   } elseif (strpos($venue, ' ') !== false) {
-    $errorMsg = "Please enter only one name for the meeting point.";
+    $errorMsg = "Please enter only one name for the meeting point!";
   }
 
   // --- Check if phone already exists ---
@@ -67,22 +66,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $checkStmt->store_result();
 
     if ($checkStmt->num_rows > 0) {
-      $errorMsg = "Phone number already exists in follow-up records.";
+      $errorMsg = "Phone number already exists in follow-up records!";
     }
     $checkStmt->close();
   }
 
   // --- If no errors, insert into DB ---
   if (empty($errorMsg)) {
-    $fname = strtoupper($fname);
+    $fname = ucfirst(strtolower($fname));
+    $sname = ucfirst(strtolower($sname));
     $evangelist = strtoupper($evangelist);
     $venue = ucfirst(strtolower($venue));
 
     $stmt = $conn->prepare("INSERT INTO followup_details 
-      (first_name, phone, gender, evangelist_name, meeting_point, mission_type, altar_id) 
-      VALUES (?, ?, ?, ?, ?, ?, ?)");
+      (first_name, second_name, phone, gender, evangelist_name, meeting_point, mission_type, altar_id) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 
-    $stmt->bind_param("ssssssi", $fname, $encodedPhone, $gender, $evangelist, $venue, $missionType, $altar_id);
+    $stmt->bind_param("sssssssi", $fname, $sname, $encodedPhone, $gender, $evangelist, $venue, $missionType, $altar_id);
 
     if ($stmt->execute()) {
       $successMsg = ' Servant`s details updated successfully !<br>
@@ -140,8 +140,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php if ($successMsg) { echo "<p class='successMsg flwUp'><i class='fa-solid fa-circle-check'></i>$successMsg</p>"; } ?>
         <div class="fmInCntnr">
           <div class="inpBox">
-            <span>Servant's Name:</span>
+            <span>First Name:</span>
             <input name="fname" type="text" value="<?php echo htmlspecialchars($fname ?? ''); ?>" required>
+
+          </div>
+          <div class="inpBox">
+            <span>Second Name (optional):</span>
+            <input name="sname" type="text" value="<?php echo htmlspecialchars($sname ?? ''); ?>">
 
           </div>
           <div class="inpBox">
@@ -168,13 +173,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <span>Mission Type:</span>
             <select id="missionType" name="missionType" required>
               <option value="">--Select mission/category--</option>
-              <option value="HSMN" <?php echo ($missionType ?? '') === 'HSMN' ? 'selected' : ''; ?>>Hospital Mission</option>
-              <option value="EBEO" <?php echo ($missionType ?? '') === 'EBEO' ? 'selected' : ''; ?>>Earlybird (Outreach)</option>
-              <option value="EBEI" <?php echo ($missionType ?? '') === 'EBEI' ? 'selected' : ''; ?>>Earlybird (In-school)</option>
-              <option value="HEVM" <?php echo ($missionType ?? '') === 'HEVM' ? 'selected' : ''; ?>>Hostel Evangelism</option>
-              <option value="LBEI" <?php echo ($missionType ?? '') === 'LBEI' ? 'selected' : ''; ?>>Lunch Hour Outreach</option>
-              <option value="SUV" <?php echo ($missionType ?? '') === 'SUV' ? 'selected' : ''; ?>>Sunday Visitor</option>
-              <option value="OTH" <?php echo ($gender ?? '') === 'OTH' ? 'selected' : ''; ?>>Evangelism (other)</option>
+              <option value="Hospital Mission" <?php echo ($missionType ?? '') === 'Hospital Mission' ? 'selected' : ''; ?>>Hospital Mission</option>
+              <option value="Earlybird (Outreach)" <?php echo ($missionType ?? '') === 'Earlybird (Outreach)' ? 'selected' : ''; ?>>Earlybird (Outreach)</option>
+              <option value="Earlybird (In-school)" <?php echo ($missionType ?? '') === 'Earlybird (In-school)' ? 'selected' : ''; ?>>Earlybird (In-school)</option>
+              <option value="Hostel Evangelism" <?php echo ($missionType ?? '') === 'Hostel Evangelism' ? 'selected' : ''; ?>>Hostel Evangelism</option>
+              <option value="Lunch Hour Outreach" <?php echo ($missionType ?? '') === 'Lunch Hour Outreach' ? 'selected' : ''; ?>>Lunch Hour Outreach</option>
+              <option value="Outreach" <?php echo ($missionType ?? '') === 'Outreach' ? 'selected' : ''; ?>>Outreach</option>
+              <option value="Evangelism" <?php echo ($gender ?? '') === 'Evangelism' ? 'selected' : ''; ?>>Evangelism</option>
             </select>
           </div>
 

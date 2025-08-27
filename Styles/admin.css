@@ -365,7 +365,7 @@ footer p a {
   font-size: 14px;
   display: inline-block;
   padding: 8px 16px;
-  background-color: #ff3b3b;
+  background-color: #ff3b3bd7;
   color: white;
   display: flex;
   gap:5px;
@@ -377,20 +377,28 @@ footer p a {
 
 .tcontnr table tbody tr td.dfTd a {
   text-decoration: none;
-  background-color: #008000;
+  background-color: #0f268c;
 }
 
 .tcontnr table tbody tr td.dfTd p.update {
-  background-color: #0f268c;
+  background-color: #065777;
+}
+
+.tcontnr table tbody tr td.dfTd p.verify {
+  background-color: #008000c5;
 }
 
 .tcontnr table tbody tr td.dfTd p:last-of-type {
   border-radius: 2px;
   color: #0f0f0f;
-  background-color: #dedede;
+  background-color: #8b8d1dc9;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-table tbody tr td p:hover {
+.tcontnr table tbody tr td.dfTd a:hover, table tbody tr td p:hover {
   opacity: .875;
+}
+
+table tbody tr:nth-child(odd) {
+  background-color: #dedede;
 }
