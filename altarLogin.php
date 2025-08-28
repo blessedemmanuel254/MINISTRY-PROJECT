@@ -44,16 +44,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $altar = $result->fetch_assoc();
 
     if ($altar && password_verify($password, $altar['password'])) {
-        // Success
-        $_SESSION['altar_id'] = $altar['altar_id'];
-        $_SESSION['altar_name'] = $altar['altar_name'];
-        $_SESSION['altar_type'] = $altar['altar_type'];
-        $success = "✅ Login successful! Welcome " . htmlspecialchars($altar['snr_pst_fullname']);
-        header("Location: altarPortal.php");
-        exit;
-
+      // Success: check status
+      if ($altar['verification_status'] === 'pending') {
+          $pendingMessage = "Your altar account is still pending verification. Please wait until it's approval!";
+      } elseif ($altar['verification_status'] === 'verified') {
+          // Store session values
+          $_SESSION['altar_id'] = $altar['altar_id'];
+          $_SESSION['altar_name'] = $altar['altar_name'];
+          $_SESSION['altar_type'] = $altar['altar_type'];
+          $success = "Login successful! Welcome " . htmlspecialchars($altar['snr_pst_fullname']);
+          header("Location: altarPortal.php");
+          exit;
+      } else {
+          $error = "Your altar account status is invalid. Please contact support!";
+      }
     } else {
-        $error = "Invalid email, or phone or password!";
+      $error = "Invalid email, phone or password!";
     }
   }
 }
@@ -91,7 +97,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       </div>
       <form action="" method="POST">
         <?php if (!empty($pendingMessage)) { ?>
-          <p class="errorMsg"><i class="fa-solid fa-triangle-exclamation"></i> <?php echo htmlspecialchars($pendingMessage); ?></p>
+          <p class="pendingMsg"><i class="fa-solid fa-hourglass-half"></i> <?php echo htmlspecialchars($pendingMessage); ?></p>
         <?php } ?>
 
         <?php if (!empty($error)) { ?>

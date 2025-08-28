@@ -664,13 +664,17 @@ body.nwAltr .mjCntr {
   width: 100%;
 }
 
-.nwAltr .fmContnr form .errorMsg, .nwAltr .fmContnr form .successMsg {
+.nwAltr .fmContnr form .errorMsg, .nwAltr .fmContnr form .successMsg, .nwAltr .fmContnr form .pendingMsg {
   color: #ff0000;
   text-align: left;
   font-size: 14px;
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.nwAltr .fmContnr form .pendingMsg {
+  color: #c08d00;
 }
 
 .nwAltr .fmContnr form .successMsg {
