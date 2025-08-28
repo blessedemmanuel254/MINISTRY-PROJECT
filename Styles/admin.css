@@ -387,13 +387,21 @@ footer p a {
 }
 
 .tcontnr table tbody tr td
-.dfTd p.verify {
-  background-color: #008000c5;
+.dfTd a.update {
+  background-color: #065777;
 }
 
 .tcontnr table tbody tr td
-.dfTd p.update {
-  background-color: #065777;
+.dfTd p.verify, .tcontnr table tbody tr td
+.dfTd p.disprove {
+  background-color: #008000c5;
+  width: 92.84px;
+  justify-content: center;
+}
+
+.tcontnr table tbody tr td
+.dfTd p.disprove {
+  background-color: #ff5e00ec;
 }
 
 .tcontnr table tbody tr td
@@ -423,12 +431,16 @@ footer p a {
   justify-content: center;
 }
 
-.tcontnr table tbody tr td .vrfdTd p.vrfd {
+.tcontnr table tbody tr td .vrfdTd p.vrfd, .tcontnr table tbody tr td .vrfdTd p.not-vrfd {
   background-color: #0080009f;
   width: fit-content;
-  padding: 4px 8px;
+  padding: 2px 8px;
   color: white;
 
+}
+
+.tcontnr table tbody tr td .vrfdTd p.not-vrfd {
+  background-color: #805e0086;
 }
 
 .tcontnr table tbody tr td

@@ -3,6 +3,7 @@ include 'connection.php';
 $success = "";
 $error = "";
 
+// ----------------- Helper functions -----------------
 function generateUniqueCode($length = 10) {
   $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   $charLength = strlen($characters);
@@ -11,7 +12,6 @@ function generateUniqueCode($length = 10) {
   for ($i = 0; $i < $length; $i++) {
       $randomString .= $characters[random_int(0, $charLength - 1)];
   }
-
   return $randomString;
 }
 
@@ -32,27 +32,48 @@ function getUniqueAltarCode($conn, $length = 10) {
 }
 
 function normalizePhoneNumber($rawPhone) {
-  // Remove all characters except numbers and plus sign
   $cleaned = preg_replace('/[^\d+]/', '', $rawPhone);
 
-  // Handle various formats
   if (strpos($cleaned, '+') === 0) {
-      // Already starts with country code
       return $cleaned;
   } elseif (strpos($cleaned, '0') === 0 && strlen($cleaned) >= 10) {
-      // Starts with 0 — assume it's local Kenyan-style and convert to +254
       return '+254' . substr($cleaned, 1);
   } elseif (strlen($cleaned) >= 9 && !str_starts_with($cleaned, '+')) {
-      // Assume starts directly with country code
       return '+' . $cleaned;
   }
-
-  // Invalid fallback
   return '';
 }
 
+// ----------------- Load altar to update -----------------
+$altar_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+if ($altar_id <= 0) {
+  die("Invalid altar ID.");
+}
+
+$stmt = $conn->prepare("SELECT * FROM altars WHERE altar_id = ?");
+$stmt->bind_param("i", $altar_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$altar = $result->fetch_assoc();
+$stmt->close();
+
+if (!$altar) {
+  die("Altar not found.");
+}
+
+// Pre-fill values for form
+$altar_name       = $altar['altar_name'];
+$altar_type       = $altar['altar_type'];
+$snr_pst_fullname = $altar['snr_pst_fullname'];
+$snr_pst_title    = $altar['snr_pst_title'];
+$altar_status     = $altar['altar_status'];
+$phone_1          = base64_decode($altar['phone_1']);
+$phone_2          = base64_decode($altar['phone_2']);
+$email            = $altar['email'] ? base64_decode($altar['email']) : '';
+$county           = $altar['county'];
+
+// ----------------- Handle update submission -----------------
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Collect inputs
     $altar_name       = trim($_POST['altar_name']);
     $altar_type       = trim($_POST['altar_type']);
     $snr_pst_fullname = trim($_POST['snr_pst_fullname']);
@@ -65,8 +86,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password         = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
 
-    // Validation (same as yours)...
-
+    // ----------------- Validation -----------------
     if (empty($altar_name) || strlen($altar_name) < 3 || strlen($altar_name) > 100) {
         $error = "Altar name must be between 3 and 100 characters!";
     } elseif (empty($snr_pst_fullname) || !preg_match("/^[a-zA-Z\s.]+$/", $snr_pst_fullname) || str_word_count($snr_pst_fullname) < 2) {
@@ -77,38 +97,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error = "Phone 2 cannot be the same as Phone 1.";
     } elseif (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = "Invalid email format!";
-    } elseif (strlen($password) < 6) {
-        $error = "Password must be at least 6 characters long!";
     } elseif ($password !== $confirm_password) {
         $error = "Passwords do not match!";
-    } else {
-        // --- Check uniqueness for altar_name ---
-        $stmt = $conn->prepare("SELECT altar_id FROM altars WHERE altar_name = ? LIMIT 1");
-        $stmt->bind_param("s", $altar_name);
-        $stmt->execute();
-        $stmt->store_result();
-        if ($stmt->num_rows > 0) {
-            $error = "An altar with this name already exists!";
-        }
-        $stmt->close();
-
-        // --- Check uniqueness for email (if provided) ---
-        if (empty($error) && !empty($email)) {
-            $encrypted_email = base64_encode($email);
-
-            $stmt = $conn->prepare("SELECT altar_id FROM altars WHERE email = ? LIMIT 1");
-            $stmt->bind_param("s", $encrypted_email);
-            $stmt->execute();
-            $stmt->store_result();
-            if ($stmt->num_rows > 0) {
-                $error = "This email is already registered with another altar!";
-            }
-            $stmt->close();
-        }
     }
 
-    // Insert if no error
     if (empty($error)) {
+        // Normalize + encode
         $normalized_phone1 = normalizePhoneNumber($phone_1);
         $normalized_phone2 = normalizePhoneNumber($phone_2);
         $encrypted_phone1  = base64_encode($normalized_phone1);
@@ -116,32 +110,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $encrypted_email   = !empty($email) ? base64_encode($email) : null;
         $hashedPassword    = password_hash($password, PASSWORD_DEFAULT);
 
-        // ✅ Generate a unique altar code
+        // Generate a new unique verification code
         $unique_code = getUniqueAltarCode($conn, 12);
 
-        $stmt = $conn->prepare("INSERT INTO altars 
-            (altar_name, altar_type, snr_pst_fullname, snr_pst_title, altar_status, phone_1, phone_2, email, county, password, unique_code) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        // ----------------- Update -----------------
+        $stmt = $conn->prepare("UPDATE altars SET 
+          altar_name=?, altar_type=?, snr_pst_fullname=?, snr_pst_title=?, altar_status=?, 
+          phone_1=?, phone_2=?, email=?, county=?, password=?, unique_code=? 
+          WHERE altar_id=?");
 
         $stmt->bind_param(
-            "sssssssssss",
-            $altar_name,
-            $altar_type,
-            $snr_pst_fullname,
-            $snr_pst_title,
-            $altar_status,
-            $encrypted_phone1,
-            $encrypted_phone2,
-            $encrypted_email,
-            $county,
-            $hashedPassword,
-            $unique_code
+          "sssssssssssi",
+          $altar_name,
+          $altar_type,
+          $snr_pst_fullname,
+          $snr_pst_title,
+          $altar_status,
+          $encrypted_phone1,
+          $encrypted_phone2,
+          $encrypted_email,
+          $county,
+          $hashedPassword,
+          $unique_code,
+          $altar_id
         );
 
         if ($stmt->execute()) {
-          $success = "Amen please, your altar has been registered successfully! Wait for verification email to login. We may contact you for more information. #PROTECTINGTHEGLORY";
+          $success = "Altar updated successfully!";
         } else {
-            $error = "Database Error: " . $stmt->error;
+          $error = "Database Error: " . $stmt->error;
         }
         $stmt->close();
     }
@@ -153,7 +150,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Register Altar | Returntoholiness</title>
+  <title>Update Altar Admin | Returntoholiness</title>
 
   <link rel="stylesheet" href="Styles/general.css">
 
@@ -174,8 +171,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <div class="mjCntr">
     <div class="fmContnr container">
       <div class="fmTp">
-        <h1>ADD NEW ALTAR</h1>
-        <p>Fill in the details below to register your altar or fellowship:</p>
+        <h1>UPDATE ALTAR</h1>
+        <p>Modify the altar details below:</p>
       </div>
       <form action="" method="POST">
         <?php if ($error) { echo "<p class='errorMsg'><i class='fa-solid fa-triangle-exclamation'></i>$error</p>"; } ?>
@@ -285,15 +282,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           </div>
           <div class="inpBox">
             <span>Password</span>
-            <input type="password" name="password" required>
+            <input type="password" name="password">
           </div>
           <div class="inpBox">
             <span>Confirm password</span>
-            <input type="password" name="confirm_password" required>
+            <input type="password" name="confirm_password">
           </div>
         </div>
-        <button type="submit">Register Altar</button>
-        <p class="lgIn">Already have your altar's account with us? <a href="altarLogin.php">Login here</a></p>
+        <button type="submit">Update Altar</button>
       </form>
     </div>
   </div>
