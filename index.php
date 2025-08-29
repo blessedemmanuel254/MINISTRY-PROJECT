@@ -29,7 +29,7 @@
         <h1>THE&nbsp;MINISTRY&nbsp;OF<br>REPENTANCE&nbsp;AND&nbsp;HOLINESS</h1>
       </a>
       <div class="contnrHA">
-        <a href="https://www.jesusislordradio.info/" target="_blank"><i class="fa-solid fa-radio"></i> Listen&nbsp;to&nbsp;Radio</a>
+        <a class="rdCll" href="tel:+254777445851"><i class="fa-solid fa-phone-volume"></i> Call&nbsp;the&nbsp;Radio</a>
         <a href="#" class="help-icon">
           <i class="fa-regular fa-circle-question"></i>
           <p class="help-text">Help</p>
@@ -42,7 +42,7 @@
         <a href="" class="active"><li>Home</li></a>
         <a onclick="toggleCodePopup()"><li>Announcements</li></a>
         <a onclick="toggleCodePopup()"><li>Activities</li></a>
-        <a onclick="toggleCodePopup()"><li>Sermons</li></a>
+        <a href="radioPage.php"><li>J.I.L&nbsp;Radio</li></a>
         <a href="altarPortal.php"><li>Altar&nbsp;Account</li></a>
         <a href=""><li>FAQs</li></a>
       </ul>
@@ -63,13 +63,13 @@
     </div>
     <ul>
       <a href="" class="active">Home</a>
-      <p href="" onclick="toggleCodePopup(), toggleSideBar()">Announcements</p>
-      <a href="">Sermons</a>
-      <a href=""><li>Activities</li></a>
-      <a href="altarLogin.php">Altar Account</a>
+      <p onclick="toggleCodePopup(), toggleSideBar()">Announcements</p>
+      <a href="radioPage.php">J.I.L&nbsp;Radio</a>
+      <a onclick="toggleCodePopup(), toggleSideBar()"><li>Activities</li></a>
+      <a href="altarPortal.php">Altar Account</a>
       <a href="">FAQs</a>
     </ul>
-    <a class="ercr" href="https://www.jesusislordradio.info/" target="_blank"><i class="fa-solid fa-radio"></i> Listen&nbsp;to&nbsp;Radio</a>
+    <a class="ercr" href="radioPage.php"><i class="fa-solid fa-radio"></i> Listen&nbsp;to&nbsp;Radio</a>
     <a class="ercr" href="#"><i class="fa-regular fa-circle-question"></i> Help</a>
   </div>
   <main id="home">

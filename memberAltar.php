@@ -97,8 +97,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Poppins:wght@700;800;900&display=swap" rel="stylesheet">
   
-  <!-- DataTables CSS -->
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+  <!-- jQuery + DataTables JS -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 </head>
 <body>
   <header>
@@ -120,7 +121,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       <ul>
         <a href="altarPortal.php"><li>Dashboard</li></a>
         <a href="memberAltar.php" class="active"><li>Members</li></a>
-        <a><li>Media</li></a>
+        <a href="radioPage.php"><li>J.I.L&nbsp;Radio</li></a>
         <li class="drpdwn">
           <a onclick="toggleDropdown()">Followup&nbsp;▼</a>
           <div class="dropdown-content" id="Dropdown">
@@ -161,7 +162,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <ul>
       <a href="altarPortal.php"><li>Dashboard</li></a>
       <a href="memberAltar.php" class="active"><li>Members</li></a>
-      <a><li>Media</li></a>
+      <a href="radioPage.php"><li>J.I.L&nbsp;Radio</li></a>
       <li class="drpdwn">
         <a onclick="toggleDropdownS()">Followup&nbsp;▼</a>
         <div class="dropdown-content" id="DropdownS">
@@ -173,7 +174,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         </div>
       </li>
       <a href=""><li>Make&nbsp;Announcement</li></a>
-      <a href=""><li>Activities</li></a>
+      <a href="" onclick="toggleCodePopup()"><li>Activities</li></a>
       <a href=""><li>FAQs</li></a>
     </ul>
     <a class="rdCll" href="tel:+254777445851"><i class="fa-solid fa-phone-volume"></i> Call&nbsp;the&nbsp;Radio</a>
@@ -195,14 +196,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <!-- Give the table an ID for DataTables -->
         <table id="myTable">
           <thead>
-            <th>#</th>
-            <th>Name</th>
-            <th>Gender</th>
-            <th>Action</th>
-            <th>Phone</th>
-            <th>Status</th>
-            <th>Move</th>
-            <th>Date</th>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Gender</th>
+              <th>Action</th>
+              <th>Phone</th>
+              <th>Status</th>
+              <th>Move</th>
+              <th>Date</th>
+            </tr>
           </thead>
           <tbody>
             <?php
@@ -242,8 +245,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         </tr>";
                         $counter++;
                 }
-            } else {
-              echo "<tr><td colspan='9'>No records found</td></tr>";
             }
             ?>
           </tbody>
@@ -327,6 +328,31 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
       });
     });
+
+    // DataTables Script Js
+    $(document).ready(function () {
+      $('#myTable').DataTable({
+        pagingType: "simple_numbers", // only numbers + prev/next
+        pageLength: 15,                // rows per page
+        lengthChange: false,          // hide "Show X entries"
+        searching: true,              // keep search box
+        ordering: true,               // column sorting
+        language: {
+          paginate: {
+            previous: "PREV",
+            next: "NEXT"
+          }
+        }
+      });
+    });
+    // Handle update -> redirect to memberUpdate.php
+    document.querySelectorAll(".update").forEach(btn => {
+      btn.addEventListener("click", function() {
+        const userId = this.dataset.userid;
+        window.location.href = "memberUpdate.php?id=" + encodeURIComponent(userId);
+      });
+    });
+
   </script>
 </body>
 </html>

@@ -46,6 +46,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Poppins:wght@700;800;900&display=swap" rel="stylesheet">
+  <!-- jQuery + DataTables JS -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -62,8 +65,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         <p>emmanueltindi23@gmail.com</p>
       </section>
       <ul>
-        <a href="" class="active"><i class="fa-solid fa-house"></i>Dashboard</a>
-        <a href=""><i class="fa-solid fa-place-of-worship"></i>Altars</a>
+        <a href="returnToHolinessAdminDashboard.php"><i class="fa-solid fa-house"></i>Dashboard</a>
+        <a href="altarsRecordsAdmin.php" class="active"><i class="fa-solid fa-place-of-worship"></i>Altars</a>
+        <a href="adminJILRadio.php"><i class="fa-solid fa-place-of-worship"></i>J.I.L&nbsp;Radio</a>
         <a href=""><i class="fa-solid fa-chart-line"></i>Activities</a>
         <a href=""><i class="fa-solid fa-pen"></i>Updates</a>
         <a href=""><i class="fa-solid fa-ticket"></i>Tickets</a>
@@ -89,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
           <a href="#"><i class="fa-solid fa-envelope"></i>Email&nbsp;the&nbsp;Radio</a>
         </div>
         <div class="tcontnr container">
-          <table>
+          <table id="myTable">
             <thead>
               <th>#</th>
               <th>Altar&nbsp;Name</th>
@@ -228,6 +232,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             alert("Unique Code copied to clipboard!");
           });
         });
+      });
+    });
+
+    // DataTables Script Js
+    $(document).ready(function () {
+      $('#myTable').DataTable({
+        pagingType: "simple_numbers", // only numbers + prev/next
+        pageLength: 15,                // rows per page
+        lengthChange: false,          // hide "Show X entries"
+        searching: true,              // keep search box
+        ordering: true,               // column sorting
+        language: {
+          paginate: {
+            previous: "PREV",
+            next: "NEXT"
+          }
+        }
       });
     });
   </script>

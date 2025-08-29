@@ -65,8 +65,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Poppins:wght@700;800;900&display=swap" rel="stylesheet">
   
-  <!-- DataTables CSS -->
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+  <!-- jQuery + DataTables JS -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 </head>
 <body>
   <header>
@@ -88,7 +89,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       <ul>
         <a href="altarPortal.php"><li>Dashboard</li></a>
         <a href="memberAltar.php"><li>Members</li></a>
-        <a><li>Media</li></a>
+        <a href="radioPage.php"><li>J.I.L&nbsp;Radio</li></a>
         <li class="drpdwn">
           <a onclick="toggleDropdown()" class="active">Followup&nbsp;▼</a>
           <div class="dropdown-content" id="Dropdown">
@@ -129,6 +130,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
   <div class="overlay" id="overlay" onclick="toggleSideBar()"></div>
   <div class="overlayDropdown" id="overlayDropdown" onclick="toggleDropdown()"></div>
+  <div class="overlayFup" id="overlayFup" onclick="toggleFollowupResponseBar()"></div>
+  <form action="" method="post" class="rspnsDiv" id="rspnsDiv">
+    <h1>Did you communicate?</h1>
+    <div class="spnAns">
+      <span>Yes</span>
+      <span>No</span>
+    </div>
+  </form>
   <div class="sideBar" id="sidebar">
     <div class="sContainer">
       <img src="Images/Jesus is Lord Radio Logo.avif" alt="Jesus is Lord Radio Logo" width="140">
@@ -137,7 +146,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <ul>
       <a href="altarPortal.php"><li>Dashboard</li></a>
       <a href="memberAltar.php"><li>Members</li></a>
-      <a><li>Media</li></a>
+      <a href="radioPage.php"><li>J.I.L&nbsp;Radio</li></a>
       <li class="drpdwn">
         <a onclick="toggleDropdownS()" class="active">Followup&nbsp;▼</a>
         <div class="dropdown-content" id="DropdownS">
@@ -150,7 +159,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         </div>
       </li>
       <a href=""><li>Make&nbsp;Announcement</li></a>
-      <a href=""><li>Activities</li></a>
+      <a href="" onclick="toggleCodePopup()"><li>Activities</li></a>
       <a href=""><li>FAQs</li></a>
     </ul>
     <a class="rdCll" href="tel:+254777445851"><i class="fa-solid fa-phone-volume"></i> Call&nbsp;the&nbsp;Radio</a>
@@ -158,19 +167,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   </div>
   <main>
     <div class="containerFp container">
-      <h1>Precious First Years</h1>
+      <h1>Visitors in the House</h1>
       <a class="addS" href="followupVisitorsForm.php">+ Add Visitor</a>
       <div class="tableContainer">
         <!-- Give the table an ID for DataTables -->
         <table id="myTable">
           <thead>
-            <th>#</th>
-            <th>Name</th>
-            <th>Phone</th>
-            <th>Action</th>
-            <th class="fStUpth">Status</th>
-            <th>Usher's Name</th>
-            <th>Date</th>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Action</th>
+              <th class="fStUpth">Status</th>
+              <th>Usher's Name</th>
+              <th>Date</th>
+            </tr>
           </thead>
           <tbody>
             
@@ -206,9 +217,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         </tr>";
                         $counter++;
                 }
-              } else {
-                    echo "<tr><td colspan='8'>No records found</td></tr>";
-                }
+              }
             ?>
           </tbody>
         </table>
@@ -254,6 +263,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
             body: "action=delete&id=" + encodeURIComponent(userId)
           }).then(() => location.reload());
+        }
+      });
+    });
+
+    // DataTables Script Js
+    $(document).ready(function () {
+      $('#myTable').DataTable({
+        pagingType: "simple_numbers", // only numbers + prev/next
+        pageLength: 15,                // rows per page
+        lengthChange: false,          // hide "Show X entries"
+        searching: true,              // keep search box
+        ordering: true,               // column sorting
+        language: {
+          paginate: {
+            previous: "PREV",
+            next: "NEXT"
+          }
         }
       });
     });

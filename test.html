@@ -1,118 +1,340 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Table with Pagination & Search</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Jesus Is Lord Radio – Web Player</title>
+  <meta name="description" content="Listen live to Jesus Is Lord Radio." />
+  <link rel="preconnect" href="https://s3.radio.co" crossorigin />
+  <style>
+    :root{
+      --bg:#17181c;
+      --panel:#22252b;
+      --text:#f3f5f7;
+      --muted:#a9b0b8;
+      --accent:#3fa7ff;
+      --accent-2:#58d68d;
+      --danger:#ff6b6b;
+      --radius:14px;
+      --shadow:0 10px 30px rgba(0,0,0,.35), 0 1px 0 rgba(255,255,255,.04) inset;
+    }
+
+    html,body{
+      height:100%;
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+      background: radial-gradient(1200px 600px at 20% -10%, #1d2129, transparent 60%),
+                  radial-gradient(1000px 500px at 120% 110%, #0f1217, transparent 50%),
+                  var(--bg);
+      color:var(--text);
+    }
+
+    .wrap{
+      min-height:100%;
+      display:grid;
+      place-items:center;
+      padding:24px;
+      background: url('/Images/5764744958148985344.jpg') no-repeat center center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      /* Optional: add a fallback color */
+      background-color: #000;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .wrap::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6); /* Change 0.6 for lighter/darker */
+      z-index: 1;
+      
+    }
+
+    .wrap > * {
+      position: relative;
+      z-index: 2;
+    }
+
+    .wrap .player{
+      width: clamp(300px, 80vw, 700px);
+      background:linear-gradient(180deg, #1d2128 0%, #1a1d23 100%);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px 18px 14px;
+      border:1px solid #2a2f37;
+    }
+
+    .row{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+
+    .title{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:700;
+      letter-spacing:.2px;
+      text-transform:uppercase;
+      font-size:14px;
+      color:var(--muted);
+    }
+
+    .live-dot{
+      width:9px;height:9px;border-radius:50%;
+      background:var(--danger);
+      box-shadow:0 0 10px var(--danger), 0 0 20px rgba(255,107,107,.35);
+      animation:pulse 1.4s infinite ease-in-out;
+    }
+    @keyframes pulse{
+      0%,100%{ transform:scale(.9); opacity:.8 }
+      50%{ transform:scale(1.15); opacity:1 }
+    }
+
+    .badge{
+      margin-left:auto;
+      background:#11151a;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid #2b313a;
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .panel{
+      margin-top:12px;
+      background:var(--panel);
+      border:1px solid #2a2f37;
+      border-radius:12px;
+      padding:14px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    button.icon{
+      flex:0 0 auto;
+      width:44px;height:44px;border-radius:12px;
+      border:none;cursor:pointer;
+      background:#101318;
+      color:var(--text);
+      display:grid;place-items:center;
+      box-shadow:inset 0 0 0 1px #2b313a, 0 4px 16px rgba(0,0,0,.35);
+      transition:transform .12s ease, filter .12s ease, background .12s ease;
+    }
+    button.icon:hover{ filter:brightness(1.08) }
+    button.icon:active{ transform:translateY(1px) }
+
+    .play{
+      width:56px;height:56px;border-radius:16px;
+      background:linear-gradient(180deg, #2b86ff, #1b5eff);
+      box-shadow:0 10px 24px rgba(31, 101, 255, .35);
+    }
+    .play.paused{
+      background:linear-gradient(180deg, #58d68d, #2ecc71);
+      box-shadow:0 10px 24px rgba(46, 204, 113, .35);
+    }
+
+    .eq{
+      width:18px;height:16px;display:grid;grid-auto-flow:column;gap:3px;
+    }
+    .bar{
+      width:3px;border-radius:2px;background:var(--accent);opacity:.9;
+      transform-origin:bottom center;
+      animation:beat 1s ease-in-out infinite;
+    }
+    .bar:nth-child(2){animation-delay:.12s}
+    .bar:nth-child(3){animation-delay:.24s}
+    @keyframes beat{ 0%,100%{height:3px} 50%{height:16px} }
+
+    .meta{
+      display:grid; gap:4px;
+      min-width:0;
+    }
+    .now{
+      font-weight:700; font-size:16px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .sub{
+      font-size:12px; color:var(--muted);
+    }
+
+    .spacer{flex:1}
+
+    .vol{
+      display:flex; align-items:center; gap:8px; width:210px; max-width:28vw;
+    }
+    input[type="range"]{
+      -webkit-appearance:none; appearance:none; width:100%; height:6px; border-radius:999px;
+      background:linear-gradient(90deg, var(--accent) var(--pos,0%), #3a404a var(--pos,0%));
+      outline:none; cursor:pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb{
+      -webkit-appearance:none; appearance:none;
+      width:16px;height:16px;border-radius:50%;
+      background:#fff; border:2px solid #1a5dff; box-shadow:0 2px 8px rgba(0,0,0,.5);
+    }
+    input[type="range"]::-moz-range-thumb{
+      width:16px;height:16px;border-radius:50%;
+      background:#fff; border:2px solid #1a5dff;
+    }
+
+    .foot{
+      display:flex; justify-content:space-between; align-items:center;
+      gap:12px; margin-top:12px; color:var(--muted); font-size:12px;
+    }
+    .link{ color:var(--accent); text-decoration:none }
+    .link:hover{ text-decoration:underline }
+  </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body>
+  <div class="wrap">
+    <div class="container">
+      <div class="player" role="region" aria-label="Radio Player">
+        <!-- Top Row -->
+        <div class="row title">
+          <span class="live-dot" aria-hidden="true"></span>
+          <span>Live Stream</span>
+          <span class="badge" id="stateBadge">Idle</span>
+        </div>
 
-  <div class="container mx-auto px-6 py-8">
-    <h1 class="text-2xl font-bold mb-6">Members Table</h1>
+        <!-- Main Controls -->
+        <div class="panel">
+          <button class="icon play" id="playBtn" aria-label="Play/Pause">
+            <!-- Play icon -->
+            <svg id="playIcon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M8 5v14l11-7z"></path>
+            </svg>
+            <!-- Pause icon (hidden by default) -->
+            <svg id="pauseIcon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="display:none">
+              <path d="M6 5h4v14H6zM14 5h4v14h-4z"></path>
+            </svg>
+          </button>
 
-    <!-- Custom Search Bar -->
-    <div class="mb-4">
-      <input type="text" id="searchInput" placeholder="🔍 Search by name, email, or status..." 
-             class="w-full md:w-1/3 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400">
+          <div class="eq" aria-hidden="true">
+            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+          </div>
+
+          <div class="meta">
+            <div class="now" id="nowTitle">JESUS IS LORD RADIO</div>
+            <div class="sub" id="status">Ready to play</div>
+          </div>
+
+          <div class="spacer"></div>
+
+          <button class="icon" id="muteBtn" aria-label="Mute/Unmute">
+            <svg id="volIcon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M3 10v4h4l5 5V5L7 10H3z"></path>
+            </svg>
+          </button>
+
+          <div class="vol" aria-label="Volume">
+            <input id="volume" type="range" min="0" max="1" step="0.01" value="0.8" />
+          </div>
+        </div>
+
+        <div class="foot">
+          <span>Tip: Some browsers block autoplay. Click ▶️ to start.</span>
+          <a class="link" href="https://s3.radio.co/s97f38db97/listen" target="_blank" rel="noopener"></a>
+        </div>
+
+        <!-- Hidden audio element -->
+        <audio id="radio" preload="none" crossorigin="anonymous">
+          <source src="https://s3.radio.co/s97f38db97/listen" type="audio/mpeg" />
+          Your browser does not support HTML audio.
+        </audio>
+      </div>
     </div>
-
-    <!-- Table -->
-    <div class="overflow-x-auto bg-white shadow-lg rounded-lg">
-      <table id="myTable" class="min-w-full border border-gray-200 rounded-lg">
-        <thead class="bg-gray-200">
-          <tr>
-            <th class="px-4 py-3 text-left">ID</th>
-            <th class="px-4 py-3 text-left">Name</th>
-            <th class="px-4 py-3 text-left">Email</th>
-            <th class="px-4 py-3 text-left">Status</th>
-          </tr>
-        </thead>
-        <tbody id="tableBody">
-          <!-- Example rows -->
-          <tr><td class="px-4 py-2">1</td><td class="px-4 py-2">John Doe</td><td class="px-4 py-2">john@example.com</td><td class="px-4 py-2 text-green-600">Active</td></tr>
-          <tr><td class="px-4 py-2">2</td><td class="px-4 py-2">Jane Smith</td><td class="px-4 py-2">jane@example.com</td><td class="px-4 py-2 text-red-600">Inactive</td></tr>
-          <tr><td class="px-4 py-2">3</td><td class="px-4 py-2">Michael Brown</td><td class="px-4 py-2">michael@example.com</td><td class="px-4 py-2 text-green-600">Active</td></tr>
-          <tr><td class="px-4 py-2">4</td><td class="px-4 py-2">Emily Davis</td><td class="px-4 py-2">emily@example.com</td><td class="px-4 py-2 text-red-600">Inactive</td></tr>
-          <tr><td class="px-4 py-2">5</td><td class="px-4 py-2">Chris Johnson</td><td class="px-4 py-2">chris@example.com</td><td class="px-4 py-2 text-green-600">Active</td></tr>
-          <tr><td class="px-4 py-2">6</td><td class="px-4 py-2">Sarah Lee</td><td class="px-4 py-2">sarah@example.com</td><td class="px-4 py-2 text-green-600">Active</td></tr>
-          <tr><td class="px-4 py-2">7</td><td class="px-4 py-2">David Wilson</td><td class="px-4 py-2">david@example.com</td><td class="px-4 py-2 text-red-600">Inactive</td></tr>
-          <tr><td class="px-4 py-2">8</td><td class="px-4 py-2">Anna White</td><td class="px-4 py-2">anna@example.com</td><td class="px-4 py-2 text-green-600">Active</td></tr>
-          <tr><td class="px-4 py-2">9</td><td class="px-4 py-2">Tom Harris</td><td class="px-4 py-2">tom@example.com</td><td class="px-4 py-2 text-green-600">Active</td></tr>
-          <tr><td class="px-4 py-2">10</td><td class="px-4 py-2">Lucy Black</td><td class="px-4 py-2">lucy@example.com</td><td class="px-4 py-2 text-red-600">Inactive</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Pagination Controls -->
-    <div id="pagination" class="flex justify-center mt-6 space-x-2"></div>
   </div>
 
   <script>
-    const rowsPerPage = 5;
-    let currentPage = 1;
-    const tableBody = document.getElementById("tableBody");
-    const rows = tableBody.getElementsByTagName("tr");
-    const pagination = document.getElementById("pagination");
-    const searchInput = document.getElementById("searchInput");
+    const audio   = document.getElementById('radio');
+    const playBtn = document.getElementById('playBtn');
+    const state   = document.getElementById('stateBadge');
+    const status  = document.getElementById('status');
+    const nowEl   = document.getElementById('nowTitle');
+    const vol     = document.getElementById('volume');
+    const muteBtn = document.getElementById('muteBtn');
+    const volIcon = document.getElementById('volIcon');
+    const playIcon  = document.getElementById('playIcon');
+    const pauseIcon = document.getElementById('pauseIcon');
 
-    function displayTable() {
-      let start = (currentPage - 1) * rowsPerPage;
-      let end = start + rowsPerPage;
-      let visibleRows = 0;
+    // Set initial volume & progress color
+    function updateVolGradient() {
+      const pct = (vol.value * 100) + '%';
+      vol.style.setProperty('--pos', pct);
+    }
+    vol.addEventListener('input', () => {
+      audio.volume = +vol.value;
+      updateVolGradient();
+      if (audio.muted && audio.volume > 0) {
+        audio.muted = false;
+        volIcon.innerHTML = '<path d="M3 10v4h4l5 5V5L7 10H3z"/>';
+      }
+    });
+    updateVolGradient();
 
-      for (let i = 0; i < rows.length; i++) {
-        if (rows[i].style.display !== "none") {
-          if (visibleRows >= start && visibleRows < end) {
-            rows[i].style.display = "";
-          } else {
-            rows[i].style.display = "none";
-          }
-          visibleRows++;
+    // Play / Pause
+    async function togglePlay() {
+      if (audio.paused) {
+        try {
+          state.textContent = 'Connecting…';
+          status.textContent = 'Buffering stream…';
+          await audio.play();
+          playBtn.classList.add('paused');
+          playIcon.style.display = 'none';
+          pauseIcon.style.display = 'block';
+          state.textContent = 'Live';
+          status.textContent = 'Playing';
+        } catch (err) {
+          state.textContent = 'Error';
+          status.textContent = 'Click to try again (autoplay blocked)';
+          console.error(err);
         }
+      } else {
+        audio.pause();
+        playBtn.classList.remove('paused');
+        playIcon.style.display = 'block';
+        pauseIcon.style.display = 'none';
+        state.textContent = 'Paused';
+        status.textContent = 'Stopped';
       }
     }
+    playBtn.addEventListener('click', togglePlay);
 
-    function setupPagination() {
-      pagination.innerHTML = "";
-      let visibleRows = Array.from(rows).filter(r => r.style.display !== "none").length;
-      let pageCount = Math.ceil(visibleRows / rowsPerPage);
-
-      for (let i = 1; i <= pageCount; i++) {
-        let btn = document.createElement("button");
-        btn.textContent = i;
-        btn.className = "px-3 py-1 rounded-lg border " + (i === currentPage ? "bg-blue-500 text-white" : "bg-white");
-        btn.addEventListener("click", function () {
-          currentPage = i;
-          displayTable();
-          setupPagination();
-        });
-        pagination.appendChild(btn);
-      }
-    }
-
-    searchInput.addEventListener("keyup", function () {
-      let filter = searchInput.value.toLowerCase();
-      for (let i = 0; i < rows.length; i++) {
-        let cells = rows[i].getElementsByTagName("td");
-        let match = false;
-        for (let j = 0; j < cells.length; j++) {
-          if (cells[j].textContent.toLowerCase().includes(filter)) {
-            match = true;
-            break;
-          }
-        }
-        rows[i].style.display = match ? "" : "none";
-      }
-      currentPage = 1;
-      displayTable();
-      setupPagination();
+    // Mute / Unmute
+    muteBtn.addEventListener('click', () => {
+      audio.muted = !audio.muted;
+      volIcon.innerHTML = audio.muted
+        ? '<path d="M16.5 12l4.24-4.24-1.41-1.41L15.09 10.59 10.5 6v12l4.59-4.59 4.24 4.24 1.41-1.41L16.5 12zM3 10v4h4l5 5V5L7 10H3z"/>'
+        : '<path d="M3 10v4h4l5 5V5L7 10H3z"/>';
+      status.textContent = audio.muted ? 'Muted' : (audio.paused ? 'Paused' : 'Playing');
     });
 
-    // Init
-    displayTable();
-    setupPagination();
-  </script>
+    // Basic metadata stub (you can replace with your API if available)
+    // If your streaming provider exposes "now playing" JSON, fetch it and update nowEl.
+    nowEl.textContent = 'JESUS IS LORD RADIO';
 
+    // Connection state helpers
+    audio.addEventListener('playing', () => { state.textContent = 'Live'; status.textContent = 'Playing'; });
+    audio.addEventListener('waiting', () => { state.textContent = 'Buffering'; status.textContent = 'Reconnecting…'; });
+    audio.addEventListener('stalled', () => { status.textContent = 'Network stalled…'; });
+    audio.addEventListener('error',   () => { state.textContent = 'Error'; status.textContent = 'Stream error (check link)'; });
+
+    // Optional: resume if stream drops
+    let retryTimer;
+    audio.addEventListener('pause', () => {
+      clearTimeout(retryTimer);
+      if (!audio.ended && !audio.seeking && !audio.paused) {
+        retryTimer = setTimeout(() => audio.play().catch(()=>{}), 1500);
+      }
+    });
+  </script>
 </body>
 </html>

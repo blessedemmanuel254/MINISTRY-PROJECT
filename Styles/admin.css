@@ -5,6 +5,10 @@
   font-family: 'Poppins' , Arial;
 }
 
+html::-webkit-scrollbar {
+  display: none;
+}
+
 .container {
   width: 100%;
   max-width: 1299px;
@@ -26,6 +30,8 @@
   min-width: 245px;
   padding: 20px 16px;
   margin-left: -100%;
+  transition: all 0.3s ease;
+
 }
 
 .adContnr .sidebar.active {
@@ -98,13 +104,9 @@
   gap: 16px;
   width: 100%;
   transition: margin-left 0.3s ease;
+  margin-left: 0;
+  transition: margin-left 0.3s ease;
 
-
-}
-
-/* To push content when sidebar opens (optional) */
-.cntnrDash.shift {
-  margin-left: clamp(200px, 15%, 320px); /* same as sidebar width */
 }
 
 /* Header section */
@@ -165,10 +167,18 @@ main .wlcmTp h1 {
   line-height: 25px;
 }
 
+main#rdMn .wlcmTp h1 {
+  color: #ffff00ea;
+}
+
 main .wlcmTp h1 span {
   font-weight: normal;
   font-size: 18px;
   color: #898888;
+}
+
+main#rdMn .wlcmTp h1 span {
+  color: white;
 }
 
 main .wlcmTp a {
@@ -181,6 +191,10 @@ main .wlcmTp a {
   text-decoration: none;
   align-items: center;
   width: fit-content;
+}
+
+main#rdMn .wlcmTp a {
+  background-color: #0f268c;
 }
 
 main .crdsCntr {
@@ -451,3 +465,277 @@ footer p a {
 table tbody tr:nth-child(odd) {
   background-color: #dedede;
 }
+
+/* Pagination Section */
+
+/* Pagination container */
+.dataTables_wrapper .dataTables_paginate {
+  margin-top: 1rem;
+  text-align: right;
+}
+
+/* Pagination buttons */
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  display: inline-block;
+  margin: 0 4px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333 !important;
+  background: #8988889f;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Hover effect */
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+  background: #0f268c1c;
+  color: #0f0f0f !important;
+}
+
+/* Active page */
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+  background: #0f268c !important;
+  color: white !important;
+  font-weight: bold;
+}
+
+/* Disabled state */
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #eaeaea;
+  border-color: #ccc;
+}
+
+/* Wrapper alignment */
+.dataTables_wrapper .dataTables_filter {
+  float: right;
+  margin-bottom: 1rem;
+}
+
+.dataTables_wrapper .dataTables_filter label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Search input */
+.dataTables_wrapper .dataTables_filter input {
+  margin-left: 8px;
+  padding: 6px 12px;
+  border: 1px solid #898888;
+  border-radius: 4px;
+  outline: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.dataTables_wrapper .dataTables_filter input:focus {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Info text below table */
+.dataTables_wrapper .dataTables_info {
+  font-size: 13px;
+  color: #0f0f0f;
+  margin-top: 0.5rem;
+}
+
+/* Radio page section */
+:root{
+  --bg:#17181c;
+  --panel:#22252b;
+  --text:#f3f5f7;
+  --muted:#a9b0b8;
+  --accent:#3fa7ff;
+  --accent-2:#58d68d;
+  --danger:#ff6b6b;
+  --radius:14px;
+  --shadow:0 10px 30px rgba(0,0,0,.35), 0 1px 0 rgba(255,255,255,.04) inset;
+}
+
+main#rdMn {
+  background: url('/Images/5764744958148985344.jpg') no-repeat center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-top: -16px;
+
+}
+
+main#adRdio {
+  display: flex;
+  gap: 16px;
+  height: fit-content;
+  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+  /* Optional: add a fallback color */
+  position: relative;
+  padding-top: 50px;
+  margin: 0 auto;
+  padding: 0 16px;
+  overflow-x: hidden;
+}
+
+main#adRdio .player {
+  width: clamp(278px, 100%, 680px);
+  background:linear-gradient(180deg, #1d2128 0%, #1a1d23 100%);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:18px 18px 14px;
+  border:1px solid #2a2f37;
+}
+
+main#adRdio .player .row {
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+main#adRdio .player .row.title {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-weight:700;
+  letter-spacing:.2px;
+  text-transform:uppercase;
+  font-size:14px;
+  color:var(--muted);
+}
+
+main#adRdio .player .row.title .live-dot {
+  width:9px;height:9px;border-radius:50%;
+  background:var(--danger);
+  box-shadow:0 0 10px var(--danger), 0 0 20px rgba(255,107,107,.35);
+  animation:none;
+}
+
+@keyframes pulse {
+  0%,100%{ transform:scale(.9); opacity:.8 }
+  50%{ transform:scale(1.15); opacity:1 }
+}
+
+main#adRdio .player .row.title .badge {
+  margin-left:auto;
+  background:#11151a;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid #2b313a;
+  color:var(--muted);
+  font-size:12px;
+}
+
+main#adRdio .player .panel {
+  margin-top:12px;
+  background:var(--panel);
+  border:1px solid #2a2f37;
+  border-radius:12px;
+  padding:14px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+main#adRdio .player .panel button.icon{
+  flex:0 0 auto;
+  width:44px;height:44px;border-radius:12px;
+  border:none;cursor:pointer;
+  background:#101318;
+  color:var(--text);
+  display:grid;place-items:center;
+  box-shadow:inset 0 0 0 1px #2b313a, 0 4px 16px rgba(0,0,0,.35);
+  transition:transform .12s ease, filter .12s ease, background .12s ease;
+}
+
+main#adRdio .player .panel button.icon:hover{ filter:brightness(1.08) }
+main#adRdio .player .panel button.icon:active{ transform:translateY(1px) }
+
+.play{
+  width:56px;height:56px;border-radius:16px;
+  background:linear-gradient(180deg, #2b86ff, #1b5eff);
+  box-shadow:0 10px 24px rgba(31, 101, 255, .35);
+}
+main#adRdio .player .panel button.icon.play.paused {
+  background:linear-gradient(180deg, #58d68d, #2ecc71);
+  box-shadow:0 10px 24px rgba(46, 204, 113, .35);
+}
+
+main#adRdio .player .panel .eq {
+  width:18px;height:16px;display:grid;grid-auto-flow:column;gap:3px;
+}
+
+main#adRdio .player .panel .eq .bar {
+  width:3px;border-radius:2px;background:var(--accent);opacity:.9;
+  transform-origin:bottom center;
+  animation: none;
+}
+
+@keyframes beat { 0%,100%{height:3px} 50%{height:16px} }
+
+main#adRdio .player .panel .meta {
+  display:grid; gap:4px;
+  min-width:0;
+}
+
+/* OFF state (idle/paused) */
+main#adRdio .player:not(.playing) .row.title .live-dot {
+  animation: none;
+}
+
+main#adRdio .player:not(.playing) .panel .eq .bar {
+  animation: none;
+}
+
+/* ON state (after Play) */
+main#adRdio .player.playing .row.title .live-dot {
+  animation: pulse 1.4s infinite ease-in-out;
+}
+
+main#adRdio .player.playing .panel .eq .bar {
+  animation: beat 1s ease-in-out infinite;
+}
+
+/* stagger while playing */
+main#adRdio .player.playing .panel .eq .bar:nth-child(2) { animation-delay: .12s; }
+main#adRdio .player.playing .panel .eq .bar:nth-child(3) { animation-delay: .24s; }
+
+main#adRdio .player .panel .meta .now {
+  font-weight:700; font-size:16px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+
+main#adRdio .player .panel .meta .sub {
+  font-size:12px; color:var(--muted);
+}
+
+main#adRdio .player .panel .spacer {flex:1}
+
+main#adRdio .player .panel .vol {
+  display:flex; align-items:center; gap:8px; width:210px; max-width:28vw;
+}
+
+main#adRdio .player .panel .vol input[type="range"] {
+  -webkit-appearance:none; appearance:none; width:100%; height:6px; border-radius:999px;
+  background:linear-gradient(90deg, var(--accent) var(--pos,0%), #3a404a var(--pos,0%));
+  outline:none; cursor:pointer;
+}
+main#adRdio .player .panel .vol input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance:none; appearance:none;
+  width:16px;height:16px;border-radius:50%;
+  background:#fff; border:2px solid #1a5dff; box-shadow:0 2px 8px rgba(0,0,0,.5);
+}
+
+main#adRdio .player .panel .vol input[type="range"]::-moz-range-thumb {
+  width:16px;height:16px;border-radius:50%;
+  background:#fff; border:2px solid #1a5dff;
+}
+
+main#adRdio .player .foot {
+  display:flex; justify-content:space-between; align-items:center;
+  gap:12px; margin-top:12px; color:var(--muted); font-size:12px;
+}
+main#adRdio .player .foot .link { color:var(--accent); text-decoration:none }
+
+main#adRdio .player .foot .link:hover { text-decoration:underline }

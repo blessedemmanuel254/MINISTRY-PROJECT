@@ -107,7 +107,7 @@ $announcements = $result->fetch_assoc()['total']; */
       <ul>
         <a href="altarPortal.php" class="active"><li>Dashboard</li></a>
         <a href="memberAltar.php"><li>Members</li></a>
-        <a><li>Media</li></a>
+        <a href="radioPage.php"><li>J.I.L&nbsp;Radio</li></a>
         <li class="drpdwn">
           <a onclick="toggleDropdown()">Followup&nbsp;▼</a>
           <div class="dropdown-content" id="Dropdown">
@@ -149,7 +149,7 @@ $announcements = $result->fetch_assoc()['total']; */
     <ul>
       <a href="altarPortal.php" class="active"><li>Dashboard</li></a>
       <a href="memberAltar.php"><li>Members</li></a>
-      <a><li>Media</li></a>
+      <a href="radioPage.php"><li>J.I.L&nbsp;Radio</li></a>
       <li class="drpdwn">
         <a onclick="toggleDropdownS()">Followup&nbsp;▼</a>
         <div class="dropdown-content" id="DropdownS">
@@ -162,26 +162,26 @@ $announcements = $result->fetch_assoc()['total']; */
         </div>
       </li>
       <a href=""><li>Make&nbsp;Announcement</li></a>
-      <a href=""><li>Activities</li></a>
+      <a href="" onclick="toggleCodePopup()"><li>Activities</li></a>
       <a href=""><li>FAQs</li></a>
     </ul>
     <a class="rdCll" href="tel:+254777445851"><i class="fa-solid fa-phone-volume"></i> Call&nbsp;the&nbsp;Radio</a>
     <a class="ercr" href="#"><i class="fa-regular fa-circle-question"></i> Help</a>
   </div>
   <main id="mnFrAlp">
-    <div class="devUpdts container">
+    <!-- <div class="devUpdts container">
       <div class="ttlDiv">
         <h2><i class="fa-solid fa-triangle-exclamation"></i> Developer&nbsp;Updates</h2>
         <i class="fa-solid fa-xmark"></i>
       </div>
       <p>We are launching the August Evangelism Drive. Every altar should submit at least 10 new first-year follow-ups by the 20th. Let’s work together for greater impact!</p>
-    </div>
+    </div> -->
     <div class="mnCtnr container">
       <div class="crdsStcsDiv">
         <div class="card">
           <h1 class="hd">Active Members</h1>
           <div class="midCd">
-            <i class="fa-solid fa-user-graduate"></i>
+            <i class="fa-solid fa-earth-americas"></i>
             <div class="crdDesc">
               <h1><?php echo $activeMembers; ?></h1>
               <p>Consistently present</p>
@@ -194,7 +194,7 @@ $announcements = $result->fetch_assoc()['total']; */
           <div class="card fstYrCd">
             <h1 class="hd">First Years</h1>
             <div class="midCd">
-              <i class="fa-solid fa-chart-simple"></i>
+              <i class="fa-solid fa-user-graduate"></i>
               <div class="crdDesc">
                 <h1><?php echo $firstYears; ?></h1>
                 <p>Total registered</p>

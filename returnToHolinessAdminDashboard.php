@@ -95,10 +95,11 @@ $stmt->close();
         <p>emmanueltindi23@gmail.com</p>
       </section>
       <ul>
-        <a href="" class="active"><i class="fa-solid fa-house"></i>Dashboard</a>
-        <a href=""><i class="fa-solid fa-place-of-worship"></i>Altars</a>
+        <a href="returnToHolinessAdminDashboard.php" class="active"><i class="fa-solid fa-house"></i>Dashboard</a>
+        <a href="altarsRecordsAdmin.php"><i class="fa-solid fa-place-of-worship"></i>Altars</a>
+        <a href="adminJILRadio.php"><i class="fa-solid fa-place-of-worship"></i>J.I.L&nbsp;Radio</a>
         <a href=""><i class="fa-solid fa-chart-line"></i>Activities</a>
-        <a href=""><i class="fa-solid fa-pen"></i>Updates</a>
+        <a href=""><i class="fa-solid fa-pen"></i>updateAltarAdmin</a>
         <a href=""><i class="fa-solid fa-ticket"></i>Tickets</a>
         <a href=""><i class="fa-solid fa-arrow-right-from-bracket"></i>Logout</a>
       </ul>
