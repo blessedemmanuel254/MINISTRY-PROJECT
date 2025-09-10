@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <span>"23 Whatever you do, work at it with all your heart, as working for the Lord, not for human masters 24 since you know that you will receive an inheritance from the Lord as a reward. IT IS THE LORD CHRIST YOU ARE SERVING.</span>"';
 
       // reset inputs
-      $fname = $phoneNumber = $gender = $evangelist = $venue = $missionType = '';
+      $fname = $sname = $phoneNumber = $gender = $evangelist = $venue = $missionType = '';
     } else {
       $errorMsg = "Error inserting record: " . $stmt->error;
     }
@@ -144,7 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
           </div>
           <div class="inpBox">
-            <span>Second Name:</span>
+            <span>Second Name (optional):</span>
             <input name="sname" type="text" value="<?php echo htmlspecialchars($sname ?? ''); ?>">
 
           </div>

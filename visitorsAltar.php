@@ -24,7 +24,7 @@ function maskPhone($phone) {
   return $first3 . $mask . $last3;
 }
 
-// Check if this is an AJAX POST request for updating the status
+// Check if this is an AJAX POST request
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
   if (isset($_POST['action']) && isset($_POST['id'])) {
     $id = intval($_POST['id']);
@@ -36,7 +36,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       $stmt->execute();
       $stmt->close();
 
+    } elseif ($action === "updateStatus" && isset($_POST['status'])) {
+      $status = intval($_POST['status']); // 1 = communicated, 2 = not communicated
+      $stmt = $conn->prepare("UPDATE followup_details SET status = ? WHERE followup_id = ?");
+      $stmt->bind_param("ii", $status, $id);
+      $stmt->execute();
+      $stmt->close();
     }
+
+    exit; // prevent HTML rendering on AJAX calls
   }
 }
 ?> 
@@ -131,11 +139,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   <div class="overlay" id="overlay" onclick="toggleSideBar()"></div>
   <div class="overlayDropdown" id="overlayDropdown" onclick="toggleDropdown()"></div>
   <div class="overlayFup" id="overlayFup" onclick="toggleFollowupResponseBar()"></div>
+  
   <form action="" method="post" class="rspnsDiv" id="rspnsDiv">
-    <h1>Did you communicate?</h1>
+    <h1 id="followupQuestion">Did you communicate?</h1>
+    <input type="hidden" id="followupId" value="">
     <div class="spnAns">
-      <span>Yes</span>
-      <span>No</span>
+      <span id="yesBtn">Yes</span>
+      <span id="noBtn">No</span>
     </div>
   </form>
   <div class="sideBar" id="sidebar">
@@ -207,11 +217,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                           <!-- Display the masked phone number, and store the actual number in data-phone -->
                           <td data-phone='{$row['phone']}'>{$maskedPhone}</td>
                           <td class='ffth'>
-                            <a href='tel:{$phoneDecoded}' class='call' style='cursor:pointer;'><i class='fa-solid fa-phone-volume'></i>Call</a>
-                            <p class='update' style='cursor:pointer;' data-userid='{$row['followup_id']}'>Update</p>
+                            <a href='tel:{$phoneDecoded}' 
+                              class='call " . 
+                                ($row['status'] == 3 
+                                    ? "inactive" 
+                                    : (in_array($row['status'], [1, 2]) 
+                                        ? "done" 
+                                        : "")) . "'
+                              data-userid='{$row['followup_id']}'
+                              data-statusid='{$row['followup_id']}' 
+                              style='cursor:pointer;'>
+                              <i class='fa-solid fa-phone-volume'></i>Call
+                            </a>
+                            <p onclick='toggleFollowupResponseBar()' class='update' style='cursor:pointer;' data-userid='{$row['followup_id']}'>Update</p>
                             <p class='delete' style='cursor:pointer;' data-userid='{$row['followup_id']}'>Delete</p>
                           </td>
-                          <td class='fStUp'><i class='fa-solid " . ($row['status'] == '2' ? 'fa-check' : ($row['status'] == '1' ? 'fa-x' : 'fa-minus')) . "'></i></td>
+                          <td class='fStUp' data-id='{$row['followup_id']}'><i class='fa-solid " . ($row['status'] == '1' ? 'fa-check' : ($row['status'] == '2' ? 'fa-x' : ($row['status'] == '3' ? 'fa-hourglass-half' : 'fa-minus'))) . "'></i></td>
                           <td>{$row['evangelist_name']}</td>
                           <td>{$row['date_evangelized']}</td>
                         </tr>";
@@ -271,10 +292,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $(document).ready(function () {
       $('#myTable').DataTable({
         pagingType: "simple_numbers", // only numbers + prev/next
-        pageLength: 15,                // rows per page
+        pageLength: 15,               // rows per page
         lengthChange: false,          // hide "Show X entries"
         searching: true,              // keep search box
         ordering: true,               // column sorting
+        stateSave: true,              // ✅ remembers pagination, search & sort
         language: {
           paginate: {
             previous: "PREV",
@@ -283,6 +305,108 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
       });
     });
+    
+    // Delegated click handler on the table (survives DataTables redraws)
+    const tableEl = document.getElementById('myTable');
+
+    tableEl.addEventListener('click', function (e) {
+      const btn = e.target.closest('.update');
+      if (!btn) return; // not an Update click
+
+      // Run before any inline handlers (safety) and stop them
+      e.preventDefault();
+      e.stopImmediatePropagation();
+
+      const userId = btn.dataset.userid;
+
+      // Get the status icon for this row by followup_id
+      const statusIcon = document.querySelector(`.fStUp[data-id='${userId}'] i`);
+
+      if (!statusIcon || !statusIcon.classList.contains('fa-hourglass-half')) {
+        alert('Please first call the servant!');
+        return;
+      }
+
+      // Allowed → open the popup
+      const row = btn.closest('tr');
+      const fullName = row.querySelector('td:nth-child(2)')?.textContent.trim() || '';
+      let firstName = fullName.split(/\s+/)[0]; // take only the first word
+
+      // Capitalize first letter, lowercase the rest
+      firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
+
+      document.getElementById('followupQuestion').textContent =
+        'Did you communicate with ' + firstName + '?';
+      document.getElementById('followupId').value = userId;
+      toggleFollowupResponseBar();
+
+    }, { capture: true }); // capture ensures we run before any bubbling handlers
+
+
+    // Handle Yes / No clicks
+    document.getElementById("yesBtn").addEventListener("click", function() {
+      const id = document.getElementById("followupId").value;
+
+      fetch("", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "action=updateStatus&id=" + encodeURIComponent(id) + "&status=1"
+      }).then(() => {
+        toggleFollowupResponseBar(); // close the popup
+        location.reload();           // ✅ reload page
+      });
+    });
+
+    document.getElementById("noBtn").addEventListener("click", function() {
+      const id = document.getElementById("followupId").value;
+
+      fetch("", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "action=updateStatus&id=" + encodeURIComponent(id) + "&status=2"
+      }).then(() => {
+        toggleFollowupResponseBar(); // close the popup
+        location.reload();           // ✅ reload page
+      });
+    });
+
+    // Handle Call → set status=3 (Pending), update UI, and disable button
+    document.querySelectorAll(".call").forEach(btn => {
+      btn.addEventListener("click", function(e) {
+        e.preventDefault();
+
+        const userId = this.dataset.userid;
+        const button = this;
+        const statusCell = document.querySelector(`.fStUp[data-id='${userId}']`);
+
+        if (button.classList.contains("disabled")) {
+          return;
+        }
+
+        // 🔹 Immediately update UI
+        if (statusCell) {
+          statusCell.innerHTML = "<i class='fa-solid fa-hourglass-half'></i>";
+        }
+
+        // 🔹 Update status=3 in DB
+        fetch("", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: "action=updateStatus&id=" + encodeURIComponent(userId) + "&status=3"
+        }).then(() => {
+          // Disable the button
+          button.style.opacity = "0.4";
+          button.style.pointerEvents = "none";
+          button.classList.add("disabled");
+
+          // 🔹 Give browser time to repaint, THEN trigger call
+          setTimeout(() => {
+            window.location.href = button.href;
+          }, 200); // 200ms is usually enough
+        });
+      });
+    });
+
   </script>
 </body>
 </html>

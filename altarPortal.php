@@ -49,11 +49,12 @@ $stmt->execute();
 $result = $stmt->get_result();
 $pendingFollowups = $result->fetch_assoc()['total'];
 $stmt->close();
-/* 
+
 // Pending followups
-$result = $conn->query("SELECT COUNT(*) AS total FROM followups WHERE altar_id = $altar_id AND status = 'Pending'");
+$result = $conn->query("SELECT COUNT(*) AS total FROM followup_details WHERE altar_id = $altar_id AND status = '0'");
 $pendingFollowups = $result->fetch_assoc()['total'];
 
+/*
 // Active activities
 $result = $conn->query("SELECT COUNT(*) AS total FROM activities WHERE altar_id = $altar_id AND status = 'Active'");
 $activities = $result->fetch_assoc()['total'];
@@ -61,6 +62,37 @@ $activities = $result->fetch_assoc()['total'];
 // Announcements
 $result = $conn->query("SELECT COUNT(*) AS total FROM announcements WHERE altar_id = $altar_id");
 $announcements = $result->fetch_assoc()['total']; */
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reset_all'])) {
+    $entered_code = trim($_POST['entered_code']);
+
+    // Fetch altar's unique code
+    $stmt = $conn->prepare("SELECT unique_code FROM altars WHERE altar_id = ?");
+    $stmt->bind_param("i", $altar_id);
+    $stmt->execute();
+    $stmt->bind_result($db_code);
+    $stmt->fetch();
+    $stmt->close();
+
+    if ($entered_code === $db_code) {
+        // Reset followup statuses
+        $stmt = $conn->prepare("UPDATE followup_details SET status = 0 WHERE altar_id = ?");
+        $stmt->bind_param("i", $altar_id);
+        $stmt->execute();
+        $stmt->close();
+
+        // ✅ Store success message in session
+        $_SESSION['reset_success'] = "All pending followups have been reset successfully!";
+
+        // ✅ Redirect instead of reload (prevents resubmission)
+        header("Location: altarPortal.php");
+        exit();
+    } else {
+        $_SESSION['reset_error'] = "Invalid code. Reset denied!";
+        header("Location: altarPortal.php");
+        exit();
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -139,8 +171,33 @@ $announcements = $result->fetch_assoc()['total']; */
     </nav>
   </header>
 
+  <?php if (isset($_SESSION['reset_success'])): ?>
+    <script>alert('<?php echo $_SESSION['reset_success']; ?>');</script>
+    <?php unset($_SESSION['reset_success']); ?>
+  <?php endif; ?>
+
+  <?php if (isset($_SESSION['reset_error'])): ?>
+    <script>alert('<?php echo $_SESSION['reset_error']; ?>');</script>
+    <?php unset($_SESSION['reset_error']); ?>
+  <?php endif; ?>
+
   <div class="overlay" id="overlay" onclick="toggleSideBar()"></div>
   <div class="overlayDropdown" id="overlayDropdown" onclick="toggleDropdown()"></div>
+  <div class="overlayDropdown" id="overlayDropdown" onclick="toggleDropdown()"></div>
+  <div class="resetPopupOverlay" id="resetPopupOverlay" onclick="toggleResetPopup()"></div>
+
+  <!-- Reset All Popup -->
+  <div class="resetPopup" id="resetPopup">
+    <h2>Enter Unique Altar Code:</h2>
+    <form method="POST" action="">
+      <input type="password" name="entered_code" required>
+      <div class="popup-actions">
+        <button type="submit" name="reset_all">Confirm&nbsp;Reset</button>
+        <button type="button" onclick="toggleResetPopup()">Cancel</button>
+      </div>
+    </form>
+  </div>
+
   <div class="sideBar" id="sidebar">
     <div class="sContainer">
       <img src="Images/Jesus is Lord Radio Logo.avif" alt="Jesus is Lord Radio Logo" width="140">
@@ -208,10 +265,12 @@ $announcements = $result->fetch_assoc()['total']; */
           <div class="midCd">
             <i class="fa-solid fa-chart-simple"></i>
             <div class="crdDesc">
-              <h1><?php /* echo $pendingFollowups; */ ?>0</h1>
+              <h1><?php echo $pendingFollowups; ?></h1>
               <p>Let's bring them home</p>
             </div>
           </div>
+          <button class="lstDc" onclick="toggleResetPopup()">Reset All</button>
+
         </div>
 
         <div class="card ttMCd">

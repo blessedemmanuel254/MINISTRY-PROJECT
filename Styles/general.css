@@ -1,3 +1,4 @@
+
 * {
   margin: 0;
   padding: 0;
@@ -237,7 +238,7 @@ svg path {
 
 /* Overlays section*/
 
-body .overlay, body .codOverlay, body .overlayDropdown, body .overlayFup {
+body .overlay, body .codOverlay, body .overlayDropdown, .resetPopupOverlay , body .overlayFup {
   position: fixed;
   top: 0;
   left: 0;
@@ -248,12 +249,12 @@ body .overlay, body .codOverlay, body .overlayDropdown, body .overlayFup {
   z-index: 1001;
 }
 
-body .codOverlay.active, body .overlayFup.active {
+body .codOverlay.active, body .resetPopupOverlay.active, body .overlayFup.active {
   display: block;
   z-index: 3;
 }
 
-body form.codPopup, body form.rspnsDiv {
+body form.codPopup, body form.rspnsDiv, body .resetPopup {
   background-color: white;
   display: flex;
   flex-direction: column;
@@ -269,7 +270,51 @@ body form.codPopup, body form.rspnsDiv {
   display: none;
 }
 
-body form.codPopup.active, body form.rspnsDiv.active {
+body .resetPopup h2 {
+  font-size: 17px;
+  color: #0f268c;
+  width: 100%;
+  text-align: center;
+}
+
+body .resetPopup input {
+  padding: 8px 16px;
+  border: none;
+  background-color: #dedede2c;
+  width: 100%;
+  border-radius: 4px;
+  border: 1px solid #898888;
+  outline: none;
+}
+
+body .resetPopup .popup-actions {
+  margin-top: 16px;
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  gap: 10px;
+}
+
+body .resetPopup .popup-actions button {
+  border: none;
+  padding: 8px 16px;
+  background-color: #ff3b3b;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+
+}
+
+body .resetPopup .popup-actions button:last-child {
+  background-color: #0f0f0f;
+}
+
+body .resetPopup .popup-actions button:hover {
+  opacity: .875;
+}
+
+body form.codPopup.active, body form.rspnsDiv.active, body .resetPopup.active {
   display: flex;
 }
 
@@ -944,6 +989,18 @@ main .mnCtnr .card .midCd .crdDesc p {
 main .mnCtnr .card p.lstDc {
   color: #0f268c;
   font-size: 14px;
+}
+
+main .mnCtnr .card button {
+  color: white;
+  font-size: 14px;
+  width: fit-content;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+  background-color: #ff0000;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.356);
 }
 
 main .mnCtnr .lwrStcsDiv {/* 

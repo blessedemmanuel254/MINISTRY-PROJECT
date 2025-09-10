@@ -31,6 +31,13 @@ function toggleDropdown() {
   DropdownS.classList.toggle('active');
 }
 
+function toggleResetPopup() {
+  const resetPopupOverlay = document.getElementById('resetPopupOverlay');
+  const resetPopup = document.getElementById('resetPopup');
+  resetPopupOverlay.classList.toggle('active');
+  resetPopup.classList.toggle('active');
+}
+
 function toggleDropdownS() {
   const DropdownS = document.getElementById('DropdownS');
   DropdownS.classList.toggle('active');
@@ -108,3 +115,24 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+// Handle Call button disabling
+document.getElementById("call").forEach(callBtn => {
+  callBtn.addEventListener("click", function (e) {
+    e.preventDefault(); // still allow tel: links if needed, else remove this
+    this.classList.add("disabled"); // visually disable + block clicks
+  });
+});
+
+// Re-enable when Update is clicked and done
+document.querySelectorAll(".update").forEach(updateBtn => {
+  updateBtn.addEventListener("click", function () {
+    const row = this.closest("tr"); 
+    const callBtn = row.querySelector(".call");
+    
+    // 👉 here you should place your actual update AJAX logic
+    // Example: after AJAX success, re-enable call button
+    setTimeout(() => { 
+      callBtn.classList.remove("disabled");
+    }, 2000); // simulate server response delay
+  });
+});

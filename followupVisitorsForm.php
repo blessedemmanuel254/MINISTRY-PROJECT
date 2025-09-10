@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $phoneNumber = normalizePhone($phoneNumber);
 
   // --- Validate inputs ---
-  if (empty($fname) || empty($sname) || empty($phoneNumber) || empty($gender) || empty($evangelist) || empty($venue) || empty($missionType)) {
+  if (empty($fname) || empty($phoneNumber) || empty($gender) || empty($evangelist) || empty($venue) || empty($missionType)) {
     $errorMsg = "All fields are required.";
   } elseif (!preg_match('/^\+?[0-9]{10,15}$/', $phoneNumber)) {
     $errorMsg = "Please enter a valid phone number.";
@@ -145,7 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </div>
           <div class="inpBox">
             <span>Second Name:</span>
-            <input name="sname" type="text" value="<?php echo htmlspecialchars($sname ?? ''); ?>" required>
+            <input name="sname" type="text" value="<?php echo htmlspecialchars($sname ?? ''); ?>">
 
           </div>
           <div class="inpBox">

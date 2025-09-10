@@ -170,6 +170,20 @@ table tbody tr td a.call {
   align-items: center;
 }
 
+table tbody tr td a.call.inactive {
+  opacity: .4;
+  pointer-events: none;
+}
+
+table tbody tr td a.call.done {
+  background-color: #0f0f0f;
+}
+
+table tbody tr td a.call.disabled {
+  pointer-events: none;   /* Prevent further clicks */
+  opacity: 0.5;           /* Dim the button */
+} 
+
 table tbody tr td a.call i {
   color: white;
 }
@@ -209,6 +223,10 @@ table tbody tr td i.fa-x {
 
 table tbody tr td i.fa-minus {
   color: #898888;
+}
+
+table tbody tr td i.fa-hourglass-half {
+  color: rgb(161, 161, 0);
 }
 
 h1 {

@@ -47,7 +47,8 @@ function normalizePhoneNumber($rawPhone) {
 // ----------------- Load altar to update -----------------
 $altar_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 if ($altar_id <= 0) {
-  die("Invalid altar ID.");
+  header("Location: returnToHolinessAdminDashboard.php");
+  exit();
 }
 
 $stmt = $conn->prepare("SELECT * FROM altars WHERE altar_id = ?");
@@ -70,7 +71,7 @@ $altar_status     = $altar['altar_status'];
 $phone_1          = base64_decode($altar['phone_1']);
 $phone_2          = base64_decode($altar['phone_2']);
 $email            = $altar['email'] ? base64_decode($altar['email']) : '';
-$county           = $altar['county'];
+$county = $altar['county'];
 
 // ----------------- Handle update submission -----------------
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -83,8 +84,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $phone_2          = trim($_POST['phone_2']);
     $email            = trim($_POST['email']);
     $county           = trim($_POST['county']);
-    $password         = $_POST['password'];
-    $confirm_password = $_POST['confirm_password'];
 
     // ----------------- Validation -----------------
     if (empty($altar_name) || strlen($altar_name) < 3 || strlen($altar_name) > 100) {
@@ -97,8 +96,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error = "Phone 2 cannot be the same as Phone 1.";
     } elseif (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = "Invalid email format!";
-    } elseif ($password !== $confirm_password) {
-        $error = "Passwords do not match!";
     }
 
     if (empty($error)) {
@@ -108,7 +105,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $encrypted_phone1  = base64_encode($normalized_phone1);
         $encrypted_phone2  = base64_encode($normalized_phone2);
         $encrypted_email   = !empty($email) ? base64_encode($email) : null;
-        $hashedPassword    = password_hash($password, PASSWORD_DEFAULT);
 
         // Generate a new unique verification code
         $unique_code = getUniqueAltarCode($conn, 12);
@@ -116,11 +112,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // ----------------- Update -----------------
         $stmt = $conn->prepare("UPDATE altars SET 
           altar_name=?, altar_type=?, snr_pst_fullname=?, snr_pst_title=?, altar_status=?, 
-          phone_1=?, phone_2=?, email=?, county=?, password=?, unique_code=? 
+          phone_1=?, phone_2=?, email=?, county=?, unique_code=? 
           WHERE altar_id=?");
 
         $stmt->bind_param(
-          "sssssssssssi",
+          "ssssssssssi",
           $altar_name,
           $altar_type,
           $snr_pst_fullname,
@@ -130,7 +126,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           $encrypted_phone2,
           $encrypted_email,
           $county,
-          $hashedPassword,
           $unique_code,
           $altar_id
         );
@@ -279,14 +274,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               <option value="Garissa" <?php echo ($county ?? '') === 'Garissa' ? 'selected' : ''; ?>>Garissa</option>
               <option value="Wajir" <?php echo ($county ?? '') === 'Wajir' ? 'selected' : ''; ?>>Wajir</option>
             </select>
-          </div>
-          <div class="inpBox">
-            <span>Password</span>
-            <input type="password" name="password">
-          </div>
-          <div class="inpBox">
-            <span>Confirm password</span>
-            <input type="password" name="confirm_password">
           </div>
         </div>
         <button type="submit">Update Altar</button>
