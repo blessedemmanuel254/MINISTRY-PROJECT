@@ -198,7 +198,7 @@ table tbody tr td p.actvIllsttr {
   border-radius: 2px;
 }
 
-table tbody tr td p.mMve {
+table tbody tr td p.mMve, table tbody tr td a.upgMve {
   color: white;
   background-color: #0f0f0f;
   display: flex;
@@ -207,8 +207,12 @@ table tbody tr td p.mMve {
   border-radius: 4px;
 }
 
-table tbody tr td p.mMve i {
+table tbody tr td p.mMve i, table tbody tr td a.upgMve i {
   color: white;
+}
+
+table tbody tr td a.upgMve i {
+  color: #00ff00;
 }
 
 table tbody tr td i {

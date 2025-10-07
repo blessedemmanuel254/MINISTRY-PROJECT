@@ -1,54 +1,86 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 session_start();
 require_once "connection.php"; // your DB connection
 
-// Redirect if altar not logged in
 if (!isset($_SESSION['altar_id'])) {
   header("Location: altarLogin.php");
   exit();
 }
 
-$altar_id = $_SESSION['altar_id'];
+$altar_id   = $_SESSION['altar_id'];
 $altar_name = $_SESSION['altar_name'];
 $altar_type = $_SESSION['altar_type'];
 
-function maskPhone($phone) {
-  $len = strlen($phone);
-  if ($len <= 6) {
-      return $phone; // If too short, just return as is.
-  }
-  $first3 = substr($phone, 0, 3);
-  $last3 = substr($phone, -3);
-  $maskLength = $len - 6;
-  $mask = str_repeat('*', $maskLength);
-  return $first3 . $mask . $last3;
+$errorMsg = "";
+$successMsg = "";
+
+function normalizePhone($phone) {
+    $cleaned = preg_replace('/[^\d+]/', '', $phone);
+    if (strpos($cleaned, '+') === 0) {
+        return $cleaned;
+    } elseif (strpos($cleaned, '0') === 0) {
+        return '+254' . substr($cleaned, 1);
+    } elseif (strlen($cleaned) >= 9) {
+        return '+' . $cleaned;
+    }
+    return '';
 }
 
-// Check if this is an AJAX POST request
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-  if (isset($_POST['action']) && isset($_POST['id'])) {
-    $id = intval($_POST['id']);
-    $action = $_POST['action'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $fname       = trim($_POST['fname']);
+  $sname       = trim($_POST['sname']);
+  $phoneNumber = trim($_POST['phoneNumber']);
+  $gender      = trim($_POST['gender']);
+  $evangelist  = trim($_POST['evangelist']);
+  $venue       = trim($_POST['venue']);
+  $missionType = trim($_POST['missionType']);
+  $followupId  = isset($_POST['followup_id']) ? intval($_POST['followup_id']) : null;
 
-    if ($action === "delete") {
-      $stmt = $conn->prepare("DELETE FROM followup_details WHERE followup_id = ?");
-      $stmt->bind_param("i", $id);
-      $stmt->execute();
-      $stmt->close();
+  $phoneNumber = normalizePhone($phoneNumber);
 
-    } elseif ($action === "updateStatus" && isset($_POST['status'])) {
-      $status = intval($_POST['status']); // 1 = communicated, 2 = not communicated
-      $stmt = $conn->prepare("UPDATE followup_details SET status = ? WHERE followup_id = ?");
-      $stmt->bind_param("ii", $status, $id);
-      $stmt->execute();
-      $stmt->close();
+  if (empty($fname) || empty($phoneNumber) || empty($gender) || empty($evangelist) || empty($venue) || empty($missionType)) {
+    $errorMsg = "All fields are required!";
+  } elseif (!preg_match('/^\+?[0-9]{10,15}$/', $phoneNumber)) {
+    $errorMsg = "Please enter a valid phone number!";
+  }
+
+  if (empty($errorMsg)) {
+    $encodedPhone = base64_encode($phoneNumber);
+
+    // 🔹 If followup_id exists, delete that record before inserting into members
+    if ($followupId) {
+      $delStmt = $conn->prepare("DELETE FROM followup_details WHERE followup_id = ?");
+      $delStmt->bind_param("i", $followupId);
+      $delStmt->execute();
+      $delStmt->close();
     }
 
-    exit; // prevent HTML rendering on AJAX calls
+    // 🔹 Insert into members table
+    $fname = ucfirst(strtolower($fname));
+    $sname = ucfirst(strtolower($sname));
+    $evangelist = strtoupper($evangelist);
+    $venue = ucfirst(strtolower($venue));
+
+    $stmt = $conn->prepare("INSERT INTO members 
+      (first_name, second_name, phone, gender, evangelist_name, meeting_point, mission_type, altar_id) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+
+    $stmt->bind_param("sssssssi", $fname, $sname, $encodedPhone, $gender, $evangelist, $venue, $missionType, $altar_id);
+
+    if ($stmt->execute()) {
+      $successMsg = 'Member added successfully and upgraded from follow-up if applicable!';
+      $fname = $sname = $phoneNumber = $gender = $evangelist = $venue = $missionType = '';
+    } else {
+      $errorMsg = "Error inserting record: " . $stmt->error;
+    }
+    $stmt->close();
   }
 }
+?>
 
-?> 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -193,6 +225,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
               <th>Evangelist</th>
               <th>Mission&nbsp;Type</th>
               <th>M.&nbsp;Point</th>
+              <th>Upgrade</th>
               <th>Date</th>
             </tr>
           </thead>
@@ -239,6 +272,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                           <td>{$row['evangelist_name']}</td>
                           <td>{$row['mission_type']}</td>
                           <td>{$row['meeting_point']}</td>
+                          <td>
+                            <a href='followupForm.php?followup_id={$row['followup_id']}' class='upgMve'>
+                              <i class='fa-solid fa-upload'></i> Upgrade&nbsp;to&nbsp;member
+                            </a>
+                          </td>
+
                           <td>{$row['date_evangelized']}</td>
                         </tr>";
                         $counter++;
