@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 
     $stmt->bind_param("sssssssi", $fname, $sname, $encodedPhone, $gender, $evangelist, $venue, $missionType, $altar_id);
-
+    
     if ($stmt->execute()) {
       $successMsg = 'Member added successfully and upgraded from follow-up if applicable!';
       $fname = $sname = $phoneNumber = $gender = $evangelist = $venue = $missionType = '';
