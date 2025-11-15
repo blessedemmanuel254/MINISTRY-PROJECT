@@ -233,6 +233,97 @@ table tbody tr td i.fa-hourglass-half {
   color: rgb(161, 161, 0);
 }
 
+table tbody tr td .ellipsis-btn {
+  --size: 30px;
+  width: var(--size);
+  height: var(--size);
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50%;
+  border: none;
+  background: #0f268c17;
+  cursor: pointer;
+  position: relative;
+  outline: none;
+  transition: background 0.15s ease;
+  position: relative;
+}
+
+table tbody tr td .ellipsis-btn:focus-visible {
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+table tbody tr td .ellipsis-btn:hover {
+  background: #0f268c36;
+}
+
+/* Perfectly round small dots */
+table tbody tr td .ellipsis-btn .dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: #111;
+  display: block;
+  margin: 2px 0;
+}
+
+table tbody tr td .ellipsis-vertical {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+table tbody tr td .ellipsis-btn nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: white;
+  padding: 8px;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  top: 0;
+  left: 110%;
+  min-width: 160px;
+  opacity: 0;
+  transform: scale(0.95);
+  pointer-events: none;
+  transition: all 0.15s ease;
+  z-index: 100;
+}
+
+table tbody tr td .ellipsis-btn nav.active {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+table tbody tr td .ellipsis-btn nav span {
+  padding: 4px;
+  border-radius: 4px;
+}
+
+table tbody tr td .ellipsis-btn nav .fstOpt {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+table tbody tr td .ellipsis-btn nav .fstOpt i {
+  color: #898888;
+}
+
+table tbody tr td .ellipsis-btn nav .lstOpt {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-top: 1px solid #898888;
+}
+
+table tbody tr td .ellipsis-btn nav span:hover {
+  background-color: #89888869;
+}
+    
 h1 {
   font-weight: bold;
   font-size: 25px;

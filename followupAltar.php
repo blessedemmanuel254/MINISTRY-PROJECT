@@ -1,86 +1,54 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 session_start();
 require_once "connection.php"; // your DB connection
 
+// Redirect if altar not logged in
 if (!isset($_SESSION['altar_id'])) {
   header("Location: altarLogin.php");
   exit();
 }
 
-$altar_id   = $_SESSION['altar_id'];
+$altar_id = $_SESSION['altar_id'];
 $altar_name = $_SESSION['altar_name'];
 $altar_type = $_SESSION['altar_type'];
 
-$errorMsg = "";
-$successMsg = "";
-
-function normalizePhone($phone) {
-    $cleaned = preg_replace('/[^\d+]/', '', $phone);
-    if (strpos($cleaned, '+') === 0) {
-        return $cleaned;
-    } elseif (strpos($cleaned, '0') === 0) {
-        return '+254' . substr($cleaned, 1);
-    } elseif (strlen($cleaned) >= 9) {
-        return '+' . $cleaned;
-    }
-    return '';
+function maskPhone($phone) {
+  $len = strlen($phone);
+  if ($len <= 6) {
+      return $phone; // If too short, just return as is.
+  }
+  $first3 = substr($phone, 0, 3);
+  $last3 = substr($phone, -3);
+  $maskLength = $len - 6;
+  $mask = str_repeat('*', $maskLength);
+  return $first3 . $mask . $last3;
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $fname       = trim($_POST['fname']);
-  $sname       = trim($_POST['sname']);
-  $phoneNumber = trim($_POST['phoneNumber']);
-  $gender      = trim($_POST['gender']);
-  $evangelist  = trim($_POST['evangelist']);
-  $venue       = trim($_POST['venue']);
-  $missionType = trim($_POST['missionType']);
-  $followupId  = isset($_POST['followup_id']) ? intval($_POST['followup_id']) : null;
+// Check if this is an AJAX POST request
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+  if (isset($_POST['action']) && isset($_POST['id'])) {
+    $id = intval($_POST['id']);
+    $action = $_POST['action'];
 
-  $phoneNumber = normalizePhone($phoneNumber);
+    if ($action === "delete") {
+      $stmt = $conn->prepare("DELETE FROM followup_details WHERE followup_id = ?");
+      $stmt->bind_param("i", $id);
+      $stmt->execute();
+      $stmt->close();
 
-  if (empty($fname) || empty($phoneNumber) || empty($gender) || empty($evangelist) || empty($venue) || empty($missionType)) {
-    $errorMsg = "All fields are required!";
-  } elseif (!preg_match('/^\+?[0-9]{10,15}$/', $phoneNumber)) {
-    $errorMsg = "Please enter a valid phone number!";
-  }
-
-  if (empty($errorMsg)) {
-    $encodedPhone = base64_encode($phoneNumber);
-
-    // 🔹 If followup_id exists, delete that record before inserting into members
-    if ($followupId) {
-      $delStmt = $conn->prepare("DELETE FROM followup_details WHERE followup_id = ?");
-      $delStmt->bind_param("i", $followupId);
-      $delStmt->execute();
-      $delStmt->close();
+    } elseif ($action === "updateStatus" && isset($_POST['status'])) {
+      $status = intval($_POST['status']); // 1 = communicated, 2 = not communicated
+      $stmt = $conn->prepare("UPDATE followup_details SET status = ? WHERE followup_id = ?");
+      $stmt->bind_param("ii", $status, $id);
+      $stmt->execute();
+      $stmt->close();
     }
 
-    // 🔹 Insert into members table
-    $fname = ucfirst(strtolower($fname));
-    $sname = ucfirst(strtolower($sname));
-    $evangelist = strtoupper($evangelist);
-    $venue = ucfirst(strtolower($venue));
-
-    $stmt = $conn->prepare("INSERT INTO members 
-      (first_name, second_name, phone, gender, evangelist_name, meeting_point, mission_type, altar_id) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-
-    $stmt->bind_param("sssssssi", $fname, $sname, $encodedPhone, $gender, $evangelist, $venue, $missionType, $altar_id);
-    
-    if ($stmt->execute()) {
-      $successMsg = 'Member added successfully and upgraded from follow-up if applicable!';
-      $fname = $sname = $phoneNumber = $gender = $evangelist = $venue = $missionType = '';
-    } else {
-      $errorMsg = "Error inserting record: " . $stmt->error;
-    }
-    $stmt->close();
+    exit; // prevent HTML rendering on AJAX calls
   }
 }
-?>
 
+?> 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -225,7 +193,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               <th>Evangelist</th>
               <th>Mission&nbsp;Type</th>
               <th>M.&nbsp;Point</th>
-              <th>Upgrade</th>
+              <th>Option</th>
               <th>Date</th>
             </tr>
           </thead>
@@ -273,11 +241,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                           <td>{$row['mission_type']}</td>
                           <td>{$row['meeting_point']}</td>
                           <td>
-                            <a href='followupForm.php?followup_id={$row['followup_id']}' class='upgMve'>
-                              <i class='fa-solid fa-upload'></i> Upgrade&nbsp;to&nbsp;member
-                            </a>
+                            <label class='ellipsis-btn'>
+                              <span class='ellipsis-vertical' aria-hidden='true'>
+                                <span class='dot'></span>
+                                <span class='dot'></span>
+                                <span class='dot'></span>
+                              </span>
+                              <nav id='option1' class='option' role='option' aria-label='Options'>
+                                <span class='fstOpt' href='#' role='optionitem' tabindex='0'><i class='fa-solid fa-upload'></i>&nbsp;Upgrade&nbsp;to&nbsp;member</span>
+                                <span href='#' role='optionitem' tabindex='0'>Move&nbsp;to&nbsp;Blacklist</span>
+                                <div class='divider' aria-hidden='true'></div>
+                                <span class='lstOpt' data-userid='{$row['followup_id']}'>Delete</span>
+                              </nav>
+                            </label>
                           </td>
-
                           <td>{$row['date_evangelized']}</td>
                         </tr>";
                         $counter++;
@@ -317,6 +294,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <script src="Scripts/general.js"></script>
   <script>
+
+// ===== Toggle 3-Dot Option Menu in Table =====
+document.addEventListener("click", function (e) {
+  const clickedBtn = e.target.closest(".ellipsis-btn");
+
+  // Close all open menus first
+  document.querySelectorAll(".option.active").forEach(menu => {
+    if (!menu.contains(e.target)) menu.classList.remove("active");
+  });
+
+  // If user clicked the ellipsis button
+  if (clickedBtn) {
+    const menu = clickedBtn.querySelector(".option");
+    if (menu) menu.classList.toggle("active");
+    e.stopPropagation(); // prevent global close from immediately running
+  }
+});
     
     // Handle delete
     document.querySelectorAll(".delete").forEach(btn => {
@@ -385,6 +379,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       toggleFollowupResponseBar();
 
     }, { capture: true }); // capture ensures we run before any bubbling handlers
+
 
     // Handle Yes / No clicks
     document.getElementById("yesBtn").addEventListener("click", function() {

@@ -1,340 +1,173 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Jesus Is Lord Radio – Web Player</title>
-  <meta name="description" content="Listen live to Jesus Is Lord Radio." />
-  <link rel="preconnect" href="https://s3.radio.co" crossorigin />
+  <title>3-dot Options (Ellipsis) — HTML + CSS</title>
   <style>
-    :root{
-      --bg:#17181c;
-      --panel:#22252b;
-      --text:#f3f5f7;
-      --muted:#a9b0b8;
-      --accent:#3fa7ff;
-      --accent-2:#58d68d;
-      --danger:#ff6b6b;
-      --radius:14px;
-      --shadow:0 10px 30px rgba(0,0,0,.35), 0 1px 0 rgba(255,255,255,.04) inset;
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background: #f3f4f6;
     }
 
-    html,body{
-      height:100%;
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-      background: radial-gradient(1200px 600px at 20% -10%, #1d2129, transparent 60%),
-                  radial-gradient(1000px 500px at 120% 110%, #0f1217, transparent 50%),
-                  var(--bg);
-      color:var(--text);
+    .card {
+      width: 320px;
+      padding: 20px;
+      border-radius: 12px;
+      background: white;
+      box-shadow: 0 6px 20px rgba(17, 24, 39, 0.08);
     }
 
-    .wrap{
-      min-height:100%;
-      display:grid;
-      place-items:center;
-      padding:24px;
-      background: url('/Images/5764744958148985344.jpg') no-repeat center center;
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-position: center;
-      /* Optional: add a fallback color */
-      background-color: #000;
-      position: relative;
-      overflow-x: hidden;
-    }
-
-    .wrap::before {
-      content: "";
+    .menu-toggle {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.6); /* Change 0.6 for lighter/darker */
-      z-index: 1;
-      
+      opacity: 0;
+      pointer-events: none;
     }
 
-    .wrap > * {
+    .ellipsis-btn {
+      --size: 36px;
+      width: var(--size);
+      height: var(--size);
+      display: inline-grid;
+      place-items: center;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      cursor: pointer;
       position: relative;
-      z-index: 2;
+      outline: none;
+      transition: background 0.15s ease;
     }
 
-    .wrap .player{
-      width: clamp(300px, 80vw, 700px);
-      background:linear-gradient(180deg, #1d2128 0%, #1a1d23 100%);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding:18px 18px 14px;
-      border:1px solid #2a2f37;
+    .ellipsis-btn:focus-visible {
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
     }
 
-    .row{
-      display:flex;
-      align-items:center;
-      gap:14px;
+    .ellipsis-btn:hover {
+      background: rgba(0, 0, 0, 0.04);
     }
 
-    .title{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      font-weight:700;
-      letter-spacing:.2px;
-      text-transform:uppercase;
-      font-size:14px;
-      color:var(--muted);
+    /* Perfectly round small dots */
+    .ellipsis-btn .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: #111;
+      display: block;
+      margin: 2px 0;
     }
 
-    .live-dot{
-      width:9px;height:9px;border-radius:50%;
-      background:var(--danger);
-      box-shadow:0 0 10px var(--danger), 0 0 20px rgba(255,107,107,.35);
-      animation:pulse 1.4s infinite ease-in-out;
-    }
-    @keyframes pulse{
-      0%,100%{ transform:scale(.9); opacity:.8 }
-      50%{ transform:scale(1.15); opacity:1 }
+    .ellipsis-vertical {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
 
-    .badge{
-      margin-left:auto;
-      background:#11151a;
-      padding:6px 10px;
-      border-radius:999px;
-      border:1px solid #2b313a;
-      color:var(--muted);
-      font-size:12px;
+    .menu-wrap {
+      position: relative;
+      display: inline-block;
     }
 
-    .panel{
-      margin-top:12px;
-      background:var(--panel);
-      border:1px solid #2a2f37;
-      border-radius:12px;
-      padding:14px;
-      display:flex;
-      align-items:center;
-      gap:12px;
+    .menu {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 10px);
+      min-width: 160px;
+      padding: 6px;
+      border-radius: 8px;
+      background: white;
+      box-shadow: 0 6px 18px rgba(2, 6, 23, 0.12);
+      opacity: 0;
+      transform: translateY(-6px) scale(0.98);
+      transform-origin: top right;
+      pointer-events: none;
+      transition: opacity 0.18s ease, transform 0.18s ease;
     }
 
-    button.icon{
-      flex:0 0 auto;
-      width:44px;height:44px;border-radius:12px;
-      border:none;cursor:pointer;
-      background:#101318;
-      color:var(--text);
-      display:grid;place-items:center;
-      box-shadow:inset 0 0 0 1px #2b313a, 0 4px 16px rgba(0,0,0,.35);
-      transition:transform .12s ease, filter .12s ease, background .12s ease;
-    }
-    button.icon:hover{ filter:brightness(1.08) }
-    button.icon:active{ transform:translateY(1px) }
-
-    .play{
-      width:56px;height:56px;border-radius:16px;
-      background:linear-gradient(180deg, #2b86ff, #1b5eff);
-      box-shadow:0 10px 24px rgba(31, 101, 255, .35);
-    }
-    .play.paused{
-      background:linear-gradient(180deg, #58d68d, #2ecc71);
-      box-shadow:0 10px 24px rgba(46, 204, 113, .35);
+    .menu-toggle:checked + .ellipsis-btn + .menu,
+    .menu-wrap:focus-within .menu {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
     }
 
-    .eq{
-      width:18px;height:16px;display:grid;grid-auto-flow:column;gap:3px;
-    }
-    .bar{
-      width:3px;border-radius:2px;background:var(--accent);opacity:.9;
-      transform-origin:bottom center;
-      animation:beat 1s ease-in-out infinite;
-    }
-    .bar:nth-child(2){animation-delay:.12s}
-    .bar:nth-child(3){animation-delay:.24s}
-    @keyframes beat{ 0%,100%{height:3px} 50%{height:16px} }
-
-    .meta{
-      display:grid; gap:4px;
-      min-width:0;
-    }
-    .now{
-      font-weight:700; font-size:16px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    }
-    .sub{
-      font-size:12px; color:var(--muted);
+    .menu a {
+      display: block;
+      padding: 10px 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      color: #0f172a;
+      font-size: 14px;
     }
 
-    .spacer{flex:1}
-
-    .vol{
-      display:flex; align-items:center; gap:8px; width:210px; max-width:28vw;
-    }
-    input[type="range"]{
-      -webkit-appearance:none; appearance:none; width:100%; height:6px; border-radius:999px;
-      background:linear-gradient(90deg, var(--accent) var(--pos,0%), #3a404a var(--pos,0%));
-      outline:none; cursor:pointer;
-    }
-    input[type="range"]::-webkit-slider-thumb{
-      -webkit-appearance:none; appearance:none;
-      width:16px;height:16px;border-radius:50%;
-      background:#fff; border:2px solid #1a5dff; box-shadow:0 2px 8px rgba(0,0,0,.5);
-    }
-    input[type="range"]::-moz-range-thumb{
-      width:16px;height:16px;border-radius:50%;
-      background:#fff; border:2px solid #1a5dff;
+    .menu a:hover,
+    .menu a:focus {
+      background: rgba(2, 6, 23, 0.04);
+      outline: none;
     }
 
-    .foot{
-      display:flex; justify-content:space-between; align-items:center;
-      gap:12px; margin-top:12px; color:var(--muted); font-size:12px;
+    .divider {
+      height: 1px;
+      background: rgba(2, 6, 23, 0.06);
+      margin: 6px 0;
+      border-radius: 1px;
     }
-    .link{ color:var(--accent); text-decoration:none }
-    .link:hover{ text-decoration:underline }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .title {
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .description {
+      font-size: 13px;
+      color: #475569;
+      margin-top: 12px;
+    }
+
+    .menu a {
+      outline-offset: 4px;
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="container">
-      <div class="player" role="region" aria-label="Radio Player">
-        <!-- Top Row -->
-        <div class="row title">
-          <span class="live-dot" aria-hidden="true"></span>
-          <span>Live Stream</span>
-          <span class="badge" id="stateBadge">Idle</span>
-        </div>
+  <div class="card" aria-label="card with options">
+    <div class="header">
+      <div>
+        <div class="title">Item title</div>
+        <div class="description">Small description text below the title.</div>
+      </div>
 
-        <!-- Main Controls -->
-        <div class="panel">
-          <button class="icon play" id="playBtn" aria-label="Play/Pause">
-            <!-- Play icon -->
-            <svg id="playIcon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M8 5v14l11-7z"></path>
-            </svg>
-            <!-- Pause icon (hidden by default) -->
-            <svg id="pauseIcon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="display:none">
-              <path d="M6 5h4v14H6zM14 5h4v14h-4z"></path>
-            </svg>
-          </button>
+      <div class="menu-wrap">
+        <input id="menuToggle1" class="menu-toggle" type="checkbox" aria-hidden="true" />
+        <label class="ellipsis-btn" for="menuToggle1" tabindex="0" aria-haspopup="true" aria-controls="menu1" aria-expanded="false" onkeydown="if(event.key==='Escape'){document.getElementById('menuToggle1').checked=false}">
+          <span class="ellipsis-vertical" aria-hidden="true">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </span>
+        </label>
 
-          <div class="eq" aria-hidden="true">
-            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
-          </div>
-
-          <div class="meta">
-            <div class="now" id="nowTitle">JESUS IS LORD RADIO</div>
-            <div class="sub" id="status">Ready to play</div>
-          </div>
-
-          <div class="spacer"></div>
-
-          <button class="icon" id="muteBtn" aria-label="Mute/Unmute">
-            <svg id="volIcon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M3 10v4h4l5 5V5L7 10H3z"></path>
-            </svg>
-          </button>
-
-          <div class="vol" aria-label="Volume">
-            <input id="volume" type="range" min="0" max="1" step="0.01" value="0.8" />
-          </div>
-        </div>
-
-        <div class="foot">
-          <span>Tip: Some browsers block autoplay. Click ▶️ to start.</span>
-          <a class="link" href="https://s3.radio.co/s97f38db97/listen" target="_blank" rel="noopener"></a>
-        </div>
-
-        <!-- Hidden audio element -->
-        <audio id="radio" preload="none" crossorigin="anonymous">
-          <source src="https://s3.radio.co/s97f38db97/listen" type="audio/mpeg" />
-          Your browser does not support HTML audio.
-        </audio>
+        <nav id="menu1" class="menu" role="menu" aria-label="Options">
+          <a href="#" role="menuitem" tabindex="0">Edit</a>
+          <a href="#" role="menuitem" tabindex="0">Share</a>
+          <div class="divider" aria-hidden="true"></div>
+          <a href="#" role="menuitem" tabindex="0">Delete</a>
+        </nav>
       </div>
     </div>
   </div>
-
-  <script>
-    const audio   = document.getElementById('radio');
-    const playBtn = document.getElementById('playBtn');
-    const state   = document.getElementById('stateBadge');
-    const status  = document.getElementById('status');
-    const nowEl   = document.getElementById('nowTitle');
-    const vol     = document.getElementById('volume');
-    const muteBtn = document.getElementById('muteBtn');
-    const volIcon = document.getElementById('volIcon');
-    const playIcon  = document.getElementById('playIcon');
-    const pauseIcon = document.getElementById('pauseIcon');
-
-    // Set initial volume & progress color
-    function updateVolGradient() {
-      const pct = (vol.value * 100) + '%';
-      vol.style.setProperty('--pos', pct);
-    }
-    vol.addEventListener('input', () => {
-      audio.volume = +vol.value;
-      updateVolGradient();
-      if (audio.muted && audio.volume > 0) {
-        audio.muted = false;
-        volIcon.innerHTML = '<path d="M3 10v4h4l5 5V5L7 10H3z"/>';
-      }
-    });
-    updateVolGradient();
-
-    // Play / Pause
-    async function togglePlay() {
-      if (audio.paused) {
-        try {
-          state.textContent = 'Connecting…';
-          status.textContent = 'Buffering stream…';
-          await audio.play();
-          playBtn.classList.add('paused');
-          playIcon.style.display = 'none';
-          pauseIcon.style.display = 'block';
-          state.textContent = 'Live';
-          status.textContent = 'Playing';
-        } catch (err) {
-          state.textContent = 'Error';
-          status.textContent = 'Click to try again (autoplay blocked)';
-          console.error(err);
-        }
-      } else {
-        audio.pause();
-        playBtn.classList.remove('paused');
-        playIcon.style.display = 'block';
-        pauseIcon.style.display = 'none';
-        state.textContent = 'Paused';
-        status.textContent = 'Stopped';
-      }
-    }
-    playBtn.addEventListener('click', togglePlay);
-
-    // Mute / Unmute
-    muteBtn.addEventListener('click', () => {
-      audio.muted = !audio.muted;
-      volIcon.innerHTML = audio.muted
-        ? '<path d="M16.5 12l4.24-4.24-1.41-1.41L15.09 10.59 10.5 6v12l4.59-4.59 4.24 4.24 1.41-1.41L16.5 12zM3 10v4h4l5 5V5L7 10H3z"/>'
-        : '<path d="M3 10v4h4l5 5V5L7 10H3z"/>';
-      status.textContent = audio.muted ? 'Muted' : (audio.paused ? 'Paused' : 'Playing');
-    });
-
-    // Basic metadata stub (you can replace with your API if available)
-    // If your streaming provider exposes "now playing" JSON, fetch it and update nowEl.
-    nowEl.textContent = 'JESUS IS LORD RADIO';
-
-    // Connection state helpers
-    audio.addEventListener('playing', () => { state.textContent = 'Live'; status.textContent = 'Playing'; });
-    audio.addEventListener('waiting', () => { state.textContent = 'Buffering'; status.textContent = 'Reconnecting…'; });
-    audio.addEventListener('stalled', () => { status.textContent = 'Network stalled…'; });
-    audio.addEventListener('error',   () => { state.textContent = 'Error'; status.textContent = 'Stream error (check link)'; });
-
-    // Optional: resume if stream drops
-    let retryTimer;
-    audio.addEventListener('pause', () => {
-      clearTimeout(retryTimer);
-      if (!audio.ended && !audio.seeking && !audio.paused) {
-        retryTimer = setTimeout(() => audio.play().catch(()=>{}), 1500);
-      }
-    });
-  </script>
 </body>
 </html>
